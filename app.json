@@ -1,15 +1,15 @@
 {
   "expo": {
-    "name": "freelancehelper",
-    "slug": "freelancehelper",
+    "name": "FreelanceHelper",
+    "slug": "front-App",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/pantalladeinicio.png",
+      "image": "./assets/inicioScreen.png",
       "resizeMode": "contain",
-      "backgroundColor": "#67B9F5"
+      "backgroundColor": "#67b9f5"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -24,8 +24,7 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      },
-      "package": "prueba1.package"
+      }
     },
     "web": {
       "favicon": "./assets/favicon.png"

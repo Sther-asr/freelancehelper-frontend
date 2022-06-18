@@ -15,10 +15,30 @@ const Pantalla =()=>{
 const NavegadorOrganizador = ()=>{
 
     return(
-        <Drawer.Navigator>
+        <Drawer.Navigator
+        screenOptions={{
+            headerShown: true,
+            swipeEnabled: true,
+            headerStyle:{
+              backgroundColor: 'white',
+              height: 80
+            },
+            headerTintColor: '#B3B3B3',
+            headerTitleStyle:{
+              fontSize:25,
+              fontWeight: 'bold',
+            },
+            drawerPosition: 'left',
+            drawerType: 'front',
+            overlayColor: "#AAAAAA80",
+            headerTitleAlign:'center',
+
+          }}
+        >
             <Drawer.Screen
                 name='HomeOrganizador'
                 component={HomeOrganizador}
+                options={{headerShown: false}}
             />
             <Drawer.Screen
                 name='PantallaPrueba'

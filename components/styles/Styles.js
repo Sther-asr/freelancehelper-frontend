@@ -167,7 +167,7 @@ export const StylesListaTareas = EStyleSheet.create({
         borderRadius: 25,
         padding: 15,
         width: '90%',
-        height:'80%',
+        height:'60%',
         marginLeft: '5%',
         marginRight:'5%'
     },
