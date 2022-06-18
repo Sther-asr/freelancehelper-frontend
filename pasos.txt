@@ -1,0 +1,6 @@
+-> npm install @react-navigation/native
+-> expo install react-native-screens react-native-safe-area-context
+-> npm install @react-navigation/drawer
+-> expo install react-native-gesture-handler react-native-reanimated
+#agregar al inicio del archivo app (antes de todo)
+-> import 'react-native-gesture-handler';
