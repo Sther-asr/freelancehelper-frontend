@@ -2,10 +2,11 @@ import React, {useState} from "react";
 import {View } from 'react-native';
 import { ScrollView, Text, TextInput, TouchableOpacity, Image, Alert} from "react-native";
 import EStyleSheet from 'react-native-extended-stylesheet';
-import styles from '../styles/Styles'
+import {styles} from '../styles/Styles'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
-import {inicioSesion} from '../../requestBackend/API';
+import {inicioSesion} from '../../requestBackend/API-Usuarios';
+import {useTogglePasswordVisibility} from "./useToggle";
 
 EStyleSheet.build();
 
@@ -13,6 +14,13 @@ const Login = (props) =>{
     /*Delaracion de estados */
     const [usuario, cargarUsuario] = useState("");
     const [contrasena, cargarContrasena] = useState("");
+    const { passwordVisibility, rightIcon, handlePasswordVisibility } = useTogglePasswordVisibility();
+
+    const restablecerCampos = () =>{
+        cargarUsuario("");
+        cargarContrasena("");
+        handlePasswordVisibility(true);
+    }
 
     const myfuncion = async (pantalla)=>{
         //props.navigation.navigate(pantalla);
@@ -21,14 +29,16 @@ const Login = (props) =>{
             "contrasena" : contrasena
         }
         const data = await inicioSesion(datos);
-        console.log(data.respuesta);
         Alert.alert(
             "Inicio de sesion dice",
             `informacion de registro ${JSON.stringify(data)}`,
             [
                 {text:"Ok", onPress: ()=>console.log('los datos')}
             ]
-        )
+        );
+        console.log(typeof(data[0].idUsuario))
+        typeof(data[0].idUsuario) === 'number' ? props.navigation.navigate('Organizador') : console.log('acceso a la pantalla siguiente');
+        
         
     }
 
@@ -74,19 +84,40 @@ const Login = (props) =>{
                         />
                     </View>
 
-                    {/*Input field Password*/}
+                    {/* campo contraseña*/}
                     <View style={styles.containerInput}>
                         <Image
                             source={require('../../assets/icons/clave.png')}
-                            style={[styles.PNGinput, {height:34, marginTop:8}]}
+                            style={[styles.PNGinput,{height:34, marginTop:8}]}
                         />
+                        
                         <TextInput
                             onChangeText={cargarContrasena}
                             value={contrasena}
-                            placeholder="password"
-                            style={styles.input}
+                            placeholder="contraseña"
+                            style={[styles.input,{width:'68%'}]}
                             placeholderTextColor="#B3B3B3"
+                            secureTextEntry={passwordVisibility}
                         />
+                        <TouchableOpacity
+                            onPress={handlePasswordVisibility}
+                        >
+                            {
+                                //mostrar icono tachado
+                                passwordVisibility ? (
+                                    <Image
+                                        source={require('../../assets/icons/ojoTachado.png')}
+                                        style={[styles.PNGinput,{height:34,width: 34 ,marginTop:8}]}
+                                    />
+                                ):(
+                                    //mostrar icono normal
+                                    <Image
+                                        source={require('../../assets/icons/ojoNormal.png')}
+                                        style={[styles.PNGinput,{height:34,width: 34 ,marginTop:8}]}
+                                    />
+                                )
+                            }
+                        </TouchableOpacity>
                     </View>
 
                     {/*Button */}

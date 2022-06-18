@@ -1,8 +1,8 @@
 import React from "react";
-import {Dimensions, StyleSheet } from "react-native";
+import {Dimensions } from "react-native";
 import EStyleSheet from 'react-native-extended-stylesheet';
 
-const styles = EStyleSheet.create({
+export const styles = EStyleSheet.create({
     
     safearea:{
         padding: 0,
@@ -19,8 +19,7 @@ const styles = EStyleSheet.create({
         marginTop: 0,
         width: '100%',
         height: 35,
-        resizeMode: "contain",
-        
+        resizeMode: "contain"
     },
     TituloPNG: {
         marginTop: 20,
@@ -114,7 +113,7 @@ const styles = EStyleSheet.create({
         justifyContent: 'center',
         borderRadius: 15,
         marginTop: 4,
-        marginBottom: 20,
+        marginBottom: 50,
         height: 50,
     },
     textBoton: {
@@ -127,4 +126,58 @@ const styles = EStyleSheet.create({
     }
 });
 
-export default styles;
+// LIENZO DE TAREA
+
+export const StylesTarea = EStyleSheet.create({
+    container:{
+        width: '100%',
+        paddingHorizontal:15,
+        paddingVertical:16,
+        backgroundColor: 'white',
+        flexDirection: 'row',
+        borderTopWidth:1.5,
+        borderTopColor: '#B3B3B3',
+    },
+    containerInfo:{
+        width:'80%',
+    },
+    titulo:{
+        fontSize: 20,
+        fontWeight: 'bold',
+
+    },
+    hora:{
+        marginRight:10
+    },
+    containerFlex:{
+        flexDirection: 'row',
+        marginTop:4
+    },
+    containerCheckBox:{
+        width:'20%',  
+        justifyContent:'center',  
+        paddingLeft:'6%'
+    }
+});
+
+// LIENZO LISTA TAREA
+export const StylesListaTareas = EStyleSheet.create({
+    container:{
+        backgroundColor:'white',
+        borderRadius: 25,
+        padding: 15,
+        width: '90%',
+        height:'80%',
+        marginLeft: '5%',
+        marginRight:'5%'
+    },
+    cabeceraLista:{
+        height:'15%'
+    },
+    tituloCabeceraLista:{
+        marginTop:5,
+        fontSize:25,
+        fontWeight:'bold',
+        color:'#FEB529'
+    }
+});

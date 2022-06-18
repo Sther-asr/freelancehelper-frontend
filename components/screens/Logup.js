@@ -1,9 +1,10 @@
-import React,{useState} from "react";
+import React,{useState, useEffect} from "react";
 import { StatusBar } from 'expo-status-bar';
 import {Text, ScrollView, View, TextInput, Image, Dimensions, TouchableOpacity, Alert} from "react-native";
 import EStyleSheet from 'react-native-extended-stylesheet';
-import styles from '../styles/Styles';
-import {registrarPersona} from '../../requestBackend/API';
+import {styles} from '../styles/Styles';
+import {registrarPersona} from '../../requestBackend/API-Personas';
+import {useTogglePasswordVisibility} from "./useToggle";
 EStyleSheet.build();
 
 const Logup = (props) =>{
@@ -13,11 +14,22 @@ const Logup = (props) =>{
     const [usuario, cargarUsuario] = useState("");
     const [correo, cargarCorreo] = useState("");
     const [contrasena, cargarContrasena] = useState("");
-    const [verContrasena, cargarVerContrasena] = useState("");
     const [fechaNacimiento,cargarFechaNacimiento] = useState("");
+    const [datosPersona, cargarDatosPersona] = useState("");
+    const { passwordVisibility, rightIcon, handlePasswordVisibility } = useTogglePasswordVisibility();
 
-    
-    
+    //restablecer todos los estados al estado inicial
+    const restablecerCampos = () =>{
+        cargarNombre("");
+        cargarApellido("");
+        cargarUsuario("");
+        cargarCorreo("");
+        cargarContrasena("");
+        cargarFechaNacimiento("");
+        cargarDatosPersona("");
+        handlePasswordVisibility(true);
+    }
+
 
     //funcion registrar
     const registrar = async ()=>{
@@ -32,23 +44,25 @@ const Logup = (props) =>{
         console.log(persona);
         const resultado = await registrarPersona(persona);
         console.log(resultado.registro);
-        resultado.registro == true ? (
+        if(resultado.registro == true ) {
             Alert.alert(
                 "Registro exitoso, dirijase a inicio",
                 `informacion de registro ${JSON.stringify(persona)}`,
                 [
                     {text:"Ok", onPress: ()=>props.navigation.navigate('Login')}
                 ]
-            )
-        ):(
+            );
+            restablecerCampos();
+            }else{
             Alert.alert(
                             "Registro invalido",
                             "Revise sus datos",
                             [
                                 {text:"Entendido"}
                             ]
-                        )
-        )
+                        );
+        }
+
     }
 
     return(
@@ -171,18 +185,29 @@ const Logup = (props) =>{
                             onChangeText={cargarContrasena}
                             value={contrasena}
                             placeholder="contraseña"
-                            style={styles.input}
+                            style={[styles.input,{width:'68%'}]}
                             placeholderTextColor="#B3B3B3"
-                            secureTextEntry={true}
+                            secureTextEntry={passwordVisibility}
                         />
-                    </View>
-
-                    {/* campo reptir contraseña*/}
-                    <View style={styles.containerInput}>
-                        <Image
-                            source={require('../../assets/icons/clave.png')}
-                            style={[styles.PNGinput,{height:34, marginTop:8}]}
-                        />
+                        <TouchableOpacity
+                            onPress={handlePasswordVisibility}
+                        >
+                            {
+                                //mostrar icono tachado
+                                passwordVisibility ? (
+                                    <Image
+                                        source={require('../../assets/icons/ojoTachado.png')}
+                                        style={[styles.PNGinput,{height:34,width: 34 ,marginTop:8}]}
+                                    />
+                                ):(
+                                    //mostrar icono normal
+                                    <Image
+                                        source={require('../../assets/icons/ojoNormal.png')}
+                                        style={[styles.PNGinput,{height:34,width: 34 ,marginTop:8}]}
+                                    />
+                                )
+                            }
+                        </TouchableOpacity>
                     </View>
 
                     {/*boton registrarse */}
