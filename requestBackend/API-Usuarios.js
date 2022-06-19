@@ -9,6 +9,9 @@ export const inicioSesion = async (infoSesion) =>{
             headers: {Accept:"application/json", "Content-Type":"application/json"},
             body: JSON.stringify(infoSesion)
         }
-    );
+    )
+    .catch(function(error) {
+        console.log('Error durante la promesa ' + error.message);
+        });
     return await respuesta.json();
 }

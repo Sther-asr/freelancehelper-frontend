@@ -1,6 +1,6 @@
 import { StyleSheet, Button, View, FlatList,Text} from 'react-native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import HomeOrganizador from '../screens/HomeOrganizador';
+import HomeOrganizador from '../../screens/HomeOrganizador';
 
 const Drawer = createDrawerNavigator();
 

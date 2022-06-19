@@ -3,8 +3,8 @@ import 'react-native-gesture-handler';
 import {View, Button} from "react-native";
 import { StatusBar } from 'expo-status-bar';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import Logup from "../screens/Logup";
-import Login from "../screens/Login"
+import Logup from "../../screens/Logup";
+import Login from "../../screens/Login"
 import NavegadorInferior from "./Tab-NavegadorInferior";
 
 const Principal = (props) =>{
