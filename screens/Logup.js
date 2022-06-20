@@ -1,8 +1,8 @@
 import React,{useState, useEffect} from "react";
 import { StatusBar } from 'expo-status-bar';
-import {Text, ScrollView, View, TextInput, Image, Dimensions, TouchableOpacity, Alert} from "react-native";
+import {Text, ScrollView, View, TextInput, Image, Dimensions, TouchableOpacity, Alert, Modal} from "react-native";
 import EStyleSheet from 'react-native-extended-stylesheet';
-import {styles} from '../components/styles/Styles';
+import {styles, StylesModal} from '../components/styles/Styles';
 import {registrarPersona} from '../requestBackend/API-Personas';
 import {useTogglePasswordVisibility} from "./useToggle";
 import { validarDatosRegistroPersona} from '../fuciones/validador';
@@ -18,7 +18,7 @@ const Logup = (props) =>{
     const [fechaNacimiento,cargarFechaNacimiento] = useState("");
     const [datosPersona, cargarDatosPersona] = useState("");
     const { passwordVisibility, rightIcon, handlePasswordVisibility } = useTogglePasswordVisibility();
-
+    const [modalVisible, setModalVisible] = useState(false);
     //restablecer todos los estados al estado inicial
     const restablecerCampos = () =>{
         cargarNombre("");
@@ -236,6 +236,89 @@ const Logup = (props) =>{
                     >
                         <Text style={[styles.textBoton, {color:'white'}]}>Registrarse</Text>
                     </TouchableOpacity>
+
+                    {/**Modal de ayusa */}
+                    
+                        <Modal
+                            animationType="slide"
+                            transparent={true}
+                            visible={modalVisible}
+                            onRequestClose={() => {
+                                setModalVisible(!modalVisible);
+                            }}
+                        >
+                            <View style={[StylesModal.container]}>
+                                <View style={[StylesModal.containerCuerpo]}>
+                                    <TouchableOpacity
+                                        style={[StylesModal.botonCerrar]}
+                                        onPress={() => setModalVisible(!modalVisible)}
+                                    >
+                                        <Text style={[styles.textlogo, {fontWeight:'600'}]}>OCULTAR</Text>
+                                    </TouchableOpacity>
+                                    <Text style={[StylesModal.titulo]}>Ayuda sobre el registro</Text>
+                                    <View style={[StylesModal.cuerpoInformacion]}>
+                                        <ScrollView>
+                                            <Text style={[StylesModal.subtitulo]}>
+                                                Campos vacios
+                                            </Text>
+                                            <Text style={[StylesModal.textoInfo]}>
+                                                - No se permiten campos vacios para el registro, todos los campos son obligatorios
+                                            </Text>
+                                            <Text style={[StylesModal.subtitulo]}>
+                                                Nombre y apellido
+                                            </Text>
+                                            <Text style={[StylesModal.textoInfo]}>
+                                                - Puede contener cualquier caracter alfabetico {'\n'}
+                                                - No se puede agregar caracteres numericos {'\n'}
+                                                - No puede agregar caracteres especiales
+                                            </Text>
+                                            <Text style={[StylesModal.subtitulo]}>
+                                                Usuario
+                                            </Text>
+                                            <Text style={[StylesModal.textoInfo]}>
+                                                - Puede contener cuaquier caracter alfanumerico{'\n'}
+                                                - Puede contener cuaquier caracter alfanumerico{'\n'}
+                                                - Longitud maxima de 20 caracteres
+                                            </Text>
+                                            <Text style={[StylesModal.subtitulo]}>
+                                                Fechas
+                                            </Text>
+                                            <Text style={[StylesModal.textoInfo]}>
+                                                - La fecha debe comprender el formato {'(AAAA-MM-DD)'} y puede utilizar como sepador
+                                                los siguientes caracteres {'("." "-" "/")'}
+                                            </Text>
+                                            <Text style={[StylesModal.subtitulo]}>
+                                                Correo
+                                            </Text>
+                                            <Text style={[StylesModal.textoInfo]}>
+                                                - El correo debe contener un formato valido a "{'ejemplo@nombreDominio.com'}"
+                                            </Text>
+                                            <Text style={[StylesModal.subtitulo]}>
+                                                Contraseña
+                                            </Text>
+                                            <Text style={[StylesModal.textoInfo]}>
+                                                - Minima Longitud de 7 caracteres{'\n'}
+                                                - Maxima longitud 30 carateres{'\n'}
+                                                - Minimo una MAYUSCULA{'\n'}
+                                                - Minimo una minuscula{'\n'}
+                                                - Minimo un numero {'(0-9)\n'}
+                                                - Minimo un caracter especial {'(!·$%&*#.-_)'}
+                                            </Text>
+                                        </ScrollView>
+                                    </View>
+                                </View>
+                            </View>
+                        </Modal>
+                    
+
+                    {/*boton registrarse */}
+                    <TouchableOpacity
+                        style={[styles.boton]}
+                        onPress={() => setModalVisible(true)}
+                    >
+                        <Text style={[styles.textBoton, { color: '#a197ff', textDecorationLine:'underline' }]}>Ayuda</Text>
+                    </TouchableOpacity>
+                    
                 </View>
             </View>
         </ScrollView>

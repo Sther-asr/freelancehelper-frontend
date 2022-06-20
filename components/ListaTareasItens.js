@@ -47,8 +47,16 @@ const ListaTareasIten = ()=>{
         }else{
             setDataTareas(data);
         }
-        //setDataTareas(data);
-        console.log(JSON.stringify(dataTareas));
+        // console.log(dataTareas.length);
+        // const nuevoArray = [];
+        // //setDataTareas(data);
+        // for (let index = 0; index < dataTareas.length; index++){
+        //     //dataTareas[index].assign(dataTareas[index],{'idReferencia': `${index}-Ref`});
+        //     const referencia = `${index}-ref`;
+        //     dataTareas[index].;
+        //     console.log(JSON.stringify(dataTareas[index]));
+        // }
+        //console.log(JSON.stringify(dataTareas));
     }
    
     // funcion para cambiar el estado al actualizar la lista de tareas
@@ -75,7 +83,7 @@ const ListaTareasIten = ()=>{
             </View>
             <FlatList
                 data={dataTareas}
-                keyExtractor={(item) => {item.idActividad===undefined ? item.idReordatorio + "-R" : item.idActividad + "-A"}}
+                keyExtractor={(item) => {item.fechaInicio + '_' + item.fechaFin}}
                 renderItem={dibujarItens}
                 refreshControl={
                     <RefreshControl

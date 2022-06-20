@@ -11,5 +11,6 @@ export const consultaDatosPersona = async (infoSolicitud) =>{
             body: JSON.stringify(infoSolicitud)
         }
     );
+        console.log('Yei'+JSON.stringify(respuesta))
     return await respuesta.json();
 }

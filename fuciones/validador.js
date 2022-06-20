@@ -133,7 +133,7 @@ export const validarDatosRegistroPersona = (objetoSolicitud = 0) =>{
 export const validarRangoFechaInicioFin = (objetoSolicitud = {fechaFin:'2000-01-03', fechaInicio:'2000-01-05'}) =>{
     const fecha_inicio = new Date(objetoSolicitud.fechaInicio); 
     const fecha_fin = new Date(objetoSolicitud.fechaFin);
-    if(fecha_inicio.getTime() < fecha_fin.getTime()){
+    if(fecha_inicio.getTime() <= fecha_fin.getTime()){
         return true;
     }
     return false;

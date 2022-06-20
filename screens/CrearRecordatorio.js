@@ -54,6 +54,7 @@ const CrearRecordatorio = (props) =>{
             Alert.alert(
                 'Rango de tiempo invalido', `La fecha incial "${infoTarea.fechaInicio}" no puede ser mayor a la fecha final "${infoTarea.fechaFin}"`,[{text:'Entiendo'}]
             );
+            return;
         }
         crearRecordatorio();
     }

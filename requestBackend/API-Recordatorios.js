@@ -13,3 +13,16 @@ export const registrarRecordatorio = async (infoSolicitud) =>{
     );
     return await respuesta.json();
 }
+
+//funion de actualizar recordatorio
+export const actualizarRecordatorio = async (infoSolicitud) =>{
+    const respuesta = await fetch(
+        `${APISERVER}/recordatorios/actualizar`,
+        {
+            method:"PUT",
+            headers: {Accept:"application/json", "Content-Type":"application/json"},
+            body: JSON.stringify(infoSolicitud)
+        }
+    );
+    return await respuesta.json();
+}

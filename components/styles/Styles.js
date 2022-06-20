@@ -248,3 +248,55 @@ export const StylesHome = EStyleSheet.create({
         borderRadius: 40
     }
 });
+
+// estilo pantalla modal
+export const StylesModal = EStyleSheet.create({
+    container:{
+        with:'100%',
+        height:'100%',
+        backgroundColor:'#a197ff80',
+        alignItems:'center',
+        justifyContent:'center'
+    },
+    containerCuerpo:{
+        width: '90%',
+        height: '90%',
+        backgroundColor: 'white',
+        padding: 10,
+        borderRadius:30,
+        alignItems:'center'
+    },
+    botonCerrar: {
+        width: '100%', 
+        padding: 12, 
+        backgroundColor: '#a197ff', 
+        alignItems: 'center', 
+        borderRadius: 30
+    },
+    titulo: { 
+        fontSize: 30, 
+        fontWeight: '900', 
+        marginBottom: 20, 
+        marginTop: 20, 
+        textAlign: 'center' 
+    },
+    cuerpoInformacion:{
+        backgroundColor:'#b3b3b330',
+        borderRadius: 20,
+        height:'80%',
+        width:'90%',
+        padding: 10
+    },
+    subtitulo:{
+        fontSize: 18,
+        fontWeight:'600',
+        color: 'black',
+        marginBottom: 5,
+        marginTop:8
+    },
+    textoInfo:{
+        fontSize:16,
+        fontWeight:'300',
+        color: 'black'
+    }
+});
