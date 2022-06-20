@@ -167,7 +167,7 @@ export const StylesListaTareas = EStyleSheet.create({
         borderRadius: 25,
         padding: 15,
         width: '90%',
-        height:'60%',
+        height:'63%',
         marginLeft: '5%',
         marginRight:'5%'
     },
@@ -179,5 +179,72 @@ export const StylesListaTareas = EStyleSheet.create({
         fontSize:25,
         fontWeight:'bold',
         color:'#FEB529'
+    }
+});
+
+// Pantalla home organizador y sus elementos
+export const StylesHome = EStyleSheet.create({
+    container:{
+        backgroundColor:'#feb529', 
+        height:'100%',
+    },
+    colorTexto:{
+        color: '#B3B3B3'
+    },
+    containerHeaderInferior:{
+        backgroundColor:'white',
+        height:140,
+        borderBottomLeftRadius: 40,
+        borderBottomRightRadius:40,
+        marginBottom: '10%',
+        overflow:'hidden',
+    },
+    containerBtnMenu:{
+        width:'20%',
+        alignItems: 'center',
+    },
+    botonMenu:{
+        width:30,
+        height:30,
+        marginTop: 10
+    },
+    iconoMenu:{
+        width:'100%',
+        height: 4,
+        marginTop:5,
+        borderRadius:3
+    },
+    containerInfoHeader:{
+        width:'79%',
+        alignItems:'flex-end',
+        paddingRight:10
+    },
+    saludo:{
+        fontSize: 25,
+        color:'black'
+    },
+    fechaHora:{
+        fontSize:16,
+    },
+    titulo:{
+        fontSize:25,
+        textAlign:'center',
+        marginTop:20,
+        marginBottom:20,
+        fontWeight:'bold'
+    },
+    containerBtnNueva:{
+        width:'90%', 
+        marginLeft:'5%', 
+        marginRight:'5%', 
+        marginTop: 20,
+    },
+    botonNueva:{
+        width:60,
+        height:60,
+        overflow:'hidden',
+        marginLeft:'77%',
+        backgroundColor:'#53C4DE',
+        borderRadius: 40
     }
 });

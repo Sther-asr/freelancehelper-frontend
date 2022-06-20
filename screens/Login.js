@@ -7,6 +7,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import {inicioSesion} from '../requestBackend/API-Usuarios';
 import {useTogglePasswordVisibility} from "./useToggle";
+import {validarContrasena} from '../fuciones/validador';
 
 EStyleSheet.build();
 
@@ -15,14 +16,17 @@ const Login = (props) =>{
     const [usuario, cargarUsuario] = useState("");
     const [contrasena, cargarContrasena] = useState("");
     const { passwordVisibility, rightIcon, handlePasswordVisibility } = useTogglePasswordVisibility();
-
+    const [errores, setErrores] = useState({usuario:false, contrasena: false});
+    //funcion para restablecer los campos
     const restablecerCampos = () =>{
         cargarUsuario("");
         cargarContrasena("");
         handlePasswordVisibility(true);
     }
+    // if(props.route.params.usuario!=undefined){cargarUsuario(props.route.params.usuario)}
+    // if(props.route.params.contrasena!=undefined){cargarContrasena(props.route.params.contrasena)}
 
-    const myfuncion = async (pantalla)=>{
+    const solicitudLogin = async (pantalla)=>{
         //props.navigation.navigate(pantalla);
         const datos = {
             "usuario" : usuario,
@@ -31,7 +35,7 @@ const Login = (props) =>{
         const data = await inicioSesion(datos);
         Alert.alert(
             "Inicio de sesion dice",
-            `informacion de registro ${JSON.stringify(data)}`,
+            `${JSON.stringify(data)}`,
             [
                 {text:"Ok", onPress: ()=>console.log('los datos')}
             ]
@@ -40,6 +44,23 @@ const Login = (props) =>{
         typeof(data[0].idUsuario) === 'number' ? props.navigation.navigate('Organizador', {idUsuario:data[0].idUsuario}) : console.log('acceso a la pantalla siguiente');
         
         
+    }
+
+    const validarCampos = () =>{
+        let resultado = validarContrasena(contrasena);
+        if(resultado != true){
+            Alert.alert(
+                'Contraseña no permitida', resultado.contrasena,[{text:'Entiendo'}]
+            );
+            return;
+        }
+        if(usuario===''|| usuario ===null){
+            Alert.alert(
+                'Usuario invalido', 'El campo usuario no puede estar vacio',[{text:'Entiendo'}]
+            );
+            return;
+        }
+        solicitudLogin();
     }
 
     return (
@@ -70,7 +91,7 @@ const Login = (props) =>{
                     <Text style={styles.saludo}>¡Hola de nuevo!</Text>
                     
                     {/*Input field User*/}
-                    <View style={styles.containerInput}>
+                    <View style={[styles.containerInput]}>
                         <Image
                             source={require('../assets/icons/Menu-Perfil.png')}
                             style={[styles.PNGinput]}
@@ -123,7 +144,7 @@ const Login = (props) =>{
                     {/*Button */}
                     <TouchableOpacity
                         style={[styles.boton,{backgroundColor:'#00CE97'}]}
-                        onPress={myfuncion}
+                        onPress={validarCampos}
                     >
                         <Text style={[styles.textBoton, {color:'white'}]}>Ingresar</Text>
                     </TouchableOpacity>

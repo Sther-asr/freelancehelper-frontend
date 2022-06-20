@@ -50,20 +50,22 @@ const NavegadorInferior = (props)=>{
                     //funcion para cambiar los iconos del menu inferior
                     tabBarIcon: ({focused}) =>{
                         let iconoElement ='';
+                        let modificaIco = false;
                         switch (route.name) {
                             case 'Home':
                                 iconoElement = focused ? require('../../assets/icons/Menu-organizador-color.png') : require('../../assets/icons/Menu-organizador.png');
+                                modificaIco = true;
                                 break;
                             case 'Finanzas':
                                 iconoElement = focused ? require('../../assets/icons/Menu-Finanzas-color.png') : require('../../assets/icons/Menu-Finanzas.png');
                                 break;
                             case 'Perfil':
-                                iconoElement = focused ? require('../../assets/icons/Menu-Perfil.png') : require('../../assets/icons/Menu-Perfil.png');
+                                iconoElement = focused ? require('../../assets/icons/Menu-Perfil-color.png') : require('../../assets/icons/Menu-Perfil.png');
                                 break;
                             default:
                                 break;
                         }
-                        return(<Image source={iconoElement} style={[StylesNavInferior.iconoSeccion,{height:33}]}/>);
+                        return(<Image source={iconoElement} style={[StylesNavInferior.iconoSeccion,modificaIco ? {height:33 }:{}]}/>);
                     }
                 })
                 
@@ -103,7 +105,7 @@ const NavegadorInferior = (props)=>{
 
 export const StylesNavInferior = StyleSheet.create({
     iconoSeccion:{
-        width: 32,
+        width: 30,
         height:30
     }
 });

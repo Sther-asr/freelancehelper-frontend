@@ -5,6 +5,7 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import {styles} from '../components/styles/Styles';
 import {registrarPersona} from '../requestBackend/API-Personas';
 import {useTogglePasswordVisibility} from "./useToggle";
+import { validarDatosRegistroPersona} from '../fuciones/validador';
 EStyleSheet.build();
 
 const Logup = (props) =>{
@@ -32,7 +33,7 @@ const Logup = (props) =>{
 
 
     //funcion registrar
-    const registrar = async ()=>{
+    const registrarNuevoUsuario = async ()=>{
         const persona = {
             "nombrePersona" : nombre,
             "apellidoPersona" : apellido,
@@ -47,7 +48,7 @@ const Logup = (props) =>{
         if(resultado.registro == true ) {
             Alert.alert(
                 "Registro exitoso, dirijase a inicio",
-                `informacion de registro ${JSON.stringify(persona)}`,
+                `Bienvenido "${persona.nombrePersona + ' ' + persona.apellidoPersona}"`,
                 [
                     {text:"Ok", onPress: ()=>props.navigation.navigate('Login')}
                 ]
@@ -56,13 +57,31 @@ const Logup = (props) =>{
             }else{
             Alert.alert(
                             "Registro invalido",
-                            "Revise sus datos",
+                            "Revise sus datos, Usuario o correo ya existente",
                             [
                                 {text:"Entendido"}
                             ]
                         );
         }
+    }
 
+    // funcion para verificar datos antes del registro
+    const validarCampos = () =>{
+        let resultado = validarDatosRegistroPersona({
+            "nombrePersona" : nombre,
+            "apellidoPersona" : apellido,
+            "fechaNacimiento" : fechaNacimiento,
+            "usuario" : usuario,
+            "correo" : correo,
+            "contrasena" : contrasena
+        });
+        if(resultado.result != true){
+            Alert.alert(
+                'Aviso de registro invalido', resultado.alerta,[{text:'Entiendo'}]
+            );
+            return;
+        }
+        registrarNuevoUsuario();
     }
 
     return(
@@ -213,7 +232,7 @@ const Logup = (props) =>{
                     {/*boton registrarse */}
                     <TouchableOpacity
                         style={[styles.boton,{backgroundColor:'#FEB529'}]}
-                        onPress={registrar}
+                        onPress={validarCampos}
                     >
                         <Text style={[styles.textBoton, {color:'white'}]}>Registrarse</Text>
                     </TouchableOpacity>

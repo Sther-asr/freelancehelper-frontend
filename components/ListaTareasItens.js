@@ -48,7 +48,7 @@ const ListaTareasIten = ()=>{
             setDataTareas(data);
         }
         //setDataTareas(data);
-        //console.log(JSON.stringify(dataTareas));
+        console.log(JSON.stringify(dataTareas));
     }
    
     // funcion para cambiar el estado al actualizar la lista de tareas
@@ -75,7 +75,7 @@ const ListaTareasIten = ()=>{
             </View>
             <FlatList
                 data={dataTareas}
-                keyExtractor={(item) => item.idActividad}
+                keyExtractor={(item) => {item.idActividad===undefined ? item.idReordatorio + "-R" : item.idActividad + "-A"}}
                 renderItem={dibujarItens}
                 refreshControl={
                     <RefreshControl

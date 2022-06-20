@@ -1,6 +1,7 @@
 import { StyleSheet, Button, View, FlatList,Text} from 'react-native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import HomeOrganizador from '../../screens/HomeOrganizador';
+import CrearRecordatorio from '../../screens/CrearRecordatorio';
 
 const Drawer = createDrawerNavigator();
 
@@ -41,8 +42,9 @@ const NavegadorOrganizador = ()=>{
                 options={{headerShown: false}}
             />
             <Drawer.Screen
-                name='PantallaPrueba'
-                component={Pantalla}
+                name='CrearRecordatorio'
+                component={CrearRecordatorio}
+                options={{headerTitle:"Crear Recordatorio"}}
             />
         </Drawer.Navigator>
     );
