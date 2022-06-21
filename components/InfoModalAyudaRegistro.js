@@ -2,13 +2,13 @@ import React from "react";
 import {Text, ScrollView, View, TouchableOpacity} from "react-native";
 import {styles, StylesModal} from './styles/Styles';
 
-const InfoModalAyudaRegistro = () =>{
+const InfoModalAyudaRegistro = ({onPress}) =>{
     return (
         <View style={[StylesModal.container]}>
             <View style={[StylesModal.containerCuerpo]}>
                 <TouchableOpacity
                     style={[StylesModal.botonCerrar]}
-                    onPress={() => setModalVisible(!modalVisible)}
+                    onPress={onPress}
                 >
                     <Text style={[styles.textlogo, { fontWeight: '600' }]}>OCULTAR</Text>
                 </TouchableOpacity>

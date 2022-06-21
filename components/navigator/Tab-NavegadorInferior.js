@@ -24,24 +24,24 @@ const Pantalla2 =()=>{
 }
 
 const NavegadorInferior = (props)=>{
-    // almacenar info estado
-    const [datosUsuario, setDatosUsuario] = useState({});
-    useEffect(()=>{
-        obtenerDatosPersona();
-    },[])
-    const obtenerDatosPersona = async()=>{
-        const infoSolicitud = {
-            "sesion" : true,
-            "idSesion" : props.route.params.idUsuario
-        }
-        console.log(infoSolicitud);
-        const data = await consultaDatosPersona(infoSolicitud);
-        setDatosUsuario(data[0]);
-        console.log(JSON.stringify(datosUsuario));
-    }
-    //console.log(props.route.params);
+    // // almacenar info estado
+    // const [datosUsuario, setDatosUsuario] = useState({});
+    // useEffect(()=>{
+    //     obtenerDatosPersona();
+    // },[])
+    // const obtenerDatosPersona = async()=>{
+    //     const infoSolicitud = {
+    //         "sesion" : true,
+    //         "idSesion" : props.route.params.idUsuario
+    //     }
+    //     console.log(infoSolicitud);
+    //     const data = await consultaDatosPersona(infoSolicitud);
+    //     setDatosUsuario(data[0]);
+    //     console.log(JSON.stringify(datosUsuario));
+    // }
+    //console.log(JSON.stringify(props.route.params.datosUsuario));
     return(
-        <ContextUsuario.Provider value={datosUsuario}>
+        <ContextUsuario.Provider value={props.route.params.datosUsuario}>
             <Tab.Navigator
                 initialRouteName='Home'
                 screenOptions={({route})=>({

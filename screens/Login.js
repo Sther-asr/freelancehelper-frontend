@@ -6,6 +6,7 @@ import {styles} from '../components/styles/Styles'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import {inicioSesion} from '../requestBackend/API-Usuarios';
+import {consultaDatosPersona} from "../requestBackend/API-Persona";
 import {useTogglePasswordVisibility} from "./useToggle";
 import {validarContrasena} from '../fuciones/validador';
 
@@ -17,6 +18,18 @@ const Login = (props) =>{
     const [contrasena, cargarContrasena] = useState("");
     const { passwordVisibility, rightIcon, handlePasswordVisibility } = useTogglePasswordVisibility();
     const [errores, setErrores] = useState({usuario:false, contrasena: false});
+    // almacenar info estado
+    const [datosUsuario, setDatosUsuario] = useState({});
+
+    const obtenerDatosPersona = async (idPersona) => {
+        const data = await consultaDatosPersona({
+            "sesion": true,
+            "idSesion": idPersona
+        });
+        setDatosUsuario(data[0]);
+        console.log(JSON.stringify(datosUsuario));
+        props.navigation.navigate('Organizador', {datosUsuario});
+    }
     //funcion para restablecer los campos
     const restablecerCampos = () =>{
         cargarUsuario("");
@@ -33,6 +46,12 @@ const Login = (props) =>{
             "contrasena" : contrasena
         }
         const data = await inicioSesion(datos);
+        
+        if(data.respuesta === undefined){
+            obtenerDatosPersona(data[0].persona_idPersona);
+            return;
+        }
+
         Alert.alert(
             "Inicio de sesion dice",
             `${JSON.stringify(data)}`,
@@ -40,10 +59,7 @@ const Login = (props) =>{
                 {text:"Ok", onPress: ()=>console.log('los datos')}
             ]
         );
-        console.log(typeof(data[0].idUsuario))
-        typeof(data[0].idUsuario) === 'number' ? props.navigation.navigate('Organizador', {idUsuario:data[0].idUsuario}) : console.log('acceso a la pantalla siguiente');
-        
-        
+        console.log(JSON.stringify(data))        
     }
 
     const validarCampos = () =>{

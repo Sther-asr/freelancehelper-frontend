@@ -6,7 +6,7 @@ import { consultaTareasDiarias } from "../requestBackend/API-Diarias";
 import useContextUsuario from "../hook/useContextUsuario";
 
 
-const ListaTareasIten = ()=>{
+const ListaTareasIten = (props)=>{
     // control estado actualizar
     const [estadoActualizar, setEstadoActualizar] = useState(false);
     // informacion del contexto de usuario
@@ -18,7 +18,7 @@ const ListaTareasIten = ()=>{
     const fechaActual = `${fecha.getFullYear()}-${fecha.getMonth()+1>=13 ? 12 : fecha.getMonth()+1}-${fecha.getDate()}`;
     
     useEffect(()=>{
-        consultaTareasDiarias();
+        consultarTareas();
     },[]);
 
     const consultarTareas = async() =>{
@@ -31,6 +31,7 @@ const ListaTareasIten = ()=>{
         }
         console.log(JSON.stringify(infoSolicitud));
         const data = await consultaTareasDiarias(infoSolicitud);
+        console.log(JSON.stringify(data));
         if(data[0]==undefined){
             setDataTareas([
                 {
@@ -83,7 +84,7 @@ const ListaTareasIten = ()=>{
             </View>
             <FlatList
                 data={dataTareas}
-                keyExtractor={(item) => {item.fechaInicio + '_' + item.fechaFin}}
+                keyExtractor={(item) => {return(item.fechaInicio + '_' + item.fechaFin + Math.random())}}
                 renderItem={dibujarItens}
                 refreshControl={
                     <RefreshControl
