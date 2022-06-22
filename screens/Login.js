@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useCallback, useState} from "react";
 import {View } from 'react-native';
 import { ScrollView, Text, TextInput, TouchableOpacity, Image, Alert} from "react-native";
 import EStyleSheet from 'react-native-extended-stylesheet';
@@ -28,7 +28,7 @@ const Login = (props) =>{
         });
         setDatosUsuario(data[0]);
         console.log(JSON.stringify(datosUsuario));
-        props.navigation.navigate('Organizador', {datosUsuario});
+        useCallback(props.navigation.navigate('Organizador', {datosUsuario}));
     }
     //funcion para restablecer los campos
     const restablecerCampos = () =>{

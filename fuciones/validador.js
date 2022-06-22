@@ -138,3 +138,8 @@ export const validarRangoFechaInicioFin = (objetoSolicitud = {fechaFin:'2000-01-
     }
     return false;
 }
+
+export const validarCifrasNumericas = (cifra) =>{
+    const expresion = /^[0-9]+([.])?([0-9]+)?$/;
+    return !expresion.test(cifra);
+}

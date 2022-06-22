@@ -198,6 +198,7 @@ export const StylesHome = EStyleSheet.create({
         borderBottomRightRadius:40,
         marginBottom: '10%',
         overflow:'hidden',
+        marginTop:29
     },
     containerBtnMenu:{
         width:'20%',

@@ -14,8 +14,10 @@ const ListaTareasIten = (props)=>{
     //variable para las tareas obtenidas de la bdd
     const [dataTareas, setDataTareas] = useState([]);
     // obteniendo la fecha actual del dispositivo
-    const fecha = new Date();
-    const fechaActual = `${fecha.getFullYear()}-${fecha.getMonth()+1>=13 ? 12 : fecha.getMonth()+1}-${fecha.getDate()}`;
+    const fechaActual = new Date().toISOString().slice(0, 10);
+    console.log(fechaActual);
+    
+        //const hola = `${fecha.getFullYear()}-${fecha.getMonth()+1>=13 ? 12 : fecha.getMonth()+1}-${fecha.getDate()}`;
     
     useEffect(()=>{
         consultarTareas();
@@ -31,7 +33,7 @@ const ListaTareasIten = (props)=>{
         }
         console.log(JSON.stringify(infoSolicitud));
         const data = await consultaTareasDiarias(infoSolicitud);
-        console.log(JSON.stringify(data));
+        //console.log(JSON.stringify(data));
         if(data[0]==undefined){
             setDataTareas([
                 {
@@ -42,22 +44,12 @@ const ListaTareasIten = (props)=>{
                     "estado": null,
                     "proyecto_idProyecto":"01",
                     "idProyecto":"01",
-                    "persona_idPersona": infoUsuario.idPersona
+                    "persona_idPersona": null
                 }
             ]);
         }else{
             setDataTareas(data);
         }
-        // console.log(dataTareas.length);
-        // const nuevoArray = [];
-        // //setDataTareas(data);
-        // for (let index = 0; index < dataTareas.length; index++){
-        //     //dataTareas[index].assign(dataTareas[index],{'idReferencia': `${index}-Ref`});
-        //     const referencia = `${index}-ref`;
-        //     dataTareas[index].;
-        //     console.log(JSON.stringify(dataTareas[index]));
-        // }
-        //console.log(JSON.stringify(dataTareas));
     }
    
     // funcion para cambiar el estado al actualizar la lista de tareas
