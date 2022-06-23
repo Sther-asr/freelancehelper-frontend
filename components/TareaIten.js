@@ -1,10 +1,11 @@
 import React,{useState} from "react";
-import {Text, View, TouchableOpacity, Alert, ScrollView} from "react-native";
+import {Text, View, TouchableOpacity, Alert, ScrollView, Modal} from "react-native";
 import {StylesTarea} from './styles/Styles';
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import useContextUsuario from "../hook/useContextUsuario";
 import {actualizarActividad} from '../requestBackend/API-Actividad';
 import { actualizarRecordatorio } from "../requestBackend/API-Recordatorios";
+import AlertModalInfoTareas from "./AlertModalInfoTareas";
 
 const Tarea = ({infoTarea}) =>{
 
@@ -13,21 +14,21 @@ const Tarea = ({infoTarea}) =>{
 
 
     //funcion para  mostrar la info de la tarea
-    const mostrarInfoTarea = ()=>{
+    // const mostrarInfoTarea = ()=>{
 
-        const cuerpoMensaje = `
-            Descripción:\n
-            ${infoTarea.item.descripcion}
-            \n\nFecha de Inicio: \n${infoTarea.item.fechaInicio}
-            \nFecha de culminación: \n${infoTarea.item.fechaFin}
-            \nEstado terminada:\n ${estadoTarea ? 'Terminada':'No terminada'}
-        `
+    //     const cuerpoMensaje = `
+    //         Descripción:\n
+    //         ${infoTarea.item.descripcion}
+    //         \n\nFecha de Inicio: \n${infoTarea.item.fechaInicio}
+    //         \nFecha de culminación: \n${infoTarea.item.fechaFin}
+    //         \nEstado terminada:\n ${estadoTarea ? 'Terminada':'No terminada'}
+    //     `
 
-        Alert.alert('Informacion actividad', cuerpoMensaje),
-        [
-            {text:"Ok", onPress: ()=>console.log('los datos')}
-        ]
-    }
+    //     Alert.alert('Informacion actividad', cuerpoMensaje),
+    //     [
+    //         {text:"Ok", onPress: ()=>console.log('los datos')}
+    //     ]
+    // }
 
 
     //funcion para cambiar estado de la tarea
@@ -66,14 +67,31 @@ const Tarea = ({infoTarea}) =>{
 
     }
 
-    
+    const [modalVisible, setModalVisible] = useState(false);
     //estado inicial del checkbox
     const [estadoTarea, setEstadoTarea] = useState(infoTarea.item.estado ==="Activo"? false : true);
     //console.log(infoTarea.item.descripcion + '-->' + estadoTarea);
     return(
         <View style={StylesTarea.container}>
 
-            <TouchableOpacity style={StylesTarea.containerInfo} onPress={mostrarInfoTarea}>
+            <Modal
+                animationType="fade"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={() => {setModalVisible(!modalVisible);}}
+            >
+                <AlertModalInfoTareas
+                    onPress={() => setModalVisible(!modalVisible)}
+                    informacion={infoTarea.item}
+                    titulo={`Información ${infoTarea.item.idRecordatorio=== undefined? 'Tarea':'Recordatorio'}`}
+                    textBtn={"OK"}
+                    colorBtnOcultar="pink"
+                    colorFondoModal="#afafaf70"
+                    altura='80%'
+                />
+            </Modal>
+
+            <TouchableOpacity style={StylesTarea.containerInfo} onPress={()=>setModalVisible(!modalVisible)}>
 
                 <Text style={StylesTarea.titulo}>
                     {infoTarea.item.descripcion}

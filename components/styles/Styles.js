@@ -16,7 +16,7 @@ export const styles = EStyleSheet.create({
     },
     logo:{
         marginVertical: 20,
-        marginTop: 0,
+        marginTop: '10%',
         width: '100%',
         height: 35,
         resizeMode: "contain"
@@ -299,5 +299,100 @@ export const StylesModal = EStyleSheet.create({
         fontSize:16,
         fontWeight:'300',
         color: 'black'
+    }
+});
+
+// seccion de crear recordatorios, tags, actividades .....
+export const StylesCrearRecordatorio = EStyleSheet.create({
+    container: {
+        height: '100%',
+    },
+    containerFormulario:{
+        backgroundColor: 'white',
+        borderColor: 'black',
+        borderTopLeftRadius: 60,
+        borderTopRightRadius: 60,
+        alignItems: 'center',
+        flex: 1,
+    },
+    logo:{
+        marginVertical: '15%',
+        width: '100%',
+        height: 30,
+        resizeMode: "contain"
+    },
+    lineasup:{
+        width: 40,
+        height: 20,
+        marginTop: 20,
+        marginBottom: 50,
+        resizeMode: "contain"
+    },
+    containerInput:{
+        backgroundColor: 'white',
+        flexDirection: 'row',
+        width: ((Dimensions.get('window').width) - 80),
+        height: 50,
+        marginBottom: 20,
+        borderColor: '#B3B3B3',
+        borderBottomWidth: 1.5
+    },
+    containerInputDoble:{
+        width: ((Dimensions.get('window').width) - 80),
+        backgroundColor: 'white',
+        flexDirection: 'row',
+        flexDirection:'column',
+        marginBottom: 20,
+    },
+    containerInputDual:{
+        backgroundColor: 'white',
+        flexDirection: 'row',
+        height: 40,
+        borderColor: '#B3B3B3',
+        borderBottomWidth: 1.5
+    },
+    dualInputPNG:{
+        width:27,
+        height:26,
+        marginTop:6,
+        marginLeft:2,
+        marginRight:6
+    },
+    inputPNG:{
+        width:23,
+        height:16,
+        marginTop:19,
+        marginLeft:2,
+        marginRight:6
+    },
+    inputTitulo:{
+        width:'100%', 
+        color: '#B3B3B3',
+        fontWeight:'500'
+    },
+    input: {
+        backgroundColor: 'white',
+        width: '80%',
+        fontSize: 16,
+        color: '#808080'
+    },
+    saludo:{
+        color: '#666666',
+        fontSize: 28,
+        fontWeight:'600',
+    },
+    containerSaludo:{
+        width:'80%',
+        flexDirection:'row',
+        alignSelf: 'flex-start',
+        marginLeft: '10%',
+        marginRight:'10%',
+        marginBottom:40,
+        marginTop:10
+    },
+    iconoSaludo:{
+        width:50,
+        height:30,
+        marginRight:'4%'
     }
 });

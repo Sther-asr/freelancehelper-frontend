@@ -13,3 +13,16 @@ export const actualizarActividad = async (infoSolicitud) =>{
     );
     return await respuesta.json();
 }
+
+//funion de registrar actividad
+export const registrarActividad = async (infoSolicitud) =>{
+    const respuesta = await fetch(
+        `${APISERVER}/actividades/registro`,
+        {
+            method:"POST",
+            headers: {Accept:"application/json", "Content-Type":"application/json"},
+            body: JSON.stringify(infoSolicitud)
+        }
+    );
+    return await respuesta.json();
+}

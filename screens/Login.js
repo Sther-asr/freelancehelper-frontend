@@ -28,7 +28,7 @@ const Login = (props) =>{
         });
         setDatosUsuario(data[0]);
         console.log(JSON.stringify(datosUsuario));
-        useCallback(props.navigation.navigate('Organizador', {datosUsuario}));
+        props.navigation.navigate('Organizador', {datosUsuario});
     }
     //funcion para restablecer los campos
     const restablecerCampos = () =>{
@@ -80,8 +80,8 @@ const Login = (props) =>{
     }
 
     return (
-        <SafeAreaView style={{backgroundColor: '#F56783'}}>
-            <ScrollView  contentContainerStyle={styles.container}>
+        <SafeAreaView style={[{backgroundColor: '#F56783'},styles.container,]}>
+            <ScrollView  contentContainerStyle={[{}]}>
                 <StatusBar translucent={true} backgroundColor='#F56783'/>
                 {/* Logo */}
                 <Image style={styles.logo} source={require('../assets/icons/Logo-sup.png')}/>
@@ -144,13 +144,13 @@ const Login = (props) =>{
                                 passwordVisibility ? (
                                     <Image
                                         source={require('../assets/icons/ojoTachado.png')}
-                                        style={[styles.PNGinput,{height:34,width: 34 ,marginTop:8}]}
+                                        style={[styles.PNGinput,{height:22.5,width: 30 ,marginTop:12}]}
                                     />
                                 ):(
                                     //mostrar icono normal
                                     <Image
                                         source={require('../assets/icons/ojoNormal.png')}
-                                        style={[styles.PNGinput,{height:34,width: 34 ,marginTop:8}]}
+                                        style={[styles.PNGinput,{height:22.5,width: 30 ,marginTop:12}]}
                                     />
                                 )
                             }
@@ -170,7 +170,7 @@ const Login = (props) =>{
                         <Text style={[styles.texto,{color: '#808080', marginTop: 20}]}>¿No posees cuenta?</Text>
                     
                         <TouchableOpacity
-                            style={[styles.boton]}
+                            style={[styles.boton,{marginBottom:100}]}
                             onPress={()=>props.navigation.navigate('Logup')}
                         >
                         <Text style={[styles.textBoton, {color:'#a197ff'}]}>REGÍSTRATE</Text>

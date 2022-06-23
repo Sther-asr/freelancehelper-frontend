@@ -215,13 +215,13 @@ const Logup = (props) =>{
                                 passwordVisibility ? (
                                     <Image
                                         source={require('../assets/icons/ojoTachado.png')}
-                                        style={[styles.PNGinput,{height:34,width: 34 ,marginTop:8}]}
+                                        style={[styles.PNGinput,{height:22.5,width: 30 ,marginTop:12}]}
                                     />
                                 ):(
                                     //mostrar icono normal
                                     <Image
                                         source={require('../assets/icons/ojoNormal.png')}
-                                        style={[styles.PNGinput,{height:34,width: 34 ,marginTop:8}]}
+                                        style={[styles.PNGinput,{height:22.5,width: 30 ,marginTop:12}]}
                                     />
                                 )
                             }
