@@ -10,7 +10,10 @@ export const registrarRecordatorio = async (infoSolicitud) =>{
             headers: {Accept:"application/json", "Content-Type":"application/json"},
             body: JSON.stringify(infoSolicitud)
         }
-    );
+    )
+    .catch(function(error) {
+        console.log('Error durante la promesa de registro de recordatorios' + error.message);
+        });
     return await respuesta.json();
 }
 
@@ -23,6 +26,9 @@ export const actualizarRecordatorio = async (infoSolicitud) =>{
             headers: {Accept:"application/json", "Content-Type":"application/json"},
             body: JSON.stringify(infoSolicitud)
         }
-    );
+    )
+    .catch(function(error) {
+        console.log('Error durante la promesa actualizar recordatorios' + error.message);
+        });
     return await respuesta.json();
 }

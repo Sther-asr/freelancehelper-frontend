@@ -39,10 +39,6 @@ const CrearProyecto = (props) =>{
         cargarHora({"horaInicio":"", "horaFin":""});
     }
     //funcion para actualizar cada uno de los elementos del estado inicial
-    const handleCargar = (index,valor) =>{
-        cargarInfoProyecto({...infoProyecto, [index]:valor});
-    }
-    //funcion para actualizar cada uno de los elementos del estado inicial
     const handleCargarEstado = (index,valor, tipoState) =>{
         if(tipoState === "infoProyecto"){
            cargarInfoProyecto({...infoProyecto, [index]:valor}); 
@@ -164,7 +160,7 @@ const CrearProyecto = (props) =>{
                     />
 
                     <TextInput
-                        onChangeText={(textoEntrando) => handleCargar('monto', textoEntrando, "infoProyecto")}
+                        onChangeText={(textoEntrando) => handleCargarEstado('monto', textoEntrando, "infoProyecto")}
                         value={infoProyecto.monto}
                         placeholder="monto"
                         style={styles.input}

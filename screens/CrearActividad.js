@@ -5,7 +5,7 @@ import { validarDatosRegistroPersona, validarRangoFechaInicioFin, validarHora } 
 import { registrarActividad} from "../requestBackend/API-Actividad";
 import { consultaProyecto } from "../requestBackend/API-Proyectos";
 import HeaderMenuPersonalizado from "../components/HeaderMenuPersonalizado";
-import {styles, StylesCrearRecordatorio} from '../components/styles/Styles'
+import {styles, StylesCrearRecordatorio, StylesHome} from '../components/styles/Styles'
 import { StatusBar } from 'expo-status-bar';
 import SelectDropdown from 'react-native-select-dropdown';
 import { useIsFocused } from '@react-navigation/native';
@@ -119,14 +119,16 @@ const CrearActividad = (props) =>{
     }
     return (
         <SafeAreaView style={[{backgroundColor: '#ffdb6f'},StylesCrearRecordatorio.container]}>
-            <HeaderMenuPersonalizado
-                title={"Crear Proyecto"}
-                togleMenu={()=>props.navigation.openDrawer()}
-                saludo={"❤¡Hola, "}
-                nombreUsuario={infousuario.nombrePersona}
-            />
-            {/* <StatusBar backgroundColor="#ffdb6f" translucent={true} /> */}
-            <ScrollView  contentContainerStyle={{}}>
+            
+            
+            <ScrollView  style={[StylesHome.container]}>
+                <HeaderMenuPersonalizado
+                    title={"Crear Actividad"}
+                    togleMenu={()=>props.navigation.openDrawer()}
+                    saludo={"❤¡Hola, "}
+                    nombreUsuario={infousuario.nombrePersona}
+                />
+                {/* <StatusBar backgroundColor="#ffdb6f" translucent={true} /> */}
                 {/* Logo */}
                 <Image style={[StylesCrearRecordatorio.logo]} source={require('../assets/icons/Logo-sup.png')}/>
                 

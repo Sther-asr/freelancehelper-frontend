@@ -11,7 +11,7 @@ export const inicioSesion = async (infoSesion) =>{
         }
     )
     .catch(function(error) {
-        console.log('Error durante la promesa ' + error.message);
+        console.log('Error durante la promesa consuta datos de inicio de sesion' + error.message);
         });
     return await respuesta.json();
 }

@@ -11,7 +11,10 @@ export const registrarProyecto = async (infoSolicitud) =>{
             headers: {Accept:"application/json", "Content-Type":"application/json"},
             body: JSON.stringify(infoSolicitud)
         }
-    );
+    )
+    .catch(function(error) {
+        console.log('Error durante la promesa de registro de proyecto ' + error.message);
+        });
     //console.log('Este es el resultado' +  JSON.stringify(respuesta));
     return await respuesta.json();
 }
@@ -26,7 +29,10 @@ export const consultaProyecto = async (infoSolicitud) =>{
             headers: {Accept:"application/json", "Content-Type":"application/json"},
             body: JSON.stringify(infoSolicitud)
         }
-    );
+    )
+    .catch(function(error) {
+        console.log('Error durante la promesa consulta de proyectos' + error.message);
+        });
     //console.log('Este es el resultado' +  JSON.stringify(respuesta));
     return await respuesta.json();
 }

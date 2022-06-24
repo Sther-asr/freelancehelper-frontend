@@ -31,9 +31,9 @@ const IconoNuevo = ({navegar}) =>{
                     <Text style={{ fontSize: 18, fontWeight: '600', marginTop: 2 }}>CREAR</Text>
                 </View>
                 <Divider />
-                <Menu.Item onPress={() => { closeMenu()}} title="Proyecto" icon={() => { return (<Image source={require('../assets/icons/Crear-Proyecto.png')} style={{ width: 35, height: 25 }} />) }} />
+                <Menu.Item onPress={() => { closeMenu(); navegar.navigation.navigate('CrearProyecto')}} title="Proyecto" icon={() => { return (<Image source={require('../assets/icons/Crear-Proyecto.png')} style={{ width: 35, height: 25 }} />) }} />
                 <Divider />
-                <Menu.Item onPress={() => { closeMenu()}} title="Tarea" icon={() => { return (<Image source={require('../assets/icons/Crear-Tarea.png')} style={{ width: 27, height: 30, marginLeft: 4 }} />) }} />
+                <Menu.Item onPress={() => { closeMenu(); navegar.navigation.navigate('CrearActividad')}} title="Actividad" icon={() => { return (<Image source={require('../assets/icons/Crear-Tarea.png')} style={{ width: 27, height: 30, marginLeft: 4 }} />) }} />
                 <Divider />
                 <Menu.Item onPress={() => { closeMenu(); navegar.navigation.navigate('CrearRecordatorio')}} title="Recordatorio" icon={() => { return (<Image source={require('../assets/icons/Crear-Recordatorio.png')} style={{ width: 27, height: 30, marginLeft: 4 }} />) }} />
                 <Divider />
