@@ -1,19 +1,15 @@
 import React,{useState} from "react";
 import { View, Text, ScrollView, TextInput, Image , TouchableOpacity, Alert, Vibration} from "react-native";
+import { styles, StylesHome } from "../components/styles/Styles";
 import useContextUsuario from "../hook/useContextUsuario";
 import { validarDatosRegistroPersona, validarRangoFechaInicioFin, validarCifrasNumericas } from "../fuciones/validador";
 import { registrarProyecto} from "../requestBackend/API-Proyectos";
 import HeaderMenuPersonalizado from "../components/HeaderMenuPersonalizado";
-import {styles, StylesCrearRecordatorio, StylesHome} from '../components/styles/Styles'
-
 
 const CrearProyecto = (props) =>{
     // utilizando contexto de usuario
     const infousuario = useContextUsuario();
     const fechaActual = new Date().toISOString().slice(0, 10);
-
-    const [fecha, cargarFecha] = useState({"fechaInicio":"", "fechaFin":""});
-    const [hora, cargarHora] = useState({"horaInicio":"", "horaFin":""});
 
     const [infoProyecto, cargarInfoProyecto] = useState({
         "sesion": true,
@@ -35,21 +31,10 @@ const CrearProyecto = (props) =>{
             "fechaFin":fechaActual.slice(0 , 8),
             "estado":"Activo"
         });
-        cargarFecha({"fechaInicio":"", "fechaFin":""});
-        cargarHora({"horaInicio":"", "horaFin":""});
     }
     //funcion para actualizar cada uno de los elementos del estado inicial
-    const handleCargarEstado = (index,valor, tipoState) =>{
-        if(tipoState === "infoProyecto"){
-           cargarInfoProyecto({...infoProyecto, [index]:valor}); 
-        }
-        if(tipoState === "fecha"){
-            cargarFecha({...fecha, [index]:valor}); 
-        }
-        if(tipoState === "hora"){
-            cargarHora({...hora, [index]:valor}); 
-        }
-        //console.log(JSON.stringify(infoProyecto));
+    const handleCargar = (index,valor) =>{
+        cargarInfoProyecto({...infoProyecto, [index]:valor});
     }
 
     // funcion para validar los campos antes de enviar
@@ -72,25 +57,13 @@ const CrearProyecto = (props) =>{
             );
             return;
         }
-        let resultado = validarDatosRegistroPersona(fecha);
+        let resultado = validarDatosRegistroPersona(infoProyecto);
         if(resultado.result != true){
             Alert.alert(
                 'Fecha invalida', resultado.alerta,[{text:'Entiendo'}]
             );
             return;
         }
-        resultado = validarDatosRegistroPersona(hora);
-        if(resultado.result != true){
-            Alert.alert(
-                'Hora invalida', resultado.alerta,[{text:'Entiendo'}]
-            );
-            return;
-        }
-        ////////////////////////////////////
-        const fecha_inicio = `${fecha.fechaInicio}T${hora.horaInicio}:00`;
-        const fecha_fin = `${fecha.fechaFin}T${hora.horaFin}:00`;
-        cargarInfoProyecto({...infoProyecto, "fechaInicio":fecha_inicio, "fechaFin":fecha_fin});
-        /////////////////////////////////
         if(!validarRangoFechaInicioFin(infoProyecto)){
             Alert.alert(
                 'Rango de tiempo invalido', `La fecha incial "${infoProyecto.fechaInicio}" no puede ser mayor a la fecha final "${infoProyecto.fechaFin}"`,[{text:'Entiendo'}]
@@ -120,47 +93,42 @@ const CrearProyecto = (props) =>{
         <ScrollView style={[StylesHome.container]}>
             <HeaderMenuPersonalizado
                 title={"Crear Proyecto"}
-                togleMenu={() => props.navigation.openDrawer()}
+                togleMenu={()=>props.navigation.openDrawer()}
                 saludo={"❤¡Hola, "}
                 nombreUsuario={infousuario.nombrePersona}
             />
-            {/* Logo */}
-            <Image style={[StylesCrearRecordatorio.logo]} source={require('../assets/icons/Logo-sup.png')} />
+
+            <View style={{width:'100%', padding:10, alignItems:'flex-end'}}>
+                <Text style={[styles.textlogo,{fontSize:30, fontWeight:'700',marginRight:'10%', marginTop:30}]}>¡Nuevo Proyecto!</Text>
+            </View>
 
             {/**formulario contenedor */}
-            <View style={[{ alignItems: 'center' }, StylesCrearRecordatorio.containerFormulario]}>
-                <Image style={[StylesCrearRecordatorio.lineasup, { marginBottom: 30 }]} source={require('../assets/icons/Linea-sup.png')} />
-
-                {/* Saludo */}
-                <View style={[StylesCrearRecordatorio.containerSaludo]}>
-                    <Image style={[StylesCrearRecordatorio.iconoSaludo, { height: 33, width: 45 }]} source={require('../assets/icons/Icon-proyecto-color.png')} />
-                    <Text style={StylesCrearRecordatorio.saludo}>Proyecto</Text>
-                </View>
-
-                {/*Entrada descripcion*/}
-                <View style={[StylesCrearRecordatorio.containerInput]}>
+            <View style={[{alignItems:'center'}]}>
+                {/*entrada descripcion*/}
+                <View style={[styles.containerInput]}>
                     <Image
-                        source={require('../assets/icons/Tag_Título_del_Tag.png')}
-                        style={[StylesCrearRecordatorio.inputPNG]}
+                        source={require('../assets/inputTemp.png')}
+                        style={[styles.PNGinput]}
                     />
+
                     <TextInput
-                        onChangeText={(textoEntrando) => handleCargarEstado("descripcion", textoEntrando, "infoProyecto")}
+                        onChangeText={(textoEntrando) => handleCargar('descripcion', textoEntrando)}
                         value={infoProyecto.descripcion}
-                        placeholder="Descripción"
+                        placeholder="Descripcion"
                         style={styles.input}
                         placeholderTextColor="#B3B3B3"
                     />
                 </View>
 
                 {/*entrada monto*/}
-                <View style={[StylesCrearRecordatorio.containerInput]}>
+                <View style={[styles.containerInput]}>
                     <Image
-                        source={require('../assets/icons/Tag_dinero.png')}
-                        style={[StylesCrearRecordatorio.dualInputPNG,{marginTop:12}]}
+                        source={require('../assets/inputTemp.png')}
+                        style={[styles.PNGinput]}
                     />
 
                     <TextInput
-                        onChangeText={(textoEntrando) => handleCargarEstado('monto', textoEntrando, "infoProyecto")}
+                        onChangeText={(textoEntrando) => handleCargar('monto', textoEntrando)}
                         value={infoProyecto.monto}
                         placeholder="monto"
                         style={styles.input}
@@ -168,79 +136,36 @@ const CrearProyecto = (props) =>{
                     />
                 </View>
 
+                {/*entrada fecha inicio*/}
+                <View style={[styles.containerInput]}>
+                    <Image
+                        source={require('../assets/icons/Menu-Calendario.png')}
+                        style={[styles.PNGinput]}
+                    />
 
-                {/**campo fecha con hora INCIO */}
-                <View style={[StylesCrearRecordatorio.containerInputDoble]}>
-
-                    <Text style={[StylesCrearRecordatorio.inputTitulo]}>Incio</Text>
-
-                    <View style={[{ flexDirection: 'row' }]}>
-
-                        <View style={[StylesCrearRecordatorio.containerInputDual, { width: '55%' }]}>
-                            <Image
-                                source={require('../assets/icons/Tag_Inicio_Final.png')}
-                                style={[StylesCrearRecordatorio.dualInputPNG]}
-                            />
-                            <TextInput
-                                onChangeText={(textoEntrando) => handleCargarEstado("fechaInicio", textoEntrando, "fecha")}
-                                value={fecha.fechaInicio}
-                                placeholder="año/mes/dia"
-                                style={[StylesCrearRecordatorio.input]}
-                                placeholderTextColor="#B3B3B3"
-                            />
-                        </View>
-
-                        <View style={[StylesCrearRecordatorio.containerInputDual, { width: '40%', marginLeft: '5%' }]}>
-                            <Image
-                                source={require('../assets/icons/Tag_Tiempo.png')}
-                                style={[StylesCrearRecordatorio.dualInputPNG]}
-                            />
-                            <TextInput
-                                onChangeText={(textoEntrando) => handleCargarEstado("horaInicio", textoEntrando, "hora")}
-                                value={hora.horaInicio}
-                                placeholder="00:00"
-                                style={[StylesCrearRecordatorio.input, { width: '68%' }]}
-                                placeholderTextColor="#B3B3B3"
-                            />
-                        </View>
-                    </View>
+                    <TextInput
+                        onChangeText={(textoEntrando) => handleCargar('fechaInicio', textoEntrando)}
+                        value={infoProyecto.fechaInicio}
+                        placeholder="Inicio 2000-01-01"
+                        style={styles.input}
+                        placeholderTextColor="#B3B3B3"
+                    />
                 </View>
 
-                {/**campo fecha con hora FIN*/}
-                <View style={[StylesCrearRecordatorio.containerInputDoble]}>
+                {/*entrada fecha fin*/}
+                <View style={[styles.containerInput]}>
+                    <Image
+                        source={require('../assets/icons/Menu-Calendario-color.png')}
+                        style={[styles.PNGinput]}
+                    />
 
-                    <Text style={[StylesCrearRecordatorio.inputTitulo]}>Finalización</Text>
-
-                    <View style={[{ flexDirection: 'row' }]}>
-
-                        <View style={[StylesCrearRecordatorio.containerInputDual, { width: '55%' }]}>
-                            <Image
-                                source={require('../assets/icons/Tag_Inicio_Final.png')}
-                                style={[StylesCrearRecordatorio.dualInputPNG]}
-                            />
-                            <TextInput
-                                onChangeText={(textoEntrando) => handleCargarEstado("fechaFin", textoEntrando, "fecha")}
-                                value={fecha.fechaFin}
-                                placeholder="año/mes/dia"
-                                style={[StylesCrearRecordatorio.input]}
-                                placeholderTextColor="#B3B3B3"
-                            />
-                        </View>
-
-                        <View style={[StylesCrearRecordatorio.containerInputDual, { width: '40%', marginLeft: '5%' }]}>
-                            <Image
-                                source={require('../assets/icons/Tag_Tiempo.png')}
-                                style={[StylesCrearRecordatorio.dualInputPNG]}
-                            />
-                            <TextInput
-                                onChangeText={(textoEntrando) => handleCargarEstado("horaFin", textoEntrando, "hora")}
-                                value={hora.horaFin}
-                                placeholder="00:00"
-                                style={[StylesCrearRecordatorio.input, { width: '68%' }]}
-                                placeholderTextColor="#B3B3B3"
-                            />
-                        </View>
-                    </View>
+                    <TextInput
+                        onChangeText={(textoEntrando) => handleCargar('fechaFin', textoEntrando)}
+                        value={infoProyecto.fechaFin}
+                        placeholder="Fin 2000-02-02"
+                        style={styles.input}
+                        placeholderTextColor="#B3B3B3"
+                    />
                 </View>
 
                 {/*Button */}
@@ -251,7 +176,7 @@ const CrearProyecto = (props) =>{
                     <Text style={[styles.textBoton, { color: 'white' }]}>Guardar</Text>
                 </TouchableOpacity>
             </View>
-
+            
         </ScrollView>
     );
 }

@@ -1,22 +1,22 @@
-import React,{useState, useEffect, useRef} from "react";
+import React,{useState} from "react";
 import { View, Text, ScrollView, TextInput, Image , TouchableOpacity, Alert, Vibration, StyleSheet, Dimensions, SafeAreaView} from "react-native";
 import useContextUsuario from "../hook/useContextUsuario";
 import { validarDatosRegistroPersona, validarRangoFechaInicioFin, validarHora } from "../fuciones/validador";
-import { registrarActividad} from "../requestBackend/API-Actividad";
-import { consultaProyecto } from "../requestBackend/API-Proyectos";
+import { registrarProyecto} from "../requestBackend/API-Proyectos";
 import HeaderMenuPersonalizado from "../components/HeaderMenuPersonalizado";
-import {styles, StylesCrearRecordatorio, StylesHome} from '../components/styles/Styles'
+import {styles, StylesCrearRecordatorio} from '../components/styles/Styles'
 import { StatusBar } from 'expo-status-bar';
 import SelectDropdown from 'react-native-select-dropdown';
-import { useIsFocused } from '@react-navigation/native';
 
 const CrearActividad = (props) =>{
     // utilizando contexto de usuario
     const infousuario = useContextUsuario();
-    const [proyectos, cargarProyectos] = useState([]);
+    const fechaActual = new Date().toISOString().slice(0, 10);
+
     const [infoActividad, cargarInfoActividad] = useState({
         "sesion": true,
         "idSesion": infousuario.idPersona,
+        "titulo":"",
         "descripcion": "",
         "fechaInicio":"", 
         "fechaFin":"",
@@ -25,34 +25,19 @@ const CrearActividad = (props) =>{
     });
     const [fecha, cargarFecha] = useState({"fechaInicio":"", "fechaFin":""});
     const [hora, cargarHora] = useState({"horaInicio":"", "horaFin":""});
-    const isFocus = useIsFocused();
-    // llamar los proyetos al entrar a la pantalla
-    const traerDataProyectos = async () =>{
-        const data = await consultaProyecto({"sesion": true, "idSesion" : infousuario.idPersona});
-        cargarProyectos(data);
-    }
-    useEffect(()=>{
-        traerDataProyectos();
-        restablecerCampos();
-    },[isFocus]);
+
     // funcion para restablecer los campos input
     const restablecerCampos = ()=>{
         cargarInfoActividad({
             "sesion": true,
             "idSesion": infousuario.idPersona,
             "descripcion": "",
-            "fechaInicio":"", 
-            "fechaFin":"",
-            "estado":"Activo",
-            "proyecto_idProyecto":""
+            "monto":"",
+            "fechaInicio":fechaActual, 
+            "fechaFin":fechaActual.slice(0 , 8),
+            "estado":"Activo"
         });
-        cargarFecha({"fechaInicio":"", "fechaFin":""});
-        cargarHora({"horaInicio":"", "horaFin":""});
-        selectListRestablecer();
     }
-    // restablecer el select list al estado defecto
-    const referenciaSelectList = useRef({});
-    const selectListRestablecer = () => {referenciaSelectList.current.reset();}
     //funcion para actualizar cada uno de los elementos del estado inicial
     const handleCargarEstado = (index,valor, tipoState) =>{
         if(tipoState === "infoActividad"){
@@ -64,16 +49,18 @@ const CrearActividad = (props) =>{
         if(tipoState === "hora"){
             cargarHora({...hora, [index]:valor}); 
         }
-        //console.log(JSON.stringify(infoActividad));
+        console.log(JSON.stringify(infoActividad));
     }
     // funcion para validar los campos antes de enviar
     const validarCampos = () =>{
-        if(infoActividad.proyecto_idProyecto===''|| infoActividad.proyecto_idProyecto ===null){
+        
+        if(infoActividad.titulo===''|| infoActividad.titulo ===null){
             Alert.alert(
-                'Proyecto invalido', 'En el campo \'proyecto\' debe seleccionar un proyecto',[{text:'Entiendo'}]
+                'Título invalido', 'El campo \'título\' no puede estar vacio',[{text:'Entiendo'}]
             );
             return;
         }
+        
         let resultado = validarDatosRegistroPersona(fecha);
         if(resultado.result != true){
             Alert.alert(
@@ -81,6 +68,7 @@ const CrearActividad = (props) =>{
             );
             return;
         }
+
         resultado = validarDatosRegistroPersona(hora);
         if(resultado.result != true){
             Alert.alert(
@@ -89,9 +77,12 @@ const CrearActividad = (props) =>{
             return;
         }
         ////////////////////////////////////
-        const fecha_inicio = `${fecha.fechaInicio}T${hora.horaInicio}:00`;
-        const fecha_fin = `${fecha.fechaFin}T${hora.horaFin}:00`;
-        cargarInfoActividad({...infoActividad, "fechaInicio":fecha_inicio, "fechaFin":fecha_fin});
+        // const fecha_inicio = `${fecha.fechaInicio} ${hora.horaInicio}`;
+        // console.log(fecha_inicio);
+        // handleCargarEstado("fechaInicio", fecha_inicio, "infoActividad");
+        // const fecha_fin = `${fecha.fechaFin} ${hora.horaFin}`;
+        // console.log(fecha_fin);
+        // handleCargarEstado("fechaFin", fecha_fin, "infoActividad");
         /////////////////////////////////
         if(!validarRangoFechaInicioFin(infoActividad)){
             Alert.alert(
@@ -105,30 +96,14 @@ const CrearActividad = (props) =>{
             );
             return;
         }
-        setTimeout(handleCrearActividad, 300);
     }
-    // funcion para realizar el registro
-    const handleCrearActividad= async () =>{
-        console.log(infoActividad);
-        const data = await registrarActividad(infoActividad);
-        if(data.registro === true){
-            Alert.alert('Informacón de registro', `Actividad : "${infoActividad.descripcion}" para el proyecto: "${infoActividad.proyecto_idProyecto}"\n CREADA CON EXITO`,[{title:'OK'}])
-        }else{
-            Alert.alert('Informacón de registro', `Ha ocurrido un error durante el registro: ${data.resultado}`,[{title:'OK'}])
-        }
-    }
+
+    const countries = ["Egypt", "Canada", "Australia", "Ireland"];
+
     return (
         <SafeAreaView style={[{backgroundColor: '#ffdb6f'},StylesCrearRecordatorio.container]}>
-            
-            
-            <ScrollView  style={[StylesHome.container]}>
-                <HeaderMenuPersonalizado
-                    title={"Crear Actividad"}
-                    togleMenu={()=>props.navigation.openDrawer()}
-                    saludo={"❤¡Hola, "}
-                    nombreUsuario={infousuario.nombrePersona}
-                />
-                {/* <StatusBar backgroundColor="#ffdb6f" translucent={true} /> */}
+            <StatusBar backgroundColor="#ffdb6f" translucent={true} />
+            <ScrollView  contentContainerStyle={{}}>
                 {/* Logo */}
                 <Image style={[StylesCrearRecordatorio.logo]} source={require('../assets/icons/Logo-sup.png')}/>
                 
@@ -138,41 +113,41 @@ const CrearActividad = (props) =>{
                     
                     {/* Saludo */}
                     <View style={[StylesCrearRecordatorio.containerSaludo]}>
-                        <Image style={[StylesCrearRecordatorio.iconoSaludo,{height:33, width:30}]} source={require('../assets/icons/Crear-Tarea.png')}/>
-                        <Text style={StylesCrearRecordatorio.saludo}>Actividad</Text>
+                        <Image style={[StylesCrearRecordatorio.iconoSaludo]} source={require('../assets/icons/Icon-tags-color.png')}/>
+                        <Text style={StylesCrearRecordatorio.saludo}>Tags</Text>
                     </View>
-
                     {/**lista select */}
                     <View style={[StylesCrearRecordatorio.containerInputDoble]}>
                         <SelectDropdown
-                            data={proyectos}
+                            data={countries}
                             onSelect={(selectedItem, index) => {
-                                handleCargarEstado("proyecto_idProyecto", selectedItem.idProyecto, "infoActividad");
+                                console.log(selectedItem, index)
                             }}
                             buttonTextAfterSelection={(selectedItem, index) => {
                                 // text represented after item is selected
                                 // if data array is an array of objects then return selectedItem.property to render after item is selected
-                                return `${selectedItem.descripcion.slice(0, 30)}...`
+                                return selectedItem
                             }}
                             rowTextForSelection={(item, index) => {
                                 // text represented for each item in dropdown
                                 // if data array is an array of objects then return item.property to represent item in dropdown
-                                return `${item.descripcion.slice(0, 25)}...`
+                                return item
                             }}
-                            buttonStyle={{width:'100%', borderBottomWidth:1.5, borderBottomColor:'#B3B3B3', backgroundColor:'white'}}
-                            buttonTextStyle={{color:'#B3B3B3', fontWeight:'600'}}
-                            dropdownStyle={{borderRadius:10, padding:5, backgroundColor:'white'}}
-                            dropdownOverlayColor='#B3B3B315'
-                            rowStyle={{backgroundColor:'#B3B3B310', borderRadius:5, marginBottom:1}}
-                            rowTextStyle={{color:'#B3B3B3', fontWeight:'500'}}
-                            selectedRowStyle={{backgroundColor:'#ffdb6f'}}
-                            selectedRowTextStyle={{color:'white'}}
-                            search={true}
-                            searchPlaceHolder={"Buscar"}
-                            searchInputStyle={{borderBottomWidth:1, borderBottomColor:'#B3B3B3',}}
-                            searchInputTxtColor={"#B3B3B3"}
-                            defaultButtonText={"SELECCIONAR PROYECTO"}
-                            ref={referenciaSelectList}
+                        />
+                    </View>
+                    
+                    {/*Entrada titulo*/}
+                    <View style={[StylesCrearRecordatorio.containerInput]}>
+                        <Image
+                            source={require('../assets/icons/Tag_Título_del_Tag.png')}
+                            style={[StylesCrearRecordatorio.inputPNG]}
+                        />
+                        <TextInput
+                            onChangeText={(textoEntrando)=>handleCargarEstado("titulo",textoEntrando,"infoActividad")}
+                            value={infoActividad.titulo}
+                            placeholder="Titulo"
+                            style={styles.input}
+                            placeholderTextColor="#B3B3B3"
                         />
                     </View>
 
@@ -205,7 +180,7 @@ const CrearActividad = (props) =>{
                                 <TextInput
                                     onChangeText={(textoEntrando)=>handleCargarEstado("horaInicio",textoEntrando,"hora")}
                                     value={hora.horaInicio}
-                                    placeholder="00:00"
+                                    placeholder="00:00 am"
                                     style={[StylesCrearRecordatorio.input,{width:'68%'}]}
                                     placeholderTextColor="#B3B3B3"
                                 />
@@ -242,7 +217,7 @@ const CrearActividad = (props) =>{
                                 <TextInput
                                     onChangeText={(textoEntrando)=>handleCargarEstado("horaFin",textoEntrando,"hora")}
                                     value={hora.horaFin}
-                                    placeholder="00:00"
+                                    placeholder="00:00 am"
                                     style={[StylesCrearRecordatorio.input,{width:'68%'}]}
                                     placeholderTextColor="#B3B3B3"
                                 />
