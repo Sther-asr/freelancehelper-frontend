@@ -1,11 +1,10 @@
-import React from "react";
+import React,{useState, useEffect} from "react";
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, View,Text, Image} from 'react-native';
+import { StyleSheet, Button, View, FlatList,Text, Image} from 'react-native';
 import { createBottomTabNavigator,useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import NavegadorOrganizador from './Drawer-NavegadorOrganizador';
-import Perfil from '../../screens/Perfil';
 import ContextUsuario from '../../Context/ContextUsuario';
-// import {consultaDatosPersona} from "../../requestBackend/API-Persona";
+import {consultaDatosPersona} from "../../requestBackend/API-Persona";
 const Tab = createBottomTabNavigator();
 
 const Pantalla1 =()=>{
@@ -16,6 +15,13 @@ const Pantalla1 =()=>{
     );
 }
 
+const Pantalla2 =()=>{
+    return(
+        <View>
+            <Text>Pantalla prueba 2000</Text>
+        </View>
+    );
+}
 
 const NavegadorInferior = (props)=>{
     // // almacenar info estado
@@ -34,7 +40,6 @@ const NavegadorInferior = (props)=>{
     //     console.log(JSON.stringify(datosUsuario));
     // }
     //console.log(JSON.stringify(props.route.params.datosUsuario));
-    
     return(
         <ContextUsuario.Provider value={props.route.params.datosUsuario}>
             <Tab.Navigator
@@ -45,23 +50,22 @@ const NavegadorInferior = (props)=>{
                     //funcion para cambiar los iconos del menu inferior
                     tabBarIcon: ({focused}) =>{
                         let iconoElement ='';
-                        let organizadorIco = false;
-                        let perfilIco = false;
+                        let modificaIco = false;
                         switch (route.name) {
                             case 'Home':
                                 iconoElement = focused ? require('../../assets/icons/Menu-organizador-color.png') : require('../../assets/icons/Menu-organizador.png');
-                                organizadorIco = true;
+                                modificaIco = true;
                                 break;
                             case 'Finanzas':
                                 iconoElement = focused ? require('../../assets/icons/Menu-Finanzas-color.png') : require('../../assets/icons/Menu-Finanzas.png');
                                 break;
                             case 'Perfil':
-                                iconoElement = focused ? require('../../assets/icons/Menu-Perfil-color.png') : require('../../assets/icons/Menu-Perfil.png'); perfilIco = true;
+                                iconoElement = focused ? require('../../assets/icons/Menu-Perfil-color.png') : require('../../assets/icons/Menu-Perfil.png');
                                 break;
                             default:
                                 break;
                         }
-                        return(<Image source={iconoElement} style={[StylesNavInferior.iconoSeccion, organizadorIco ? {height:29, width:24 } : {}, perfilIco ? {width:31} : {} ]}/>);
+                        return(<Image source={iconoElement} style={[StylesNavInferior.iconoSeccion,modificaIco ? {height:33 }:{}]}/>);
                     }
                 })
                 
@@ -81,13 +85,13 @@ const NavegadorInferior = (props)=>{
                     component={Pantalla1}
                     options={{
                         headerShown:false,
-                        title:"Finanzas",
+                        title:"Finazas",
                     }}
                 />
 
                 <Tab.Screen
                     name='Perfil'
-                    component={Perfil}
+                    component={Pantalla2}
                     options={{
                         headerShown:false,
                         title:"Perfil",
@@ -102,7 +106,7 @@ const NavegadorInferior = (props)=>{
 export const StylesNavInferior = StyleSheet.create({
     iconoSeccion:{
         width: 30,
-        height: 31,
+        height:30
     }
 });
 
