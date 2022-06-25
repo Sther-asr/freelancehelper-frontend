@@ -12,7 +12,6 @@ const Tarea = ({infoTarea}) =>{
     //contexto con informacion de sesion
     const infoUsuario = useContextUsuario();
 
-
     //funcion para  mostrar la info de la tarea
     // const mostrarInfoTarea = ()=>{
 
@@ -100,7 +99,7 @@ const Tarea = ({infoTarea}) =>{
                 <View style={StylesTarea.containerFlex}>
 
                     <Text style={StylesTarea.hora}>
-                        {infoTarea.item.fechaFin}
+                        {infoTarea.item.fechaFin.slice(11, 16)}
                     </Text>
 
                     <Text style={StylesTarea.hora}>#Etiqueta</Text>

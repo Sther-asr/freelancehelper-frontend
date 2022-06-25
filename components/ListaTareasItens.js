@@ -4,7 +4,6 @@ import {styles, StylesListaTareas} from './styles/Styles';
 import Tarea from './TareaIten';
 import { consultaTareasDiarias } from "../requestBackend/API-Diarias";
 import useContextUsuario from "../hook/useContextUsuario";
-import { useIsFocused } from '@react-navigation/native';
 
 
 const ListaTareasIten = (props)=>{
@@ -16,14 +15,13 @@ const ListaTareasIten = (props)=>{
     const [dataTareas, setDataTareas] = useState([]);
     // obteniendo la fecha actual del dispositivo
     const fechaActual = new Date().toISOString().slice(0, 10);
-    const isFocus = useIsFocused();
     console.log(fechaActual);
     
         //const hola = `${fecha.getFullYear()}-${fecha.getMonth()+1>=13 ? 12 : fecha.getMonth()+1}-${fecha.getDate()}`;
     
     useEffect(()=>{
         consultarTareas();
-    },[isFocus]);
+    },[]);
 
     const consultarTareas = async() =>{
 
@@ -40,7 +38,7 @@ const ListaTareasIten = (props)=>{
             setDataTareas([
                 {
                     "idActividad": "01",
-                    "descripcion": "Usted no posee actividades hoy, !Mire Netflx!",
+                    "descripcion": "Usted no posee actividades hoy, ¡Mire Netflx!",
                     "fechaInicio": "2022-09-18 00:00:00",
                     "fechaFin":"2022-06-17 00:00:00",
                     "estado": null,
