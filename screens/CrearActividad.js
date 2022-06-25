@@ -5,7 +5,7 @@ import { validarDatosRegistroPersona, validarRangoFechaInicioFin, validarHora } 
 import { registrarActividad} from "../requestBackend/API-Actividad";
 import { consultaProyecto } from "../requestBackend/API-Proyectos";
 import HeaderMenuPersonalizado from "../components/HeaderMenuPersonalizado";
-import {styles, StylesCrearRecordatorio, StylesHome} from '../components/styles/Styles'
+mport {styles, StylesCrearRecordatorio, StylesHome} from '../components/styles/Styles'
 import { StatusBar } from 'expo-status-bar';
 import SelectDropdown from 'react-native-select-dropdown';
 import { useIsFocused } from '@react-navigation/native';
@@ -14,6 +14,7 @@ const CrearActividad = (props) =>{
     // utilizando contexto de usuario
     const infousuario = useContextUsuario();
     const [proyectos, cargarProyectos] = useState([]);
+
     const [infoActividad, cargarInfoActividad] = useState({
         "sesion": true,
         "idSesion": infousuario.idPersona,
@@ -25,6 +26,7 @@ const CrearActividad = (props) =>{
     });
     const [fecha, cargarFecha] = useState({"fechaInicio":"", "fechaFin":""});
     const [hora, cargarHora] = useState({"horaInicio":"", "horaFin":""});
+    
     const isFocus = useIsFocused();
     // llamar los proyetos al entrar a la pantalla
     const traerDataProyectos = async () =>{
@@ -35,6 +37,7 @@ const CrearActividad = (props) =>{
         traerDataProyectos();
         restablecerCampos();
     },[isFocus]);
+
     // funcion para restablecer los campos input
     const restablecerCampos = ()=>{
         cargarInfoActividad({
@@ -53,6 +56,7 @@ const CrearActividad = (props) =>{
     // restablecer el select list al estado defecto
     const referenciaSelectList = useRef({});
     const selectListRestablecer = () => {referenciaSelectList.current.reset();}
+    
     //funcion para actualizar cada uno de los elementos del estado inicial
     const handleCargarEstado = (index,valor, tipoState) =>{
         if(tipoState === "infoActividad"){
@@ -81,6 +85,7 @@ const CrearActividad = (props) =>{
             );
             return;
         }
+
         resultado = validarDatosRegistroPersona(hora);
         if(resultado.result != true){
             Alert.alert(
@@ -117,18 +122,13 @@ const CrearActividad = (props) =>{
             Alert.alert('Informacón de registro', `Ha ocurrido un error durante el registro: ${data.resultado}`,[{title:'OK'}])
         }
     }
+
     return (
         <SafeAreaView style={[{backgroundColor: '#ffdb6f'},StylesCrearRecordatorio.container]}>
-            
-            
             <ScrollView  style={[StylesHome.container]}>
                 <HeaderMenuPersonalizado
                     title={"Crear Actividad"}
-                    togleMenu={()=>props.navigation.openDrawer()}
-                    saludo={"❤¡Hola, "}
-                    nombreUsuario={infousuario.nombrePersona}
                 />
-                {/* <StatusBar backgroundColor="#ffdb6f" translucent={true} /> */}
                 {/* Logo */}
                 <Image style={[StylesCrearRecordatorio.logo]} source={require('../assets/icons/Logo-sup.png')}/>
                 
@@ -141,13 +141,12 @@ const CrearActividad = (props) =>{
                         <Image style={[StylesCrearRecordatorio.iconoSaludo,{height:33, width:30}]} source={require('../assets/icons/Crear-Tarea.png')}/>
                         <Text style={StylesCrearRecordatorio.saludo}>Actividad</Text>
                     </View>
-
                     {/**lista select */}
                     <View style={[StylesCrearRecordatorio.containerInputDoble]}>
                         <SelectDropdown
                             data={proyectos}
                             onSelect={(selectedItem, index) => {
-                                handleCargarEstado("proyecto_idProyecto", selectedItem.idProyecto, "infoActividad");
+                               handleCargarEstado("proyecto_idProyecto", selectedItem.idProyecto, "infoActividad");
                             }}
                             buttonTextAfterSelection={(selectedItem, index) => {
                                 // text represented after item is selected
@@ -159,7 +158,10 @@ const CrearActividad = (props) =>{
                                 // if data array is an array of objects then return item.property to represent item in dropdown
                                 return `${item.descripcion.slice(0, 25)}...`
                             }}
-                            buttonStyle={{width:'100%', borderBottomWidth:1.5, borderBottomColor:'#B3B3B3', backgroundColor:'white'}}
+                        />
+                    </View>
+                    
+                   buttonStyle={{width:'100%', borderBottomWidth:1.5, borderBottomColor:'#B3B3B3', backgroundColor:'white'}}
                             buttonTextStyle={{color:'#B3B3B3', fontWeight:'600'}}
                             dropdownStyle={{borderRadius:10, padding:5, backgroundColor:'white'}}
                             dropdownOverlayColor='#B3B3B315'
@@ -173,8 +175,6 @@ const CrearActividad = (props) =>{
                             searchInputTxtColor={"#B3B3B3"}
                             defaultButtonText={"SELECCIONAR PROYECTO"}
                             ref={referenciaSelectList}
-                        />
-                    </View>
 
                     {/**campo fecha con hora INCIO */}
                     <View style={[StylesCrearRecordatorio.containerInputDoble]}>
@@ -242,7 +242,7 @@ const CrearActividad = (props) =>{
                                 <TextInput
                                     onChangeText={(textoEntrando)=>handleCargarEstado("horaFin",textoEntrando,"hora")}
                                     value={hora.horaFin}
-                                    placeholder="00:00"
+                                    placeholder="00:00 am"
                                     style={[StylesCrearRecordatorio.input,{width:'68%'}]}
                                     placeholderTextColor="#B3B3B3"
                                 />
