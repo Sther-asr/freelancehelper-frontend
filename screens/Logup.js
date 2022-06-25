@@ -1,11 +1,11 @@
 import React,{useState, useEffect} from "react";
 import { StatusBar } from 'expo-status-bar';
-import {Text, ScrollView, View, TextInput, Image, Dimensions, TouchableOpacity, Alert} from "react-native";
-import EStyleSheet from 'react-native-extended-stylesheet';
-import {styles} from '../components/styles/Styles';
+import {Text, ScrollView, View, TextInput, Image, Dimensions, TouchableOpacity, Alert, Modal} from "react-native";
+import {styles, StylesModal} from '../components/styles/Styles';
 import {registrarPersona} from '../requestBackend/API-Personas';
 import {useTogglePasswordVisibility} from "./useToggle";
-EStyleSheet.build();
+import InfoModalAyudaRegistro from "../components/InfoModalAyudaRegistro";
+import { validarDatosRegistroPersona} from '../fuciones/validador';
 
 const Logup = (props) =>{
     /*Delaracion de estados */
@@ -17,7 +17,7 @@ const Logup = (props) =>{
     const [fechaNacimiento,cargarFechaNacimiento] = useState("");
     const [datosPersona, cargarDatosPersona] = useState("");
     const { passwordVisibility, rightIcon, handlePasswordVisibility } = useTogglePasswordVisibility();
-
+    const [modalVisible, setModalVisible] = useState(false);
     //restablecer todos los estados al estado inicial
     const restablecerCampos = () =>{
         cargarNombre("");
@@ -32,7 +32,7 @@ const Logup = (props) =>{
 
 
     //funcion registrar
-    const registrar = async ()=>{
+    const registrarNuevoUsuario = async ()=>{
         const persona = {
             "nombrePersona" : nombre,
             "apellidoPersona" : apellido,
@@ -47,7 +47,7 @@ const Logup = (props) =>{
         if(resultado.registro == true ) {
             Alert.alert(
                 "Registro exitoso, dirijase a inicio",
-                `informacion de registro ${JSON.stringify(persona)}`,
+                `Bienvenido "${persona.nombrePersona + ' ' + persona.apellidoPersona}"`,
                 [
                     {text:"Ok", onPress: ()=>props.navigation.navigate('Login')}
                 ]
@@ -56,13 +56,31 @@ const Logup = (props) =>{
             }else{
             Alert.alert(
                             "Registro invalido",
-                            "Revise sus datos",
+                            "Revise sus datos, Usuario o correo ya existente",
                             [
                                 {text:"Entendido"}
                             ]
                         );
         }
+    }
 
+    // funcion para verificar datos antes del registro
+    const validarCampos = () =>{
+        let resultado = validarDatosRegistroPersona({
+            "nombrePersona" : nombre,
+            "apellidoPersona" : apellido,
+            "fechaNacimiento" : fechaNacimiento,
+            "usuario" : usuario,
+            "correo" : correo,
+            "contrasena" : contrasena
+        });
+        if(resultado.result != true){
+            Alert.alert(
+                'Aviso de registro invalido', resultado.alerta,[{text:'Entiendo'}]
+            );
+            return;
+        }
+        registrarNuevoUsuario();
     }
 
     return(
@@ -197,13 +215,13 @@ const Logup = (props) =>{
                                 passwordVisibility ? (
                                     <Image
                                         source={require('../assets/icons/ojoTachado.png')}
-                                        style={[styles.PNGinput,{height:34,width: 34 ,marginTop:8}]}
+                                        style={[styles.PNGinput,{height:22.5,width: 30 ,marginTop:12}]}
                                     />
                                 ):(
                                     //mostrar icono normal
                                     <Image
                                         source={require('../assets/icons/ojoNormal.png')}
-                                        style={[styles.PNGinput,{height:34,width: 34 ,marginTop:8}]}
+                                        style={[styles.PNGinput,{height:22.5,width: 30 ,marginTop:12}]}
                                     />
                                 )
                             }
@@ -213,10 +231,33 @@ const Logup = (props) =>{
                     {/*boton registrarse */}
                     <TouchableOpacity
                         style={[styles.boton,{backgroundColor:'#FEB529'}]}
-                        onPress={registrar}
+                        onPress={validarCampos}
                     >
                         <Text style={[styles.textBoton, {color:'white'}]}>Registrarse</Text>
                     </TouchableOpacity>
+
+                    {/**Modal de ayusa */}
+                    
+                        <Modal
+                            animationType="slide"
+                            transparent={true}
+                            visible={modalVisible}
+                            onRequestClose={() => {
+                                setModalVisible(!modalVisible);
+                            }}
+                        >
+                            <InfoModalAyudaRegistro onPress={() => setModalVisible(!modalVisible)}/>
+                        </Modal>
+                    
+
+                    {/*boton registrarse */}
+                    <TouchableOpacity
+                        style={[styles.boton]}
+                        onPress={() => setModalVisible(true)}
+                    >
+                        <Text style={[styles.textBoton, { color: '#a197ff', textDecorationLine:'underline' }]}>Ayuda</Text>
+                    </TouchableOpacity>
+                    
                 </View>
             </View>
         </ScrollView>

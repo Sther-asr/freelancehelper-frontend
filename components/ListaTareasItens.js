@@ -4,9 +4,10 @@ import {styles, StylesListaTareas} from './styles/Styles';
 import Tarea from './TareaIten';
 import { consultaTareasDiarias } from "../requestBackend/API-Diarias";
 import useContextUsuario from "../hook/useContextUsuario";
+import { useIsFocused } from '@react-navigation/native';
 
 
-const ListaTareasIten = ()=>{
+const ListaTareasIten = (props)=>{
     // control estado actualizar
     const [estadoActualizar, setEstadoActualizar] = useState(false);
     // informacion del contexto de usuario
@@ -14,12 +15,15 @@ const ListaTareasIten = ()=>{
     //variable para las tareas obtenidas de la bdd
     const [dataTareas, setDataTareas] = useState([]);
     // obteniendo la fecha actual del dispositivo
-    const fecha = new Date();
-    const fechaActual = `${fecha.getFullYear()}-${fecha.getMonth()+1>=13 ? 12 : fecha.getMonth()+1}-${fecha.getDate()}`;
+    const fechaActual = new Date().toISOString().slice(0, 10);
+    const isFocus = useIsFocused();
+    console.log(fechaActual);
+    
+        //const hola = `${fecha.getFullYear()}-${fecha.getMonth()+1>=13 ? 12 : fecha.getMonth()+1}-${fecha.getDate()}`;
     
     useEffect(()=>{
-        consultaTareasDiarias();
-    },[]);
+        consultarTareas();
+    },[isFocus]);
 
     const consultarTareas = async() =>{
 
@@ -31,6 +35,7 @@ const ListaTareasIten = ()=>{
         }
         console.log(JSON.stringify(infoSolicitud));
         const data = await consultaTareasDiarias(infoSolicitud);
+        //console.log(JSON.stringify(data));
         if(data[0]==undefined){
             setDataTareas([
                 {
@@ -41,14 +46,12 @@ const ListaTareasIten = ()=>{
                     "estado": null,
                     "proyecto_idProyecto":"01",
                     "idProyecto":"01",
-                    "persona_idPersona": infoUsuario.idPersona
+                    "persona_idPersona": null
                 }
             ]);
         }else{
             setDataTareas(data);
         }
-        //setDataTareas(data);
-        //console.log(JSON.stringify(dataTareas));
     }
    
     // funcion para cambiar el estado al actualizar la lista de tareas
@@ -75,7 +78,7 @@ const ListaTareasIten = ()=>{
             </View>
             <FlatList
                 data={dataTareas}
-                keyExtractor={(item) => item.idActividad}
+                keyExtractor={(item) => {return(item.fechaInicio + '_' + item.fechaFin + Math.random())}}
                 renderItem={dibujarItens}
                 refreshControl={
                     <RefreshControl

@@ -13,6 +13,9 @@ export const registrarPersona = async (infoPersona) =>{
             headers: {Accept:"application/json", "Content-Type":"application/json"},
             body: JSON.stringify(infoPersona)
         }
-    );
+    )
+    .catch(function(error) {
+        console.log('Error durante la promesa ' + error.message);
+    });
     return await respuesta.json();
 }

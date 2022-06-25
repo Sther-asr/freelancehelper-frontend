@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useCallback, useState} from "react";
 import {View } from 'react-native';
 import { ScrollView, Text, TextInput, TouchableOpacity, Image, Alert} from "react-native";
 import EStyleSheet from 'react-native-extended-stylesheet';
@@ -6,7 +6,9 @@ import {styles} from '../components/styles/Styles'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import {inicioSesion} from '../requestBackend/API-Usuarios';
+import {consultaDatosPersona} from "../requestBackend/API-Persona";
 import {useTogglePasswordVisibility} from "./useToggle";
+import {validarContrasena} from '../fuciones/validador';
 
 EStyleSheet.build();
 
@@ -15,36 +17,71 @@ const Login = (props) =>{
     const [usuario, cargarUsuario] = useState("");
     const [contrasena, cargarContrasena] = useState("");
     const { passwordVisibility, rightIcon, handlePasswordVisibility } = useTogglePasswordVisibility();
+    const [errores, setErrores] = useState({usuario:false, contrasena: false});
+    // almacenar info estado
+    const [datosUsuario, setDatosUsuario] = useState({});
 
+    const obtenerDatosPersona = async (idPersona) => {
+        const data = await consultaDatosPersona({
+            "sesion": true,
+            "idSesion": idPersona
+        });
+        setDatosUsuario(data[0]);
+        console.log(JSON.stringify(datosUsuario));
+        props.navigation.navigate('Organizador', {datosUsuario});
+    }
+    //funcion para restablecer los campos
     const restablecerCampos = () =>{
         cargarUsuario("");
         cargarContrasena("");
         handlePasswordVisibility(true);
     }
+    // if(props.route.params.usuario!=undefined){cargarUsuario(props.route.params.usuario)}
+    // if(props.route.params.contrasena!=undefined){cargarContrasena(props.route.params.contrasena)}
 
-    const myfuncion = async (pantalla)=>{
+    const solicitudLogin = async (pantalla)=>{
         //props.navigation.navigate(pantalla);
         const datos = {
             "usuario" : usuario,
             "contrasena" : contrasena
         }
         const data = await inicioSesion(datos);
+        
+        if(data.respuesta === undefined){
+            obtenerDatosPersona(data[0].persona_idPersona);
+            return;
+        }
+
         Alert.alert(
             "Inicio de sesion dice",
-            `informacion de registro ${JSON.stringify(data)}`,
+            `${JSON.stringify(data)}`,
             [
                 {text:"Ok", onPress: ()=>console.log('los datos')}
             ]
         );
-        console.log(typeof(data[0].idUsuario))
-        typeof(data[0].idUsuario) === 'number' ? props.navigation.navigate('Organizador', {idUsuario:data[0].idUsuario}) : console.log('acceso a la pantalla siguiente');
-        
-        
+        console.log(JSON.stringify(data))        
+    }
+
+    const validarCampos = () =>{
+        let resultado = validarContrasena(contrasena);
+        if(resultado != true){
+            Alert.alert(
+                'Contraseña no permitida', resultado.contrasena,[{text:'Entiendo'}]
+            );
+            return;
+        }
+        if(usuario===''|| usuario ===null){
+            Alert.alert(
+                'Usuario invalido', 'El campo usuario no puede estar vacio',[{text:'Entiendo'}]
+            );
+            return;
+        }
+        solicitudLogin();
     }
 
     return (
-        <SafeAreaView style={{backgroundColor: '#F56783'}}>
-            <ScrollView  contentContainerStyle={styles.container}>
+        <SafeAreaView style={[{backgroundColor: '#F56783'},styles.container,]}>
+            <ScrollView  contentContainerStyle={[{}]}>
                 <StatusBar translucent={true} backgroundColor='#F56783'/>
                 {/* Logo */}
                 <Image style={styles.logo} source={require('../assets/icons/Logo-sup.png')}/>
@@ -70,7 +107,7 @@ const Login = (props) =>{
                     <Text style={styles.saludo}>¡Hola de nuevo!</Text>
                     
                     {/*Input field User*/}
-                    <View style={styles.containerInput}>
+                    <View style={[styles.containerInput]}>
                         <Image
                             source={require('../assets/icons/Menu-Perfil.png')}
                             style={[styles.PNGinput]}
@@ -107,13 +144,13 @@ const Login = (props) =>{
                                 passwordVisibility ? (
                                     <Image
                                         source={require('../assets/icons/ojoTachado.png')}
-                                        style={[styles.PNGinput,{height:34,width: 34 ,marginTop:8}]}
+                                        style={[styles.PNGinput,{height:22.5,width: 30 ,marginTop:12}]}
                                     />
                                 ):(
                                     //mostrar icono normal
                                     <Image
                                         source={require('../assets/icons/ojoNormal.png')}
-                                        style={[styles.PNGinput,{height:34,width: 34 ,marginTop:8}]}
+                                        style={[styles.PNGinput,{height:22.5,width: 30 ,marginTop:12}]}
                                     />
                                 )
                             }
@@ -123,7 +160,7 @@ const Login = (props) =>{
                     {/*Button */}
                     <TouchableOpacity
                         style={[styles.boton,{backgroundColor:'#00CE97'}]}
-                        onPress={myfuncion}
+                        onPress={validarCampos}
                     >
                         <Text style={[styles.textBoton, {color:'white'}]}>Ingresar</Text>
                     </TouchableOpacity>
@@ -133,7 +170,7 @@ const Login = (props) =>{
                         <Text style={[styles.texto,{color: '#808080', marginTop: 20}]}>¿No posees cuenta?</Text>
                     
                         <TouchableOpacity
-                            style={[styles.boton]}
+                            style={[styles.boton,{marginBottom:100}]}
                             onPress={()=>props.navigation.navigate('Logup')}
                         >
                         <Text style={[styles.textBoton, {color:'#a197ff'}]}>REGÍSTRATE</Text>

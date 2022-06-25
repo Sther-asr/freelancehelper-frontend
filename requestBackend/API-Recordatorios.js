@@ -1,26 +1,10 @@
-// funciones de actividad bdd
+// funciones de recordatorios para bdd
 import APISERVER from './ConfigAPI';
 
-//funion de actualizar actividad
-export const actualizarActividad = async (infoSolicitud) =>{
+//registrar recordatorio nuevo
+export const registrarRecordatorio = async (infoSolicitud) =>{
     const respuesta = await fetch(
-        `${APISERVER}/actividades/actualizar`,
-        {
-            method:"PUT",
-            headers: {Accept:"application/json", "Content-Type":"application/json"},
-            body: JSON.stringify(infoSolicitud)
-        }
-    )
-    .catch(function(error) {
-        console.log('Error durante la promesa de actualizar actividades' + error.message);
-        });
-    return await respuesta.json();
-}
-
-//funion de registrar actividad
-export const registrarActividad = async (infoSolicitud) =>{
-    const respuesta = await fetch(
-        `${APISERVER}/actividades/registro`,
+        `${APISERVER}/recordatorios/registro`,
         {
             method:"POST",
             headers: {Accept:"application/json", "Content-Type":"application/json"},
@@ -28,7 +12,23 @@ export const registrarActividad = async (infoSolicitud) =>{
         }
     )
     .catch(function(error) {
-        console.log('Error durante la promesa de registro actividades' + error.message);
+        console.log('Error durante la promesa de registro de recordatorios' + error.message);
+        });
+    return await respuesta.json();
+}
+
+//funion de actualizar recordatorio
+export const actualizarRecordatorio = async (infoSolicitud) =>{
+    const respuesta = await fetch(
+        `${APISERVER}/recordatorios/actualizar`,
+        {
+            method:"PUT",
+            headers: {Accept:"application/json", "Content-Type":"application/json"},
+            body: JSON.stringify(infoSolicitud)
+        }
+    )
+    .catch(function(error) {
+        console.log('Error durante la promesa actualizar recordatorios' + error.message);
         });
     return await respuesta.json();
 }
