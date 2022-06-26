@@ -1,5 +1,5 @@
 import React,{useState, useEffect, useCallback} from "react";
-import {Text, View, TouchableOpacity,FlatList, RefreshControl} from "react-native";
+import {Text, View, FlatList, RefreshControl} from "react-native";
 import {styles, StylesListaTareas} from './styles/Styles';
 import Tarea from './TareaIten';
 import { consultaTareasDiarias } from "../requestBackend/API-Diarias";
@@ -19,7 +19,6 @@ const ListaTareasIten = (props)=>{
     const isFocus = useIsFocused();
     console.log(fechaActual);
     
-        //const hola = `${fecha.getFullYear()}-${fecha.getMonth()+1>=13 ? 12 : fecha.getMonth()+1}-${fecha.getDate()}`;
     
     useEffect(()=>{
         consultarTareas();

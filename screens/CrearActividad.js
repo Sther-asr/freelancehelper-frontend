@@ -4,8 +4,7 @@ import useContextUsuario from "../hook/useContextUsuario";
 import { validarDatosRegistroPersona, validarRangoFechaInicioFin, validarHora } from "../fuciones/validador";
 import { registrarActividad} from "../requestBackend/API-Actividad";
 import { consultaProyecto } from "../requestBackend/API-Proyectos";
-import HeaderMenuPersonalizado from "../components/HeaderMenuPersonalizado";
-import {styles, StylesCrearRecordatorio, StylesHome} from '../components/styles/Styles'
+import {styles, StylesCrearRecordatorio, StylesHome, StylesConsultaMovimientos} from '../components/styles/Styles'
 import { StatusBar } from 'expo-status-bar';
 import SelectDropdown from 'react-native-select-dropdown';
 import { useIsFocused } from '@react-navigation/native';
@@ -118,22 +117,17 @@ const CrearActividad = (props) =>{
         }
     }
     return (
-        <SafeAreaView style={[{backgroundColor: '#ffdb6f'},StylesCrearRecordatorio.container]}>
+        <ScrollView style={[{backgroundColor: '#ffdb6f'},StylesCrearRecordatorio.container]}>
             
             
-            <ScrollView  style={[StylesHome.container]}>
-                <HeaderMenuPersonalizado
-                    title={"Crear Actividad"}
-                    togleMenu={()=>props.navigation.openDrawer()}
-                    saludo={"❤¡Hola, "}
-                    nombreUsuario={infousuario.nombrePersona}
-                />
+            <SafeAreaView  style={[StylesConsultaMovimientos.todoAlto]}>
+                
                 {/* <StatusBar backgroundColor="#ffdb6f" translucent={true} /> */}
                 {/* Logo */}
                 <Image style={[StylesCrearRecordatorio.logo]} source={require('../assets/icons/Logo-sup.png')}/>
                 
                 {/* Contenedor del form */}
-                <View style={StylesCrearRecordatorio.containerFormulario}>
+                <View style={[StylesCrearRecordatorio.containerFormulario,{ alignItems: 'center' , height:'80%'}]}>
                     <Image style={[StylesCrearRecordatorio.lineasup, {marginBottom: 30}]} source={require('../assets/icons/Linea-sup.png')}/>
                     
                     {/* Saludo */}
@@ -273,8 +267,8 @@ const CrearActividad = (props) =>{
                         <Text style={[styles.textBoton, {color:'white'}]}>Guardar</Text>
                     </TouchableOpacity>
                 </View>
-            </ScrollView>
-        </SafeAreaView>
+            </SafeAreaView>
+        </ScrollView>
     );
 }
 

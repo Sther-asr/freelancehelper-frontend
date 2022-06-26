@@ -4,7 +4,8 @@ import useContextUsuario from "../hook/useContextUsuario";
 import { validarDatosRegistroPersona, validarRangoFechaInicioFin, validarCifrasNumericas } from "../fuciones/validador";
 import { registrarProyecto} from "../requestBackend/API-Proyectos";
 import HeaderMenuPersonalizado from "../components/HeaderMenuPersonalizado";
-import {styles, StylesCrearRecordatorio, StylesHome} from '../components/styles/Styles'
+import {styles, StylesCrearRecordatorio, StylesHome, StylesConsultaMovimientos} from '../components/styles/Styles'
+import { SafeAreaView } from "react-native-safe-area-context";
 
 
 const CrearProyecto = (props) =>{
@@ -118,140 +119,135 @@ const CrearProyecto = (props) =>{
 
     return (
         <ScrollView style={[StylesHome.container]}>
-            <HeaderMenuPersonalizado
-                title={"Crear Proyecto"}
-                togleMenu={() => props.navigation.openDrawer()}
-                saludo={"❤¡Hola, "}
-                nombreUsuario={infousuario.nombrePersona}
-            />
-            {/* Logo */}
-            <Image style={[StylesCrearRecordatorio.logo]} source={require('../assets/icons/Logo-sup.png')} />
+            <SafeAreaView style={[StylesConsultaMovimientos.todoAlto]}>
+                {/* Logo */}
+                <Image style={[StylesCrearRecordatorio.logo]} source={require('../assets/icons/Logo-sup.png')} />
 
-            {/**formulario contenedor */}
-            <View style={[{ alignItems: 'center' }, StylesCrearRecordatorio.containerFormulario]}>
-                <Image style={[StylesCrearRecordatorio.lineasup, { marginBottom: 30 }]} source={require('../assets/icons/Linea-sup.png')} />
+                {/**formulario contenedor */}
+                <View style={[StylesCrearRecordatorio.containerFormulario,{ alignItems: 'center' , height:'80%'}]}>
+                    <Image style={[StylesCrearRecordatorio.lineasup, { marginBottom: 30 }]} source={require('../assets/icons/Linea-sup.png')} />
 
-                {/* Saludo */}
-                <View style={[StylesCrearRecordatorio.containerSaludo]}>
-                    <Image style={[StylesCrearRecordatorio.iconoSaludo, { height: 33, width: 45 }]} source={require('../assets/icons/Icon-proyecto-color.png')} />
-                    <Text style={StylesCrearRecordatorio.saludo}>Proyecto</Text>
-                </View>
+                    {/* Saludo */}
+                    <View style={[StylesCrearRecordatorio.containerSaludo]}>
+                        <Image style={[StylesCrearRecordatorio.iconoSaludo, { height: 33, width: 45 }]} source={require('../assets/icons/Icon-proyecto-color.png')} />
+                        <Text style={StylesCrearRecordatorio.saludo}>Proyecto</Text>
+                    </View>
 
-                {/*Entrada descripcion*/}
-                <View style={[StylesCrearRecordatorio.containerInput]}>
-                    <Image
-                        source={require('../assets/icons/Tag_Título_del_Tag.png')}
-                        style={[StylesCrearRecordatorio.inputPNG]}
-                    />
-                    <TextInput
-                        onChangeText={(textoEntrando) => handleCargarEstado("descripcion", textoEntrando, "infoProyecto")}
-                        value={infoProyecto.descripcion}
-                        placeholder="Descripción"
-                        style={styles.input}
-                        placeholderTextColor="#B3B3B3"
-                    />
-                </View>
+                    {/*Entrada descripcion*/}
+                    <View style={[StylesCrearRecordatorio.containerInput]}>
+                        <Image
+                            source={require('../assets/icons/Tag_Título_del_Tag.png')}
+                            style={[StylesCrearRecordatorio.inputPNG]}
+                        />
+                        <TextInput
+                            onChangeText={(textoEntrando) => handleCargarEstado("descripcion", textoEntrando, "infoProyecto")}
+                            value={infoProyecto.descripcion}
+                            placeholder="Descripción"
+                            style={styles.input}
+                            placeholderTextColor="#B3B3B3"
+                        />
+                    </View>
 
-                {/*entrada monto*/}
-                <View style={[StylesCrearRecordatorio.containerInput]}>
-                    <Image
-                        source={require('../assets/icons/Tag_dinero.png')}
-                        style={[StylesCrearRecordatorio.dualInputPNG,{marginTop:12}]}
-                    />
+                    {/*entrada monto*/}
+                    <View style={[StylesCrearRecordatorio.containerInput]}>
+                        <Image
+                            source={require('../assets/icons/Tag_dinero.png')}
+                            style={[StylesCrearRecordatorio.dualInputPNG,{marginTop:12}]}
+                        />
 
-                    <TextInput
-                        onChangeText={(textoEntrando) => handleCargarEstado('monto', textoEntrando, "infoProyecto")}
-                        value={infoProyecto.monto}
-                        placeholder="monto"
-                        style={styles.input}
-                        placeholderTextColor="#B3B3B3"
-                    />
-                </View>
+                        <TextInput
+                            onChangeText={(textoEntrando) => handleCargarEstado('monto', textoEntrando, "infoProyecto")}
+                            value={infoProyecto.monto}
+                            placeholder="monto"
+                            style={styles.input}
+                            placeholderTextColor="#B3B3B3"
+                        />
+                    </View>
 
 
-                {/**campo fecha con hora INCIO */}
-                <View style={[StylesCrearRecordatorio.containerInputDoble]}>
+                    {/**campo fecha con hora INCIO */}
+                    <View style={[StylesCrearRecordatorio.containerInputDoble]}>
 
-                    <Text style={[StylesCrearRecordatorio.inputTitulo]}>Incio</Text>
+                        <Text style={[StylesCrearRecordatorio.inputTitulo]}>Incio</Text>
 
-                    <View style={[{ flexDirection: 'row' }]}>
+                        <View style={[{ flexDirection: 'row' }]}>
 
-                        <View style={[StylesCrearRecordatorio.containerInputDual, { width: '55%' }]}>
-                            <Image
-                                source={require('../assets/icons/Tag_Inicio_Final.png')}
-                                style={[StylesCrearRecordatorio.dualInputPNG]}
-                            />
-                            <TextInput
-                                onChangeText={(textoEntrando) => handleCargarEstado("fechaInicio", textoEntrando, "fecha")}
-                                value={fecha.fechaInicio}
-                                placeholder="año/mes/dia"
-                                style={[StylesCrearRecordatorio.input]}
-                                placeholderTextColor="#B3B3B3"
-                            />
-                        </View>
+                            <View style={[StylesCrearRecordatorio.containerInputDual, { width: '55%' }]}>
+                                <Image
+                                    source={require('../assets/icons/Tag_Inicio_Final.png')}
+                                    style={[StylesCrearRecordatorio.dualInputPNG]}
+                                />
+                                <TextInput
+                                    onChangeText={(textoEntrando) => handleCargarEstado("fechaInicio", textoEntrando, "fecha")}
+                                    value={fecha.fechaInicio}
+                                    placeholder="año/mes/dia"
+                                    style={[StylesCrearRecordatorio.input]}
+                                    placeholderTextColor="#B3B3B3"
+                                />
+                            </View>
 
-                        <View style={[StylesCrearRecordatorio.containerInputDual, { width: '40%', marginLeft: '5%' }]}>
-                            <Image
-                                source={require('../assets/icons/Tag_Tiempo.png')}
-                                style={[StylesCrearRecordatorio.dualInputPNG]}
-                            />
-                            <TextInput
-                                onChangeText={(textoEntrando) => handleCargarEstado("horaInicio", textoEntrando, "hora")}
-                                value={hora.horaInicio}
-                                placeholder="00:00"
-                                style={[StylesCrearRecordatorio.input, { width: '68%' }]}
-                                placeholderTextColor="#B3B3B3"
-                            />
+                            <View style={[StylesCrearRecordatorio.containerInputDual, { width: '40%', marginLeft: '5%' }]}>
+                                <Image
+                                    source={require('../assets/icons/Tag_Tiempo.png')}
+                                    style={[StylesCrearRecordatorio.dualInputPNG]}
+                                />
+                                <TextInput
+                                    onChangeText={(textoEntrando) => handleCargarEstado("horaInicio", textoEntrando, "hora")}
+                                    value={hora.horaInicio}
+                                    placeholder="00:00"
+                                    style={[StylesCrearRecordatorio.input, { width: '68%' }]}
+                                    placeholderTextColor="#B3B3B3"
+                                />
+                            </View>
                         </View>
                     </View>
-                </View>
 
-                {/**campo fecha con hora FIN*/}
-                <View style={[StylesCrearRecordatorio.containerInputDoble]}>
+                    {/**campo fecha con hora FIN*/}
+                    <View style={[StylesCrearRecordatorio.containerInputDoble]}>
 
-                    <Text style={[StylesCrearRecordatorio.inputTitulo]}>Finalización</Text>
+                        <Text style={[StylesCrearRecordatorio.inputTitulo]}>Finalización</Text>
 
-                    <View style={[{ flexDirection: 'row' }]}>
+                        <View style={[{ flexDirection: 'row' }]}>
 
-                        <View style={[StylesCrearRecordatorio.containerInputDual, { width: '55%' }]}>
-                            <Image
-                                source={require('../assets/icons/Tag_Inicio_Final.png')}
-                                style={[StylesCrearRecordatorio.dualInputPNG]}
-                            />
-                            <TextInput
-                                onChangeText={(textoEntrando) => handleCargarEstado("fechaFin", textoEntrando, "fecha")}
-                                value={fecha.fechaFin}
-                                placeholder="año/mes/dia"
-                                style={[StylesCrearRecordatorio.input]}
-                                placeholderTextColor="#B3B3B3"
-                            />
-                        </View>
+                            <View style={[StylesCrearRecordatorio.containerInputDual, { width: '55%' }]}>
+                                <Image
+                                    source={require('../assets/icons/Tag_Inicio_Final.png')}
+                                    style={[StylesCrearRecordatorio.dualInputPNG]}
+                                />
+                                <TextInput
+                                    onChangeText={(textoEntrando) => handleCargarEstado("fechaFin", textoEntrando, "fecha")}
+                                    value={fecha.fechaFin}
+                                    placeholder="año/mes/dia"
+                                    style={[StylesCrearRecordatorio.input]}
+                                    placeholderTextColor="#B3B3B3"
+                                />
+                            </View>
 
-                        <View style={[StylesCrearRecordatorio.containerInputDual, { width: '40%', marginLeft: '5%' }]}>
-                            <Image
-                                source={require('../assets/icons/Tag_Tiempo.png')}
-                                style={[StylesCrearRecordatorio.dualInputPNG]}
-                            />
-                            <TextInput
-                                onChangeText={(textoEntrando) => handleCargarEstado("horaFin", textoEntrando, "hora")}
-                                value={hora.horaFin}
-                                placeholder="00:00"
-                                style={[StylesCrearRecordatorio.input, { width: '68%' }]}
-                                placeholderTextColor="#B3B3B3"
-                            />
+                            <View style={[StylesCrearRecordatorio.containerInputDual, { width: '40%', marginLeft: '5%' }]}>
+                                <Image
+                                    source={require('../assets/icons/Tag_Tiempo.png')}
+                                    style={[StylesCrearRecordatorio.dualInputPNG]}
+                                />
+                                <TextInput
+                                    onChangeText={(textoEntrando) => handleCargarEstado("horaFin", textoEntrando, "hora")}
+                                    value={hora.horaFin}
+                                    placeholder="00:00"
+                                    style={[StylesCrearRecordatorio.input, { width: '68%' }]}
+                                    placeholderTextColor="#B3B3B3"
+                                />
+                            </View>
                         </View>
                     </View>
+
+                    {/*Button */}
+                    <TouchableOpacity
+                        style={[styles.boton, { backgroundColor: '#00CE97' }]}
+                        onPress={validarCampos}
+                    >
+                        <Text style={[styles.textBoton, { color: 'white' }]}>Guardar</Text>
+                    </TouchableOpacity>
                 </View>
-
-                {/*Button */}
-                <TouchableOpacity
-                    style={[styles.boton, { backgroundColor: '#00CE97' }]}
-                    onPress={validarCampos}
-                >
-                    <Text style={[styles.textBoton, { color: 'white' }]}>Guardar</Text>
-                </TouchableOpacity>
-            </View>
-
+            </SafeAreaView>
         </ScrollView>
     );
 }

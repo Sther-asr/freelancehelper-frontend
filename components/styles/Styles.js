@@ -1,22 +1,21 @@
 import React from "react";
 import {Dimensions } from "react-native";
 import EStyleSheet from 'react-native-extended-stylesheet';
+import {
+    responsiveScreenHeight,
+    responsiveScreenWidth,
+    responsiveScreenFontSize
+  } from "react-native-responsive-dimensions";
 
+
+//   Pantallas LOGIN y SINGIN
 export const styles = EStyleSheet.create({
-    
-    safearea:{
-        padding: 0,
-        margin:0
-    },
     container: {
-        // backgroundColor: '#808080',
-        // width: Dimensions.get('window').height,
         height: '100%',
-        //  flex: 1,
     },
     logo:{
         marginVertical: 20,
-        marginTop: '10%',
+        marginTop: '3%',
         width: '100%',
         height: 35,
         resizeMode: "contain"
@@ -126,23 +125,118 @@ export const styles = EStyleSheet.create({
     }
 });
 
+// Pantalla home organizador y sus elementos
+//LIENZO HOME
+export const StylesHome = EStyleSheet.create({
+    container:{
+        backgroundColor:'#ffdd9b', 
+        //height: Dimensions.get("window").height,
+        height:responsiveScreenHeight(100)
+    },
+    header:{
+        backgroundColor:'white',
+        height: responsiveScreenHeight(15),
+        borderBottomLeftRadius: 50,
+        borderBottomRightRadius:50,
+        marginBottom: responsiveScreenHeight(7),
+    },
+    logo:{
+        marginTop: 13,
+        marginBottom: 10,
+        width: '100%',
+        height: 23,
+        resizeMode: "contain"
+    },
+    headerInferior:{
+        alignSelf: "center",
+        flexDirection: "row" ,
+        width: "90%", 
+        justifyContent: "space-between",
+    },
+    hamburguesita:{
+        marginTop:8,
+        width:27,
+        height:19,
+        marginLeft: 10,
+    },
+    iconoMenu:{
+        width:'100%',
+        height: 4,
+        marginTop:5,
+        borderRadius:3
+    },
+    headerInferior_info:{
+        alignItems:'flex-end',
+        paddingRight: 10,
+        marginBottom: 10,
+    },
+    saludo:{
+        color:'black',
+        fontSize: responsiveScreenFontSize(2.8),
+    },
+    fechaHora:{
+        fontSize: responsiveScreenFontSize(1.8),
+        color: '#B3B3B3'
+        
+    },
+    containerBtnNueva:{
+        width: ((Dimensions.get('window').width) - 40), 
+        alignSelf: "center",
+        marginTop: 20,
+        // backgroundColor:'#53C4DE',
+    },
+    botonNueva:{
+        width: responsiveScreenWidth(12),
+        height:  responsiveScreenHeight(5.6),
+        alignSelf: "flex-end",
+    }
+});
+// LIENZO LISTA TAREA
+export const StylesListaTareas = EStyleSheet.create({
+    container:{
+        backgroundColor:'white',
+        width: ((Dimensions.get('window').width) - 40),
+        borderRadius: 20,
+        padding: 15,
+        // height:((Dimensions.get('window').width) + 90),
+        height: responsiveScreenHeight(53),
+        alignSelf: "center",
+    },
+    cabeceraLista:{
+        height:'12%'
+    },
+    tituloCabeceraLista:{
+        fontSize: responsiveScreenFontSize(2.6),
+        fontWeight:'bold',
+        color:'#FEB529'
+    }
+});
+// LIENZO LISTA MOVIMIENTOS 
+export const StylesListaMovimientos = EStyleSheet.create({
+    botonPequeno:{
+        paddingHorizontal:15, 
+        paddingVertical:5, 
+        alignItems:'center', 
+        justifyContent:'center', 
+        borderRadius:15, 
+        
+    }
+});
 // LIENZO DE TAREA
-
 export const StylesTarea = EStyleSheet.create({
     container:{
         width: '100%',
-        paddingHorizontal:15,
-        paddingVertical:16,
+        paddingVertical:15,
         backgroundColor: 'white',
         flexDirection: 'row',
-        borderTopWidth:1.5,
+        borderTopWidth:1,
         borderTopColor: '#B3B3B3',
     },
     containerInfo:{
         width:'80%',
     },
     titulo:{
-        fontSize: 20,
+        fontSize: responsiveScreenFontSize(2.1),
         fontWeight: 'bold',
 
     },
@@ -151,7 +245,7 @@ export const StylesTarea = EStyleSheet.create({
     },
     containerFlex:{
         flexDirection: 'row',
-        marginTop:4
+        marginTop:4,
     },
     containerCheckBox:{
         width:'20%',  
@@ -160,96 +254,70 @@ export const StylesTarea = EStyleSheet.create({
     }
 });
 
-// LIENZO LISTA TAREA
-export const StylesListaTareas = EStyleSheet.create({
-    container:{
+// Pantalla perfil y sus elementos
+export const StylesPerfil = EStyleSheet.create({
+    form:{
         backgroundColor:'white',
-        borderRadius: 25,
-        padding: 15,
-        width: '90%',
-        height:'63%',
-        marginLeft: '5%',
-        marginRight:'5%'
-    },
-    cabeceraLista:{
-        height:'15%'
-    },
-    tituloCabeceraLista:{
-        marginTop:5,
-        fontSize:25,
-        fontWeight:'bold',
-        color:'#FEB529'
-    }
-});
-
-// Pantalla home organizador y sus elementos
-export const StylesHome = EStyleSheet.create({
-    container:{
-        backgroundColor:'#feb529', 
-        height:'100%',
-    },
-    colorTexto:{
-        color: '#B3B3B3'
-    },
-    containerHeaderInferior:{
-        backgroundColor:'white',
-        height:140,
-        borderBottomLeftRadius: 40,
-        borderBottomRightRadius:40,
-        marginBottom: '10%',
-        overflow:'hidden',
-        marginTop:29
-    },
-    containerBtnMenu:{
-        width:'20%',
+        width: ((Dimensions.get('window').width) - 40),
+        height: '70%',
+        alignSelf: "center",
         alignItems: 'center',
+        borderRadius: 20,
     },
-    botonMenu:{
-        width:30,
-        height:30,
+    containerInput: {
+        backgroundColor: 'white',
+        flexDirection: 'row',
+        width: ((Dimensions.get('window').width) - 80),
+        borderRadius: 15,
+        height: 50,
+        marginBottom: 20,
+        borderColor: '#B3B3B3',
+        borderWidth: 1.5
+    },
+    input: {
+        backgroundColor: 'white',
+        width: '80%',
+        fontSize: 16,
+        color: '#808080'
+    },
+    PNGinput: {
+        width: 30,
+        height: 29,
+        marginLeft: 10,
+        marginRight: 7,
         marginTop: 10
     },
-    iconoMenu:{
-        width:'100%',
-        height: 4,
-        marginTop:5,
-        borderRadius:3
+    vieweditar: {
+        marginTop: 5,
+        marginRight: 8,
+        alignSelf: "flex-end",
     },
-    containerInfoHeader:{
-        width:'79%',
-        alignItems:'flex-end',
-        paddingRight:10
+    imgUsuario: {
+        width: 90,
+        height: 90,
+        marginBottom: 40,
     },
-    saludo:{
-        fontSize: 25,
-        color:'black'
+    textChangePassword: {
+        marginTop: 30,
+        fontWeight: 'bold',
+        color: "#F56783",
     },
-    fechaHora:{
-        fontSize:16,
+    textSaveChange: {
+        fontSize: responsiveScreenFontSize(2),
+        fontWeight: 'bold',
+        color: "white",
     },
-    titulo:{
-        fontSize:25,
-        textAlign:'center',
-        marginTop:20,
-        marginBottom:20,
-        fontWeight:'bold'
+    saveChanges: {
+        width: ((Dimensions.get('window').width) - 80),
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 15,
+        marginTop: 4,
+        // marginBottom: 50,
+        height: 50,
+        backgroundColor: "#00CE97",
     },
-    containerBtnNueva:{
-        width:'90%', 
-        marginLeft:'5%', 
-        marginRight:'5%', 
-        marginTop: 20,
-    },
-    botonNueva:{
-        width:60,
-        height:60,
-        overflow:'hidden',
-        marginLeft:'77%',
-        backgroundColor:'#53C4DE',
-        borderRadius: 40
-    }
 });
-
 // estilo pantalla modal
 export const StylesModal = EStyleSheet.create({
     container:{
@@ -301,7 +369,6 @@ export const StylesModal = EStyleSheet.create({
         color: 'black'
     }
 });
-
 // seccion de crear recordatorios, tags, actividades .....
 export const StylesCrearRecordatorio = EStyleSheet.create({
     container: {
@@ -313,10 +380,10 @@ export const StylesCrearRecordatorio = EStyleSheet.create({
         borderTopLeftRadius: 60,
         borderTopRightRadius: 60,
         alignItems: 'center',
-        flex: 1,
+        //flex: 1,
     },
     logo:{
-        marginVertical: '15%',
+        marginVertical: '20%',
         width: '100%',
         height: 30,
         resizeMode: "contain"
@@ -394,5 +461,37 @@ export const StylesCrearRecordatorio = EStyleSheet.create({
         width:50,
         height:30,
         marginRight:'4%'
+    }
+});
+// ESILOS CONSULTAR INGRESOS
+export const StylesConsultaMovimientos = EStyleSheet.create({
+    input: {
+        backgroundColor: 'white',
+        fontSize: 16,
+        color: '#808080',
+        width:'35%', 
+        borderBottomWidth:1, 
+        borderBottomColor:'#B3B3B3',
+        marginLeft:'4%',
+        marginRight:'4%'
+    },
+    containerInputDoble:{
+        width: ((Dimensions.get('window').width) - 80),
+        backgroundColor: 'white',
+        flexDirection: 'row',
+        flexDirection:'column',
+        marginBottom: 20,
+        flexDirection:'row', 
+        alignItems:'center', 
+        justifyContent:'center', 
+    },
+    textInputDoble:{
+        color:"#B3B3B3",
+        fontSize:20,
+        fontWeight:'700',
+        paddingTop:10
+    },
+    todoAlto:{
+        height: responsiveScreenHeight(100)
     }
 });
