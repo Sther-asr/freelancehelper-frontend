@@ -132,7 +132,7 @@ const CrearActividad = (props) =>{
                     
                     {/* Saludo */}
                     <View style={[StylesCrearRecordatorio.containerSaludo]}>
-                        <Image style={[StylesCrearRecordatorio.iconoSaludo,{height:33, width:30}]} source={require('../assets/icons/Crear-Tarea.png')}/>
+                        <Image style={[StylesCrearRecordatorio.iconoSaludo,{height:33, width:30}]} source={require('../assets/icons/Actividad.png')}/>
                         <Text style={StylesCrearRecordatorio.saludo}>Actividad</Text>
                     </View>
 
