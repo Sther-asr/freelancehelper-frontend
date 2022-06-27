@@ -4,7 +4,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import HeaderMenuPersonalizado from "../components/HeaderMenuPersonalizado";
 import { StylesPerfil } from "../components/styles/Styles";
 import useContextUsuario from "../hook/useContextUsuario";
-import { Dimensions, StyleSheet } from "react-native";
+import { Dimensions, Modal } from "react-native";
+import PerfilContraseñaModal from "../components/PerfilContraseñaModal";
 import {
   View,
   Text,
@@ -15,6 +16,9 @@ import {
 } from "react-native";
 
 const Perfil = (props) => {
+  // Modal
+  const [modalVisible, setModalVisible] = useState(false);
+  // Datos
   const [nombre, cargarNombre] = useState("");
   const [usuario, cargarUsuario] = useState("");
   const [correo, cargarCorreo] = useState("");
@@ -28,7 +32,7 @@ const Perfil = (props) => {
   const enableInputs = () => {
     setIsEditable(!isEditable);
   };
-  let text = (isEditable ? "Guardar cambios" : "CAMBIAR CONTRASEÑA");
+  let text = isEditable ? "Guardar cambios" : "CAMBIAR CONTRASEÑA";
   return (
     <ScrollView style={[{ backgroundColor: "#F4B3C2" }]}>
       <SafeAreaView
@@ -112,13 +116,41 @@ const Perfil = (props) => {
 
           {/*Seccion Dynamic Buttons */}
           <View>
-            <TouchableOpacity  style={(isEditable ? StylesPerfil.saveChanges : "")}
-            onPress={(isEditable ? () =>console.log("Hola") : "")}>
-              <Text style={[(isEditable ? StylesPerfil.textSaveChange : StylesPerfil.textChangePassword)]}>
+            <TouchableOpacity
+              style={isEditable ? StylesPerfil.saveChanges : ""}
+              onPress={
+                isEditable
+                  ? () => console.log("Hola")
+                  : () => setModalVisible(true)
+              }
+            >
+              <Text
+                style={[
+                  isEditable
+                    ? StylesPerfil.textSaveChange
+                    : StylesPerfil.textChangePassword,
+                ]}
+              >
                 {text}
               </Text>
             </TouchableOpacity>
+            <Modal
+              animationType="slide"
+              transparent={true}
+              visible={modalVisible}
+              onRequestClose={() => {
+                setModalVisible(!modalVisible);
+              }}
+            >
+              <PerfilContraseñaModal
+                onPress={() => setModalVisible(!modalVisible)}
+                altura={'50%'}
+                colorBtnOcultar={'#00CE97'}
+                textBtn={'Cerrar'}
+              />
+            </Modal>
           </View>
+          {/**Modal de ayuda */}
         </View>
       </SafeAreaView>
     </ScrollView>
