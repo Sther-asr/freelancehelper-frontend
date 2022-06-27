@@ -231,6 +231,7 @@ export const StylesTarea = EStyleSheet.create({
         flexDirection: 'row',
         borderTopWidth:1,
         borderTopColor: '#B3B3B3',
+        alignItems:'center'
     },
     containerInfo:{
         width:'80%',
@@ -494,4 +495,95 @@ export const StylesConsultaMovimientos = EStyleSheet.create({
     todoAlto:{
         height: responsiveScreenHeight(100)
     }
+});
+// estilos DRAWER navigator
+export const StylesDrawer = EStyleSheet.create({
+ 
+    scroll: {
+        height:'100%',
+        backgroundColor: '#ffdd9b'
+       
+            
+    }, 
+    drawerscroll: {
+       
+       backgroundColor: '#ffdd9b',
+       
+            
+    },
+    view:{
+        flex:1,
+        backgroundColor: '#ffdd9b',
+        justifyContent:'space-between',
+        height:'12%'
+             
+
+    },
+    menu:{
+        marginTop:-250,
+         height:"36%"
+        
+    },
+    exit:{
+        
+       backgroundColor: "white",
+       height:'12%'
+        
+    },
+    imageView:{
+       
+        backgroundColor: '#ffdd9b',
+        marginTop:-5,
+        height:'5%'
+       
+    },
+    PNGinput: {
+        width: 50,
+        height: 29,
+        marginLeft: 10,
+        marginRight: 7,
+        marginTop: 10,
+        marginBottom: 10,
+        resizeMode: "contain"
+    },
+    
+    texto:{
+        width:'50%',
+   
+        marginLeft: 10,
+        marginRight:'10%',
+        marginBottom:20,
+        marginTop:20,
+        fontWeight:'bold'
+        
+    },
+    boton:{
+        flexDirection:'row',
+        alignItems:'center',
+        justifyContent:'center',
+        width:'100%',
+        padding:3,
+        // borderBottomWidth:1,
+        // borderBottomColor:'#B3B3B3'
+        
+    },
+    containerHeader:{
+        backgroundColor:'white',
+        height:72,
+        overflow:'hidden',
+       
+    },
+    header:{
+        backgroundColor:'white',
+        height: '15%',
+
+
+    },
+    logo:{
+        marginTop: 20,
+        width: '100%',
+        height: 30,
+        resizeMode: 'contain'
+    }
+    
 });

@@ -2,49 +2,50 @@ import React,{useState, useEffect, useCallback} from "react";
 import {Text, View, FlatList, RefreshControl, Image, TouchableOpacity } from "react-native";
 import {styles, StylesListaTareas, StylesListaMovimientos} from './styles/Styles';
 import MovimientoItem from "./MovimientoItem";
+import { consultaMovimientos } from "../requestBackend/API-Diarias";
 import useContextUsuario from "../hook/useContextUsuario";
 import { useIsFocused } from '@react-navigation/native';
 
 
 
-const ListaMovientosItems = (props) => {
+const ListaMovientosItems = ({datas}) => {
     // control estado actualizar
     const [estadoActualizar, setEstadoActualizar] = useState(false);
     // informacion del contexto de usuario
     const infoUsuario = useContextUsuario();
     //variable para las tareas obtenidas de la bdd
     const [dataMovimientos, setDataMovimientos] = useState([
-        {"motivo":"Compra", "monto":"1300,47", "fecha":"2020-06-25", "proyecto_idProyecto":"1", "persona_idPersona":"4", "idEgreso":"1"},
-        {"motivo":"Pago", "monto":"3000,00", "fecha":"2020-06-24", "proyecto_idProyecto":"1", "persona_idPersona":"4", "idIngreso":"1"},
-        {"motivo":"Compra", "monto":"1300,47", "fecha":"2020-06-25", "proyecto_idProyecto":"1", "persona_idPersona":"4", "idEgreso":"1"},
-        {"motivo":"Pago", "monto":"3000,00", "fecha":"2020-06-24", "proyecto_idProyecto":"1", "persona_idPersona":"4", "idIngreso":"1"},
-        {"motivo":"Compra", "monto":"1300,47", "fecha":"2020-06-25", "proyecto_idProyecto":"1", "persona_idPersona":"4", "idEgreso":"1"},
-        {"motivo":"Pago", "monto":"3000,00", "fecha":"2020-06-24", "proyecto_idProyecto":"1", "persona_idPersona":"4", "idIngreso":"1"}
+        {"motivo":"No posee movimientos", 
+        "monto":"0,00", 
+        "fecha":"0000/00/00 00:00", 
+        "proyecto_idProyecto":null, 
+        "persona_idPersona":null, 
+        "idEgreso":null}
     ]);
     // obteniendo la fecha actual del dispositivo
     const fechaActual = new Date().toISOString().slice(0, 10);
-    // const isFocus = useIsFocused();
-    // console.log(fechaActual);
+    const isFocus = useIsFocused();
     
     
-    // useEffect(()=>{
-    //     //consultarTareas();
-    // },[isFocus]);
+    
+    useEffect(()=>{
+        console.log("Consultando los movimientos del mes");
+        obtenerMovimientos("Mensual");
+    },[isFocus]);
 
     // funcion para cambiar el estado al actualizar la lista de tareas
     const actualizarActiva = useCallback(async () => {
         // cargando el estado de refreshing
         setEstadoActualizar(true);
         // ejecutar de forma asincrona la funcion de llamar las tareas
-        //await consultarTareas();
+        obtenerMovimientos("Mensual");
         // cargando el estado de refreshing
         setEstadoActualizar(false);
     });
 
     //funcion que dibuja cada elemento pasado a traves del llamado del flatList
-    const dibujarItens = ({item}) => {
-        
-        const tipo = item.idEgreso === undefined ? "Ingreso" : "Egreso";console.log(JSON.stringify(tipo))
+    const dibujarItens = ({item}) => {      
+        const tipo = item.idEgreso === undefined ? "Ingreso" : "Egreso";
         return (
             <MovimientoItem 
                 tipo={tipo}
@@ -55,6 +56,23 @@ const ListaMovientosItems = (props) => {
         );
     }
 
+    // funcion para realizar la consulta
+    const obtenerMovimientos = async (periodo) =>{
+        if(periodo === "Mensual"){
+            const data = await consultaMovimientos({
+                "sesion": true,
+                "idSession": infoUsuario.idPersona,
+                "fecha": fechaActual,
+                "tipo": "Mensual"
+            });
+            console.log(JSON.stringify(data));
+            if(data.length !== 0){
+                setDataMovimientos(data);
+            }
+        }
+
+    }
+    
     return (
         <View style={[StylesListaTareas.container,{height:'53%'}]}>
             <View style={[StylesListaTareas.cabeceraLista,{flexDirection:'row', alignItems:'center'}]}>

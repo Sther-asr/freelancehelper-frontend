@@ -117,7 +117,7 @@ const CrearActividad = (props) =>{
         }
     }
     return (
-        <ScrollView style={[{backgroundColor: '#ffdb6f'},StylesCrearRecordatorio.container]}>
+        <ScrollView style={[StylesHome.container]}>
             
             
             <SafeAreaView  style={[StylesConsultaMovimientos.todoAlto]}>
