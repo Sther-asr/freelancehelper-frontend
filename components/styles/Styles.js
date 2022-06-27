@@ -464,6 +464,55 @@ export const StylesCrearRecordatorio = EStyleSheet.create({
         marginRight:'4%'
     }
 });
+
+// ESTILOS HOME FINANZAS
+export const StylesHomeFinanzas = EStyleSheet.create({
+    colorFondo:{
+        backgroundColor:"#97e5d0"
+    },
+});
+// ESTILOS ELEMENTOS MOSTRAR CIFRAS
+export const StylesMostrarCifras = EStyleSheet.create({
+    container:{
+        width:'100%',
+        overflow:'hidden'
+    },
+    containerTitulo:{
+        backgroundColor:'#00ce97',
+        paddingHorizontal:15,
+        paddingVertical:8,
+        borderTopEndRadius:15,
+        borderTopLeftRadius:15,
+        marginLeft:'5%',
+        width:'60%',
+        alignItems:'center'
+    },
+    containerElementosCifras:{
+        width:'100%',
+        backgroundColor:'white',
+        padding:20,
+        borderRadius:20,
+        borderWidth:0.5,
+        borderBottomWidth:4,
+        borderColor:'#00ce97'
+    },
+    containerCifras:{
+        width:'90%',
+        marginHorizontal:'5%',
+        flexDirection:'row'
+    },
+    textTitulo:{
+        fontSize:18,
+        color:'white',
+        fontWeight:'700',
+    },
+    textCifras:{
+        fontSize:20,
+        fontWeight:'800',
+        color:'black'
+    }
+    
+});
 // ESILOS CONSULTAR INGRESOS
 export const StylesConsultaMovimientos = EStyleSheet.create({
     input: {

@@ -105,6 +105,11 @@ export const validarDatosRegistroPersona = (objetoSolicitud = 0) =>{
 
         return { "result": false, "alerta": "Fecha 'Fin' inválida, \nEjemplo: \n1999-01-01\n1999.06.06\n1999-12-31" };
     }
+    
+    if (objetoSolicitud.fecha != undefined && !validarFecha(objetoSolicitud.fecha)) {
+
+        return { "result": false, "alerta": "Fecha inválida, \nEjemplo: \n1999-01-01\n1999.06.06\n1999-12-31" };
+    }
 
     if (objetoSolicitud.fechaInicio != undefined && !validarFecha(objetoSolicitud.fechaInicio)){
 
@@ -123,6 +128,11 @@ export const validarDatosRegistroPersona = (objetoSolicitud = 0) =>{
     if(objetoSolicitud.horaFin != undefined && validarHora(objetoSolicitud.horaFin)){
 
         return {"result":false, "alerta": "Formato de hora 'Finalizacion' no válido, el formato aceptado es de '24'horas.\nEjemplo: 23:59"};  
+    }
+
+    if(objetoSolicitud.hora != undefined && validarHora(objetoSolicitud.hora)){
+
+        return {"result":false, "alerta": "Formato de hora no válido, el formato aceptado es de '24'horas.\nEjemplo: 23:59"};  
     }
 
     if(objetoSolicitud.correo != undefined && !validarCorreo(objetoSolicitud.correo)){
@@ -150,7 +160,7 @@ export const validarRangoFechaInicioFin = (objetoSolicitud = {fechaFin:'2000-01-
 }
 
 export const validarCifrasNumericas = (cifra) =>{
-    const expresion = /^[0-9]+([.])?([0-9]+)?$/;
+    const expresion = /^[0-9]+([.]||[,])?([0-9]{0,2})?$/;
     return !expresion.test(cifra);
 }
 

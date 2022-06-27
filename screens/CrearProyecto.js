@@ -3,7 +3,6 @@ import { View, Text, ScrollView, TextInput, Image , TouchableOpacity, Alert, Vib
 import useContextUsuario from "../hook/useContextUsuario";
 import { validarDatosRegistroPersona, validarRangoFechaInicioFin, validarCifrasNumericas } from "../fuciones/validador";
 import { registrarProyecto} from "../requestBackend/API-Proyectos";
-import HeaderMenuPersonalizado from "../components/HeaderMenuPersonalizado";
 import {styles, StylesCrearRecordatorio, StylesHome, StylesConsultaMovimientos} from '../components/styles/Styles'
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -112,7 +111,7 @@ const CrearProyecto = (props) =>{
         }else{
             Vibration.vibrate(200);
             Alert.alert(
-                '¡Aviso!', 'Proyecto creado on exito',[{text:'Entiendo', onPress: ()=>restablecerCampos()}]
+                '¡Aviso!', 'Proyecto creado con exito',[{text:'Entiendo', onPress: ()=>restablecerCampos()}]
             );
         }
     }

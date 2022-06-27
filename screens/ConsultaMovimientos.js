@@ -1,81 +1,109 @@
-import React,{useState} from "react";
+import React,{useState, useEffect} from "react";
 import { View, Text, ScrollView, TextInput, Image , TouchableOpacity, Alert, Vibration} from "react-native";
-import { styles, StylesHome, StylesCrearRecordatorio, StylesListaMovimientos , StylesConsultaMovimientos} from "../components/styles/Styles";
+import { styles, StylesHome, StylesCrearRecordatorio, StylesListaMovimientos , StylesConsultaMovimientos, StylesHomeFinanzas } from "../components/styles/Styles";
 import useContextUsuario from "../hook/useContextUsuario";
 import { validarDatosRegistroPersona, validarRangoFechaInicioFin } from "../fuciones/validador";
 import { registrarRecordatorio } from "../requestBackend/API-Recordatorios";
+import { consultaMovimientos } from "../requestBackend/API-Diarias";
 import ListaMovientosItems from "../components/ListaMovientosItems";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useIsFocused } from '@react-navigation/native';
 
 
 const ConsultaMovimientos = (props) =>{
     // utilizando contexto de usuario
-    const infousuario = useContextUsuario();
+    const infoUsuario = useContextUsuario();
     const fechaActual = new Date().toISOString().slice(0, 10);
+    // control estado actualizar
+    const [estadoActualizar, setEstadoActualizar] = useState(false);
+    const isFocus = useIsFocused();
 
-    const [infoMovimientos, cargarinfoMovimientos] = useState({
-        "sesion": true,
-        "idSesion": infousuario.idPersona,
-        "descripcion": "",
-        "fechaInicio": fechaActual,
-        "fechaFin": fechaActual.slice(0 , 8),
-        "estado": "Activo"
+    const [fechasMovimientos, cargarfechasMovimientos] = useState({
+        "fechaInicio": "",
+        "fechaFin": ""
     });
+    // estado contenedor del resultado de la busqueda de movimientos
+    const [dataMovimientos, setDataMovimientos] = useState([
+        {"motivo":"No posee movimientos", 
+        "monto":"0,00", 
+        "fecha":"0000/00/00 00:00", 
+        "proyecto_idProyecto":null, 
+        "persona_idPersona":null, 
+        "idEgreso":null}
+    ]);
+    // realizando consulta cada vex que se accede a la pantalla
+    useEffect(()=>{
+        console.log("Consultando los movimientos del mes");
+        restablecerCampos();
+        obtenerMovimientos("Mensual");
+    },[isFocus]);
+
     // funcion para restablecer los campos input
     const restablecerCampos = ()=>{
-        cargarinfoMovimientos({
-            "sesion": true,
-            "idSesion": infousuario.idPersona,
-            "descripcion": "",
+        cargarfechasMovimientos({
             "fechaInicio": "",
-            "fechaFin": "",
-            "estado": "Activo"
+            "fechaFin": ""
         });
     }
     //funcion para actualizar cada uno de los elementos del estado inicial
-    const handleCargarEstado = (index,valor, tipoState) =>{
-        if(tipoState === "infoMovimientos"){
-           cargarinfoMovimientos({...infoMovimientos, [index]:valor}); 
-        }
-        //console.log(JSON.stringify(infoMovimientos));
+    const handleCargarEstado = (index,valor) =>{
+        cargarfechasMovimientos({...fechasMovimientos, [index]:valor}); 
+        //console.log(JSON.stringify(fechasMovimientos));
     }
 
     // funcion para validar los campos antes de enviar
     const validarCampos = () =>{
-        if(infoMovimientos.descripcion===''|| infoMovimientos.descripcion ===null){
+        
+        let resultado = validarDatosRegistroPersona(fechasMovimientos)
+        if(resultado.result !== true){
             Alert.alert(
-                'Descripcion invalida', 'El campo \'descripción\' no puede estar vacio',[{text:'Entiendo'}]
+                'Fecha invalida', resultado.alerta ,[{text:'Entiendo'}]
             );
             return;
         }
-        if(!validarRangoFechaInicioFin(infoMovimientos)){
+
+        if(!validarRangoFechaInicioFin(fechasMovimientos)){
             Alert.alert(
-                'Rango de tiempo invalido', `La fecha incial "${infoMovimientos.fechaInicio}" no puede ser mayor a la fecha final "${infoMovimientos.fechaFin}"`,[{text:'Entiendo'}]
+                'Rango de tiempo invalido', `La fecha incial "${fechasMovimientos.fechaInicio}" no puede ser mayor a la fecha final "${fechasMovimientos.fechaFin}"`,[{text:'Entiendo'}]
             );
             return;
         }
-        console.log(JSON.stringify(infoMovimientos));
-        //setTimeout(handleCrearRecordatorio, 300);
+        obtenerMovimientos("Rango")
     }
 
     // funcion para realizar la consulta
-    const handleCrearRecordatorio = async () =>{
-        const respuesta = await registrarRecordatorio(infoMovimientos);
-        if(!respuesta.registro === true){
-            Vibration.vibrate(1500);
-            Alert.alert(
-                'El recordatorio no se pudo crear', `Situacion:\n ${respuesta.resultado === undefined? JSON.stringify(respuesta): JSON.stringify(respuesta.resultado)}`,[{text:'Entiendo'}]
-            );
-        }else{
-            Vibration.vibrate(200);
-            Alert.alert(
-                '¡Aviso!', 'Recordatorio creado on exito',[{text:'Entiendo', onPress: ()=>restablecerCampos()}]
-            );
+    const obtenerMovimientos = async (periodo) =>{
+        if(periodo === "Mensual"){
+            const data = await consultaMovimientos({
+                "sesion": true,
+                "idSession": infoUsuario.idPersona,
+                "fecha": fechaActual,
+                "tipo": "Mensual"
+            });
+            console.log(JSON.stringify(data));
+            if(data.length !== 0){
+                setDataMovimientos(data);
+            }
         }
+
+        if(periodo === "Rango"){
+            const data = await consultaMovimientos({
+                "sesion": true,
+                "idSession": infoUsuario.idPersona,
+                "fechaInicio": fechasMovimientos.fechaInicio,
+                "fechaFin":fechasMovimientos.fechaFin,
+                "tipo": "Rango"
+            });
+            console.log(JSON.stringify(data));
+            if(data.length !== 0){
+                setDataMovimientos(data);
+            }
+        }
+
     }
 
     return (
-        <View style={[ {backgroundColor:'#97e5d0'}, StylesConsultaMovimientos.todoAlto]}>
+        <View style={[StylesConsultaMovimientos.todoAlto, StylesHomeFinanzas.colorFondo]}>
         
             <SafeAreaView>
                 {/* Logo */}
@@ -96,17 +124,17 @@ const ConsultaMovimientos = (props) =>{
                     <View style={[StylesConsultaMovimientos.containerInputDoble]}>
                         <Text style={[StylesConsultaMovimientos.textInputDoble]}>entre</Text>
                         <TextInput
-                            onChange={(textoEntrando)=>{handleCargarEstado("fechaInicio",textoEntrando, "infoMovimientos")}}
-                            value={infoMovimientos.fechaInicio}
-                            placeholder="2020/01/01"
+                            onChangeText={(textoEntrando)=>handleCargarEstado("fechaInicio",textoEntrando)}
+                            value={fechasMovimientos.fechaInicio}
+                            placeholder={fechaActual}
                             style={[StylesConsultaMovimientos.input]}
                             placeholderTextColor="#B3B3B3"
                         />
                         <Text style={[StylesConsultaMovimientos.textInputDoble]}>a</Text>
                         <TextInput
-                            onChange={(textoEntrando)=>{handleCargarEstado("fechaFin",textoEntrando, "infoMovimientos")}}
-                            value={infoMovimientos.fechaFin}
-                            placeholder="2020/01/01"
+                            onChangeText={(textoEntrando)=>handleCargarEstado("fechaFin",textoEntrando)}
+                            value={fechasMovimientos.fechaFin}
+                            placeholder={fechaActual}
                             style={[StylesConsultaMovimientos.input]}
                             placeholderTextColor="#B3B3B3"
                         />
@@ -116,13 +144,18 @@ const ConsultaMovimientos = (props) =>{
                     <View style={[{flexDirection:'row', alignItems:'flex-start', width:'80%'}]}>
                     <TouchableOpacity
                         style={[StylesListaMovimientos.botonPequeno, { backgroundColor: '#00ce97', marginBottom:5 }]}
-                        onPress={()=>{}}
+                        onPress={validarCampos}
                     >
                         <Text style={[styles.textBoton, { color: 'white' }]}>CONSULTAR</Text>
                     </TouchableOpacity>
                     </View>
                     {/**Lista de movimientos*/}
-                    <ListaMovientosItems/>
+                    <ListaMovientosItems
+                        estadoActualizar={estadoActualizar}
+                        setEstadoActualizar={setEstadoActualizar}
+                        datas={dataMovimientos}
+                        accionarConsulta={obtenerMovimientos}
+                    />
                 </View>
             </SafeAreaView>
         </View>

@@ -98,7 +98,7 @@ const CrearRecordatorio = (props) =>{
         }else{
             Vibration.vibrate(200);
             Alert.alert(
-                '¡Aviso!', 'Recordatorio creado on exito',[{text:'Entiendo', onPress: ()=>restablecerCampos()}]
+                '¡Aviso!', 'Recordatorio creado con exito',[{text:'Entiendo', onPress: ()=>restablecerCampos()}]
             );
         }
     }
