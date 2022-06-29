@@ -4,7 +4,7 @@ import { StyleSheet, View,Text, Image} from 'react-native';
 import { createBottomTabNavigator,useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import NavegadorOrganizador from './Drawer-NavegadorOrganizador';
 import NavegadorFinanzas from "./Drawer-NavegadorFinanzas";
-import Perfil from '../../screens/Perfil';
+import HomePerfil from '../../screens/HomePerfil';
 import ContextUsuario from '../../Context/ContextUsuario';
 // import {consultaDatosPersona} from "../../requestBackend/API-Persona";
 const Tab = createBottomTabNavigator();
@@ -20,7 +20,7 @@ const NavegadorInferior = (props)=>{
     // const obtenerDatosPersona = async()=>{
     //     const infoSolicitud = {
     //         "sesion" : true,
-    //         "idSesion" : props.route.params.idUsuario
+    //         "idSession" : props.route.params.idUsuario
     //     }
     //     console.log(infoSolicitud);
     //     const data = await consultaDatosPersona(infoSolicitud);
@@ -81,7 +81,7 @@ const NavegadorInferior = (props)=>{
 
                 <Tab.Screen
                     name='Perfil'
-                    component={Perfil}
+                    component={HomePerfil}
                     options={{
                         headerShown:false,
                         title:"Perfil",

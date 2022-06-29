@@ -14,21 +14,30 @@ import {
   TextInput,
 } from "react-native";
 
-const Perfil = (props) => {
-  const [nombre, cargarNombre] = useState("");
-  const [usuario, cargarUsuario] = useState("");
-  const [correo, cargarCorreo] = useState("");
-
+const HomePerfil = (props) => {
   // trayendo info contexto
   const infoUsuario = useContextUsuario();
-
+  const [datos, setDatos] = useState({
+    sesion: true,
+    idSession: infoUsuario.idPersona,
+    usuario: "",
+    correo: "",
+    nombrePersona: "",
+  });
+  //funcion para actualizar cada uno de los elementos del estado inicial
+  const handleCargarEstado = (index, valor, tipoState) => {
+    if (tipoState === "datos") {
+      setDatos({ ...datos, [index]: valor });
+    }
+    //console.log(JSON.stringify(datos));
+  };
   //Handler para habilitar or desabilitar TextInput
   const [isEditable, setIsEditable] = useState(false);
-
   const enableInputs = () => {
     setIsEditable(!isEditable);
   };
-  let text = (isEditable ? "Guardar cambios" : "CAMBIAR CONTRASEÑA");
+  let text = isEditable ? "Guardar cambios" : "CAMBIAR CONTRASEÑA";
+
   return (
     <ScrollView style={[{ backgroundColor: "#F4B3C2" }]}>
       <SafeAreaView
@@ -65,11 +74,11 @@ const Perfil = (props) => {
             />
 
             <TextInput
-              onChangeText={cargarNombre}
-              value={nombre}
-              placeholder={
-                infoUsuario.nombrePersona ? infoUsuario.nombrePersona : "nombre"
+              onChangeText={(textoEntrando) =>
+                handleCargarEstado("nombrePersona", textoEntrando, "datos")
               }
+              value={infoUsuario.nombrePersona}
+              placeholder={"nombre"}
               style={StylesPerfil.input}
               placeholderTextColor="#B3B3B3"
               editable={isEditable}
@@ -83,11 +92,11 @@ const Perfil = (props) => {
             />
 
             <TextInput
-              onChangeText={cargarUsuario}
-              value={usuario}
-              placeholder={
-                infoUsuario.usuario ? infoUsuario.usuario : "usuario"
+              onChangeText={(textoEntrando) =>
+                handleCargarEstado("usuario", textoEntrando, "datos")
               }
+              value={infoUsuario.nombrePersona}
+              placeholder={"usuario"}
               style={StylesPerfil.input}
               placeholderTextColor="#B3B3B3"
               editable={isEditable}
@@ -101,9 +110,11 @@ const Perfil = (props) => {
             />
 
             <TextInput
-              onChangeText={cargarCorreo}
-              value={correo}
-              placeholder={infoUsuario.correo ? infoUsuario.correo : "correo"}
+              onChangeText={(textoEntrando) =>
+                handleCargarEstado("correo", textoEntrando, "datos")
+              }
+              value={infoUsuario.correo}
+              placeholder={"correo"}
               style={StylesPerfil.input}
               placeholderTextColor="#B3B3B3"
               editable={isEditable}
@@ -112,9 +123,17 @@ const Perfil = (props) => {
 
           {/*Seccion Dynamic Buttons */}
           <View>
-            <TouchableOpacity  style={(isEditable ? StylesPerfil.saveChanges : "")}
-            onPress={(isEditable ? () =>console.log("Hola") : "")}>
-              <Text style={[(isEditable ? StylesPerfil.textSaveChange : StylesPerfil.textChangePassword)]}>
+            <TouchableOpacity
+              style={isEditable ? StylesPerfil.saveChanges : ""}
+              onPress={isEditable ? () => console.log("Hola") : ""}
+            >
+              <Text
+                style={[
+                  isEditable
+                    ? StylesPerfil.textSaveChange
+                    : StylesPerfil.textChangePassword,
+                ]}
+              >
                 {text}
               </Text>
             </TouchableOpacity>
@@ -125,4 +144,4 @@ const Perfil = (props) => {
   );
 };
 
-export default Perfil;
+export default HomePerfil;
