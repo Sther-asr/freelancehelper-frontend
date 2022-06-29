@@ -4,7 +4,7 @@
     "slug": "front-App",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icons/Actividad.png",
+    "icon": "./assets/Actividad-Icon.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/inicioScreen.png",
@@ -22,12 +22,12 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/icons/Actividad.png",
+        "foregroundImage": "./assets/Actividad-Icon.png",
         "backgroundColor": "#FFFFFF"
       }
     },
     "web": {
-      "favicon": "./assets/icons/Actividad.png"
+      "favicon": "./assets/Actividad-Icon.png"
     }
   }
 }
