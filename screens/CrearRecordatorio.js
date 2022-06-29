@@ -1,4 +1,4 @@
-import React,{useState} from "react";
+import React,{useState, useEffect} from "react";
 import { View, Text, ScrollView, TextInput, Image , TouchableOpacity, Alert, Vibration} from "react-native";
 import { styles, StylesHome, StylesCrearRecordatorio,StylesConsultaMovimientos } from "../components/styles/Styles";
 import useContextUsuario from "../hook/useContextUsuario";
@@ -11,16 +11,16 @@ import { SafeAreaView } from "react-native-safe-area-context";
 const CrearRecordatorio = (props) =>{
     // utilizando contexto de usuario
     const infousuario = useContextUsuario();
-    const fechaActual = new Date().toISOString().slice(0, 10);
-    const [fecha, cargarFecha] = useState({"fechaInicio":"", "fechaFin":""});
-    const [hora, cargarHora] = useState({"horaInicio":"", "horaFin":""});
+    const fechaActual = new Date().toISOString().slice(0, 16);
+    const [fecha, cargarFecha] = useState({"fechaInicio":fechaActual.slice(0, 10), "fechaFin":""});
+    const [hora, cargarHora] = useState({"horaInicio":fechaActual.slice(11, 16), "horaFin":""});
 
     const [infoRecordatorio, cargarinfoRecordatorio] = useState({
         "sesion": true,
         "idSesion": infousuario.idPersona,
         "descripcion": "",
-        "fechaInicio": fechaActual,
-        "fechaFin": fechaActual.slice(0 , 8),
+        "fechaInicio": "",
+        "fechaFin": "",
         "estado": "Activo"
     });
     // funcion para restablecer los campos input
@@ -33,8 +33,8 @@ const CrearRecordatorio = (props) =>{
             "fechaFin": "",
             "estado": "Activo"
         });
-        cargarFecha({"fechaInicio":"", "fechaFin":""});
-        cargarHora({"horaInicio":"", "horaFin":""});
+        cargarFecha({"fechaInicio":fechaActual.slice(0, 10), "fechaFin":""});
+        cargarHora({"horaInicio":fechaActual.slice(11, 16), "horaFin":""});
     }
     //funcion para actualizar cada uno de los elementos del estado inicial
     const handleCargarEstado = (index,valor, tipoState) =>{
@@ -73,19 +73,23 @@ const CrearRecordatorio = (props) =>{
             return;
         }
         ////////////////////////////////////
-        const fecha_inicio = `${fecha.fechaInicio}T${hora.horaInicio}:00`;
-        const fecha_fin = `${fecha.fechaFin}T${hora.horaFin}:00`;
-        cargarinfoRecordatorio({...infoRecordatorio, "fechaInicio":fecha_inicio, "fechaFin":fecha_fin});
+        cargarinfoRecordatorio({...infoRecordatorio, "fechaInicio":`${fecha.fechaInicio}T${hora.horaInicio}:00`, "fechaFin":`${fecha.fechaFin}T${hora.horaFin}:00`});
         /////////////////////////////////
-        if(!validarRangoFechaInicioFin(infoRecordatorio)){
-            Alert.alert(
-                'Rango de tiempo invalido', `La fecha incial "${infoRecordatorio.fechaInicio}" no puede ser mayor a la fecha final "${infoRecordatorio.fechaFin}"`,[{text:'Entiendo'}]
-            );
-            return;
-        }
-        console.log(JSON.stringify(infoRecordatorio));
-        setTimeout(handleCrearRecordatorio, 300);
     }
+    useEffect(()=>{
+        if(infoRecordatorio.fechaFin !=="" && infoRecordatorio.fechaInicio!==""){
+            if(!validarRangoFechaInicioFin(infoRecordatorio)){
+                Alert.alert(
+                    'Rango de tiempo invalido', `La fecha incial "${infoRecordatorio.fechaInicio}" no puede ser mayor a la fecha final "${infoRecordatorio.fechaFin}"`,[{text:'Entiendo'}]
+                );
+                cargarinfoRecordatorio({...infoRecordatorio, "fechaInicio":"", "fechaFin":""});
+                return;
+            }
+            //console.log(JSON.stringify(infoRecordatorio));
+            handleCrearRecordatorio();
+        }
+        
+    },[infoRecordatorio.fechaFin])
 
     // funcion para realizar el registro
     const handleCrearRecordatorio = async () =>{

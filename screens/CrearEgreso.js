@@ -1,4 +1,4 @@
-import React,{useState} from "react";
+import React,{useEffect, useState} from "react";
 import { View, Text, ScrollView, TextInput, Image , TouchableOpacity, Alert, Vibration} from "react-native";
 import useContextUsuario from "../hook/useContextUsuario";
 import { validarDatosRegistroPersona, validarCifrasNumericas } from "../fuciones/validador";
@@ -87,9 +87,17 @@ const CrearEgreso = (props) =>{
         ////////////////////////////////////
         cargarInfoEgreso({...infoEgreso, "fecha":`${fecha.fecha}T${hora.hora}:00`});
         
-        console.log(JSON.stringify(infoEgreso));
-        handleCrearEgreso();
     }
+
+    // funcion que se ejecuta al cambiar la fecha del estado de infoEgreso
+    useEffect(()=>{
+        if(infoEgreso.fecha!=="" && infoEgreso.monto!=="" && infoEgreso.motivo!==""){
+            console.log(JSON.stringify(infoEgreso));
+            handleCrearEgreso();
+            cargarInfoEgreso({...infoEgreso, "fecha":""});
+            return;
+        }
+    },[infoEgreso.fecha]);
 
     // funcion para realizar el registro
     const handleCrearEgreso = async () =>{

@@ -22,8 +22,9 @@ const CrearActividad = (props) =>{
         "estado":"Activo",
         "proyecto_idProyecto":""
     });
-    const [fecha, cargarFecha] = useState({"fechaInicio":"", "fechaFin":""});
-    const [hora, cargarHora] = useState({"horaInicio":"", "horaFin":""});
+    const fechaActual = new Date().toISOString().slice(0, 16);
+    const [fecha, cargarFecha] = useState({"fechaInicio":fechaActual.slice(0, 10), "fechaFin":""});
+    const [hora, cargarHora] = useState({"horaInicio":fechaActual.slice(11, 16), "horaFin":""});
     const isFocus = useIsFocused();
     // llamar los proyetos al entrar a la pantalla
     const traerDataProyectos = async () =>{
@@ -45,8 +46,8 @@ const CrearActividad = (props) =>{
             "estado":"Activo",
             "proyecto_idProyecto":""
         });
-        cargarFecha({"fechaInicio":"", "fechaFin":""});
-        cargarHora({"horaInicio":"", "horaFin":""});
+        cargarFecha({"fechaInicio":fechaActual.slice(0, 10), "fechaFin":""});
+        cargarHora({"horaInicio":fechaActual.slice(11, 16), "horaFin":""});
         selectListRestablecer();
     }
     // restablecer el select list al estado defecto
@@ -88,30 +89,38 @@ const CrearActividad = (props) =>{
             return;
         }
         ////////////////////////////////////
-        const fecha_inicio = `${fecha.fechaInicio}T${hora.horaInicio}:00`;
-        const fecha_fin = `${fecha.fechaFin}T${hora.horaFin}:00`;
-        cargarInfoActividad({...infoActividad, "fechaInicio":fecha_inicio, "fechaFin":fecha_fin});
+        cargarInfoActividad({...infoActividad, "fechaInicio":`${fecha.fechaInicio}T${hora.horaInicio}:00`, "fechaFin":`${fecha.fechaFin}T${hora.horaFin}:00`});
         /////////////////////////////////
-        if(!validarRangoFechaInicioFin(infoActividad)){
-            Alert.alert(
-                'Rango de tiempo invalido', `La fecha incial "${infoActividad.fechaInicio}" no puede ser mayor a la fecha final "${infoActividad.fechaFin}"`,[{text:'Entiendo'}]
-            );
-            return;
-        }
         if(infoActividad.descripcion===''|| infoActividad.descripcion ===null){
             Alert.alert(
                 'Descripcion invalida', 'El campo \'descripción\' no puede estar vacio',[{text:'Entiendo'}]
             );
             return;
         }
-        setTimeout(handleCrearActividad, 300);
+        
     }
+    // funcion para validar los rangos de fechas una vez cargados
+    useEffect(()=>{
+        console.log("Me he ejecutado");
+        if(infoActividad.fechaInicio!=="" && infoActividad.fechaFin!==""){
+            if(!validarRangoFechaInicioFin(infoActividad)){
+                Alert.alert(
+                    'Rango de tiempo invalido', `La fecha incial "${infoActividad.fechaInicio}" no puede ser mayor a la fecha final "${infoActividad.fechaFin}"`,[{text:'Entiendo'}]
+                );
+                cargarInfoActividad({...infoActividad, "fechaInicio":"", "fechaFin":""});
+                return;
+            }
+            handleCrearActividad();
+        }
+    },[infoActividad.fechaFin])
+
     // funcion para realizar el registro
     const handleCrearActividad= async () =>{
         console.log(infoActividad);
         const data = await registrarActividad(infoActividad);
         if(data.registro === true){
-            Alert.alert('Informacón de registro', `Actividad : "${infoActividad.descripcion}" para el proyecto: "${infoActividad.proyecto_idProyecto}"\n CREADA CON EXITO`,[{title:'OK'}])
+            Alert.alert('Informacón de registro', `Actividad : "${infoActividad.descripcion}" para el proyecto: "${infoActividad.proyecto_idProyecto}"\n CREADA CON EXITO`,[{title:'OK'}]);
+            restablecerCampos();
         }else{
             Alert.alert('Informacón de registro', `Ha ocurrido un error durante el registro: ${data.resultado}`,[{title:'OK'}])
         }

@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useEffect, useState} from "react";
 import { StatusBar } from "expo-status-bar";
 import { View, ScrollView, TouchableOpacity, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -6,12 +6,36 @@ import useContextUsuario from "../hook/useContextUsuario";
 import { StylesHome, StylesHomeFinanzas, styles, StylesConsultaMovimientos } from "../components/styles/Styles";
 import HeaderMenuPersonalizado from "../components/HeaderMenuPersonalizado";
 import MostrarCifra from "../components/MostrarCifra";
+import { consultaMontoTotalMovimientos } from "../requestBackend/API-Diarias";
+import { useIsFocused } from '@react-navigation/native';
 
 const HomeFinanzas = (props) => {
+  // funcion que identifica la posiscion del usuario entre pantalla
+  const isFocus = useIsFocused();
   // trayendo info contexto
   const infoUsuario = useContextUsuario();
   // obteniendo la fecha actual del dispositivo
-  const fecha = new Date();
+  const fechaActual = new Date().toISOString().slice(0, 16);
+  // estado para almacenar la informacion de los movimientos
+  const [infoMontoTotales, setInfoMontoTotales] = useState({"totalEgresos":"", "totalIngresos":"", "saldo":"", "ahorro":""})
+  //funcion para traer los montos desde la bdd
+  const obtenerTotalMovimientos = async () =>{
+    const data = await consultaMontoTotalMovimientos(
+      {
+        "sesion": true,
+        "idSession": infoUsuario.idPersona,
+        "fecha": fechaActual
+      }
+    );
+    if(data.totalIngresos!==undefined && data.totalEgresos!==undefined){
+      setInfoMontoTotales(data);
+    }
+  }
+  //funcion que se llama cada vez que se accede a la pantalla
+  useEffect(()=>{
+    obtenerTotalMovimientos();
+  },[isFocus]);
+
 
   return (
     <ScrollView style={[{ backgroundColor: "#feb529" }]}>
@@ -28,21 +52,21 @@ const HomeFinanzas = (props) => {
 
           <MostrarCifra
             titulo={"Saldo"}
-            monto={"1000,00"}
+            monto={infoMontoTotales.saldo}
             moneda={"USD"}
             estilos={{ marginBottom: 20 }}
           />
 
           <MostrarCifra
             titulo={"Egresos Mensuales"}
-            monto={"300,45"}
+            monto={infoMontoTotales.totalEgresos}
             moneda={"USD"}
             estilos={{ marginBottom: 20 }}
           />
 
           <MostrarCifra
             titulo={"Ahorro"}
-            monto={"200,30"}
+            monto={infoMontoTotales.ahorro}
             moneda={"USD"}
             estilos={{ marginBottom: 20 }}
           />

@@ -1,4 +1,4 @@
-import React,{useState} from "react";
+import React,{useState, useEffect} from "react";
 import { View, Text, ScrollView, TextInput, Image , TouchableOpacity, Alert, Vibration} from "react-native";
 import useContextUsuario from "../hook/useContextUsuario";
 import { validarDatosRegistroPersona, validarRangoFechaInicioFin, validarCifrasNumericas } from "../fuciones/validador";
@@ -10,18 +10,18 @@ import { SafeAreaView } from "react-native-safe-area-context";
 const CrearProyecto = (props) =>{
     // utilizando contexto de usuario
     const infousuario = useContextUsuario();
-    const fechaActual = new Date().toISOString().slice(0, 10);
+    const fechaActual = new Date().toISOString().slice(0, 16);
 
-    const [fecha, cargarFecha] = useState({"fechaInicio":"", "fechaFin":""});
-    const [hora, cargarHora] = useState({"horaInicio":"", "horaFin":""});
+    const [fecha, cargarFecha] = useState({"fechaInicio":fechaActual.slice(0, 10), "fechaFin":""});
+    const [hora, cargarHora] = useState({"horaInicio":fechaActual.slice(11, 16), "horaFin":""});
 
     const [infoProyecto, cargarInfoProyecto] = useState({
         "sesion": true,
         "idSesion": infousuario.idPersona,
         "descripcion": "",
         "monto":"",
-        "fechaInicio":fechaActual, 
-        "fechaFin":fechaActual.slice(0 , 8),
+        "fechaInicio":"", 
+        "fechaFin": "",
         "estado":"Activo"
     });
     // funcion para restablecer los campos input
@@ -31,12 +31,12 @@ const CrearProyecto = (props) =>{
             "idSesion": infousuario.idPersona,
             "descripcion": "",
             "monto":"",
-            "fechaInicio":fechaActual, 
-            "fechaFin":fechaActual.slice(0 , 8),
+            "fechaInicio":"", 
+            "fechaFin":"",
             "estado":"Activo"
         });
-        cargarFecha({"fechaInicio":"", "fechaFin":""});
-        cargarHora({"horaInicio":"", "horaFin":""});
+        cargarFecha({"fechaInicio":fechaActual.slice(0, 10), "fechaFin":""});
+        cargarHora({"horaInicio":fechaActual.slice(11, 16), "horaFin":""});
     }
     //funcion para actualizar cada uno de los elementos del estado inicial
     const handleCargarEstado = (index,valor, tipoState) =>{
@@ -87,18 +87,23 @@ const CrearProyecto = (props) =>{
             return;
         }
         ////////////////////////////////////
-        const fecha_inicio = `${fecha.fechaInicio}T${hora.horaInicio}:00`;
-        const fecha_fin = `${fecha.fechaFin}T${hora.horaFin}:00`;
-        cargarInfoProyecto({...infoProyecto, "fechaInicio":fecha_inicio, "fechaFin":fecha_fin});
+        cargarInfoProyecto({...infoProyecto, "fechaInicio":`${fecha.fechaInicio}T${hora.horaInicio}:00`, "fechaFin":`${fecha.fechaFin}T${hora.horaFin}:00`});
         /////////////////////////////////
-        if(!validarRangoFechaInicioFin(infoProyecto)){
-            Alert.alert(
-                'Rango de tiempo invalido', `La fecha incial "${infoProyecto.fechaInicio}" no puede ser mayor a la fecha final "${infoProyecto.fechaFin}"`,[{text:'Entiendo'}]
-            );
-            return;
-        }
-        handleCrearProyecto();
     }
+
+    // ejecutar una vez se hayan verificado y cargado todos los datos
+    useEffect(()=>{
+        if(infoProyecto.fechaInicio!=="" && infoProyecto.fechaFin !== ""){
+            if(!validarRangoFechaInicioFin(infoProyecto)){
+                Alert.alert(
+                    'Rango de tiempo invalido', `La fecha incial "${infoProyecto.fechaInicio}" no puede ser mayor a la fecha final "${infoProyecto.fechaFin}"`,[{text:'Entiendo'}]
+                );
+                cargarInfoProyecto({...infoProyecto, "fechaInicio":"", "fechaFin":""});
+                return;
+            }
+            handleCrearProyecto();
+        }
+    },[infoProyecto.fechaFin])
 
     // funcion para realizar el registro
     const handleCrearProyecto = async () =>{

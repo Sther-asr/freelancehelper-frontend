@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View } from "react-native";
 import {
   ScrollView,
@@ -27,8 +27,8 @@ const Login = (props) => {
     useTogglePasswordVisibility();
   const [errores, setErrores] = useState({ usuario: false, contrasena: false });
   // almacenar info estado
-  const [datosUsuario, setDatosUsuario] = useState({});
-
+  const [datosUsuario, setDatosUsuario] = useState("");
+  //obtener datos de la persona desde el back
   const obtenerDatosPersona = async (idPersona) => {
     const data = await consultaDatosPersona({
       sesion: true,
@@ -36,9 +36,15 @@ const Login = (props) => {
     });
     
     setDatosUsuario(data[0]);
-    console.log(JSON.stringify(datosUsuario));
-    props.navigation.navigate("Organizador", { datosUsuario });
   };
+  //realizar la accion una vez se realice el cambio en la variable
+  useEffect(()=>{
+    if(datosUsuario !== ""){
+      console.log(JSON.stringify(datosUsuario));
+      props.navigation.navigate("Organizador", { datosUsuario });
+    }
+    
+  },[datosUsuario])
   //funcion para restablecer los campos
   const restablecerCampos = () => {
     cargarUsuario("");
