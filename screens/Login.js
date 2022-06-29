@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { View } from "react-native";
 import {
   ScrollView,
@@ -13,13 +13,14 @@ import { styles } from "../components/styles/Styles";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import { inicioSesion } from "../requestBackend/API-Usuarios";
-import { consultaDatosPersona } from "../requestBackend/API-Persona";
+import { consultaAllDatosPersona } from "../requestBackend/API-Persona";
 import { useTogglePasswordVisibility } from "./useToggle";
 import { validarContrasena } from "../fuciones/validador";
 
 EStyleSheet.build();
 
 const Login = (props) => {
+
   /*Delaracion de estados */
   const [usuario, cargarUsuario] = useState("");
   const [contrasena, cargarContrasena] = useState("");
@@ -27,30 +28,15 @@ const Login = (props) => {
     useTogglePasswordVisibility();
   const [errores, setErrores] = useState({ usuario: false, contrasena: false });
   // almacenar info estado
-  const [datosUsuario, setDatosUsuario] = useState("");
-  //obtener datos de la persona desde el back
-  const obtenerDatosPersona = async (idPersona) => {
-    const data = await consultaDatosPersona({
-      sesion: true,
-      idSesion: idPersona,
-    });
-    
-    setDatosUsuario(data[0]);
-  };
-  //realizar la accion una vez se realice el cambio en la variable
-  useEffect(()=>{
-    if(datosUsuario !== ""){
-      console.log(JSON.stringify(datosUsuario));
-      props.navigation.navigate("Organizador", { datosUsuario });
-    }
-    
-  },[datosUsuario])
-  //funcion para restablecer los campos
-  const restablecerCampos = () => {
-    cargarUsuario("");
-    cargarContrasena("");
-    handlePasswordVisibility(true);
-  };
+  const [datosUsuario, setDatosUsuario] = useState({});
+
+  // Funcion para que pase al home después de modificar los useState
+  useEffect(() => {
+    if(JSON.stringify(datosUsuario) === "{}") return;
+    console.log("Hola useEffect");
+    console.log(JSON.stringify(datosUsuario));
+    props.navigation.navigate("Organizador", { datosUsuario });
+  }, [datosUsuario]);
 
   const solicitudLogin = async (pantalla) => {
     //props.navigation.navigate(pantalla);
@@ -58,17 +44,30 @@ const Login = (props) => {
       usuario: usuario,
       contrasena: contrasena,
     };
-    const data = await inicioSesion(datos);
-
-    if (data.respuesta === undefined) {
-      obtenerDatosPersona(data[0].persona_idPersona);
+    const dataUsuario = await inicioSesion(datos);
+    if (dataUsuario.respuesta === undefined) {
+      // console.log(data);
+      obtenerDatosPersona(dataUsuario.persona_idPersona);
       return;
     }
 
-    Alert.alert("Inicio de sesion dice", `${JSON.stringify(data)}`, [
+    Alert.alert("Inicio de sesion dice", `${JSON.stringify(dataUsuario)}`, [
       { text: "Ok", onPress: () => console.log("los datos") },
     ]);
-    console.log(JSON.stringify(data));
+    console.log(JSON.stringify(dataUsuario));
+  };
+
+  const obtenerDatosPersona = async (idPersona) => {
+    console.log(idPersona);
+
+    const dataPersona = await consultaAllDatosPersona({
+      sesion: true,
+      idSession: idPersona,
+    });
+    // console.log("Persona")
+    console.log(dataPersona);
+    setDatosUsuario(dataPersona);
+    
   };
 
   const validarCampos = () => {
@@ -87,7 +86,7 @@ const Login = (props) => {
     }
     solicitudLogin();
   };
-
+  
   return (
     <ScrollView>
       <SafeAreaView style={[{ backgroundColor: "#F56783" }, styles.container]}>
