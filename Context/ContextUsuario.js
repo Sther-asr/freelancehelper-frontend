@@ -5,7 +5,9 @@ const ContextUsuario = createContext({
     "idPersona":null,
     "nombrePersona":null,
     "apellidoPersona":null,
-    "fechaNacimiento":null
+    "fechaNacimiento":null,
+    "usuario": null,
+    "correo" : null
 });
 
 export default ContextUsuario;
