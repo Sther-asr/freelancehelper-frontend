@@ -20,12 +20,16 @@ const HeaderMenuPersonalizado = ({
       {/* View del saludo y la hamburguesita */}
       <View style={[StylesHome.headerInferior]}>
         {/* Hamburguesita */}
-          <TouchableOpacity style={[StylesHome.hamburguesita]} onPress={togleMenu}>
-            <Image
-              style={[{ width: "100%", height: "100%" }]}
-              source={require("../assets/icons/Hamburguesita.png")}
-            />
-          </TouchableOpacity>
+        {
+          togleMenu!==undefined?(
+            <TouchableOpacity style={[StylesHome.hamburguesita]} onPress={togleMenu}>
+              <Image
+                style={[{ width: "100%", height: "100%" }]}
+                source={require("../assets/icons/Hamburguesita.png")}
+              />
+            </TouchableOpacity>
+          ):(<Text></Text>)
+        }
         {/* Saludo */}
         <View style={[StylesHome.headerInferior_info]}>
             {/* Nombre usuario */}

@@ -7,6 +7,21 @@ import Logup from "../../screens/Logup";
 import Login from "../../screens/Login"
 import NavegadorInferior from "./Tab-NavegadorInferior";
 
+const Principal = (props) =>{
+    return(
+      <View>
+        <StatusBar backgroundColor="orange"/>
+        <Button
+          onPress={()=>{
+            props.navigation.navigate('Logup')
+          }}
+          title="Registrarse"
+          color="#841584"
+        />
+      </View>
+    );
+}
+
 const Stack = createNativeStackNavigator();
 
 const NavegadorStack =(props)=>{

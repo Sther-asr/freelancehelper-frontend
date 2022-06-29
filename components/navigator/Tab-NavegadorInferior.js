@@ -3,18 +3,12 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, View,Text, Image} from 'react-native';
 import { createBottomTabNavigator,useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import NavegadorOrganizador from './Drawer-NavegadorOrganizador';
+import NavegadorFinanzas from "./Drawer-NavegadorFinanzas";
 import Perfil from '../../screens/Perfil';
 import ContextUsuario from '../../Context/ContextUsuario';
 // import {consultaDatosPersona} from "../../requestBackend/API-Persona";
 const Tab = createBottomTabNavigator();
 
-const Pantalla1 =()=>{
-    return(
-        <View>
-            <Text>Pantalla prueba 1000</Text>
-        </View>
-    );
-}
 
 
 const NavegadorInferior = (props)=>{
@@ -78,7 +72,7 @@ const NavegadorInferior = (props)=>{
                 
                 <Tab.Screen
                     name='Finanzas'
-                    component={Pantalla1}
+                    component={NavegadorFinanzas}
                     options={{
                         headerShown:false,
                         title:"Finanzas",

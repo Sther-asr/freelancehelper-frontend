@@ -114,7 +114,6 @@ export const styles = EStyleSheet.create({
         marginTop: 4,
         marginBottom: 50,
         height: 50,
-        backgroundColor: "#00CE97",
     },
     textBoton: {
         fontSize: 18,
@@ -131,14 +130,15 @@ export const styles = EStyleSheet.create({
 export const StylesHome = EStyleSheet.create({
     container:{
         backgroundColor:'#ffdd9b', 
-        height: Dimensions.get("window").height,
+        //height: Dimensions.get("window").height,
+        height:responsiveScreenHeight(100)
     },
     header:{
         backgroundColor:'white',
-        height: '15%',
+        height: responsiveScreenHeight(15),
         borderBottomLeftRadius: 50,
         borderBottomRightRadius:50,
-        marginBottom: '10%',
+        marginBottom: responsiveScreenHeight(7),
     },
     logo:{
         marginTop: 13,
@@ -199,7 +199,7 @@ export const StylesListaTareas = EStyleSheet.create({
         borderRadius: 20,
         padding: 15,
         // height:((Dimensions.get('window').width) + 90),
-        height: "66%",
+        height: responsiveScreenHeight(53),
         alignSelf: "center",
     },
     cabeceraLista:{
@@ -211,6 +211,17 @@ export const StylesListaTareas = EStyleSheet.create({
         color:'#FEB529'
     }
 });
+// LIENZO LISTA MOVIMIENTOS 
+export const StylesListaMovimientos = EStyleSheet.create({
+    botonPequeno:{
+        paddingHorizontal:15, 
+        paddingVertical:5, 
+        alignItems:'center', 
+        justifyContent:'center', 
+        borderRadius:15, 
+        
+    }
+});
 // LIENZO DE TAREA
 export const StylesTarea = EStyleSheet.create({
     container:{
@@ -220,6 +231,7 @@ export const StylesTarea = EStyleSheet.create({
         flexDirection: 'row',
         borderTopWidth:1,
         borderTopColor: '#B3B3B3',
+        alignItems:'center'
     },
     containerInfo:{
         width:'80%',
@@ -369,10 +381,10 @@ export const StylesCrearRecordatorio = EStyleSheet.create({
         borderTopLeftRadius: 60,
         borderTopRightRadius: 60,
         alignItems: 'center',
-        flex: 1,
+        //flex: 1,
     },
     logo:{
-        marginVertical: '25%',
+        marginVertical: '20%',
         width: '100%',
         height: 30,
         resizeMode: "contain"
@@ -451,4 +463,176 @@ export const StylesCrearRecordatorio = EStyleSheet.create({
         height:30,
         marginRight:'4%'
     }
+});
+
+// ESTILOS HOME FINANZAS
+export const StylesHomeFinanzas = EStyleSheet.create({
+    colorFondo:{
+        backgroundColor:"#97e5d0"
+    },
+});
+// ESTILOS ELEMENTOS MOSTRAR CIFRAS
+export const StylesMostrarCifras = EStyleSheet.create({
+    container:{
+        width:'100%',
+        overflow:'hidden'
+    },
+    containerTitulo:{
+        backgroundColor:'#00ce97',
+        paddingHorizontal:15,
+        paddingVertical:8,
+        borderTopEndRadius:15,
+        borderTopLeftRadius:15,
+        marginLeft:'5%',
+        width:'60%',
+        alignItems:'center'
+    },
+    containerElementosCifras:{
+        width:'100%',
+        backgroundColor:'white',
+        padding:20,
+        borderRadius:20,
+        borderWidth:0.5,
+        borderBottomWidth:4,
+        borderColor:'#00ce97'
+    },
+    containerCifras:{
+        width:'90%',
+        marginHorizontal:'5%',
+        flexDirection:'row'
+    },
+    textTitulo:{
+        fontSize:18,
+        color:'white',
+        fontWeight:'700',
+    },
+    textCifras:{
+        fontSize:20,
+        fontWeight:'800',
+        color:'black'
+    }
+    
+});
+// ESILOS CONSULTAR INGRESOS
+export const StylesConsultaMovimientos = EStyleSheet.create({
+    input: {
+        backgroundColor: 'white',
+        fontSize: 16,
+        color: '#808080',
+        width:'35%', 
+        borderBottomWidth:1, 
+        borderBottomColor:'#B3B3B3',
+        marginLeft:'4%',
+        marginRight:'4%'
+    },
+    containerInputDoble:{
+        width: ((Dimensions.get('window').width) - 80),
+        backgroundColor: 'white',
+        flexDirection: 'row',
+        flexDirection:'column',
+        marginBottom: 20,
+        flexDirection:'row', 
+        alignItems:'center', 
+        justifyContent:'center', 
+    },
+    textInputDoble:{
+        color:"#B3B3B3",
+        fontSize:20,
+        fontWeight:'700',
+        paddingTop:10
+    },
+    todoAlto:{
+        height: responsiveScreenHeight(100)
+    }
+});
+// estilos DRAWER navigator
+export const StylesDrawer = EStyleSheet.create({
+ 
+    scroll: {
+        height:'100%',
+        backgroundColor: '#ffdd9b'
+       
+            
+    }, 
+    drawerscroll: {
+       
+       backgroundColor: '#ffdd9b',
+       
+            
+    },
+    view:{
+        flex:1,
+        backgroundColor: '#ffdd9b',
+        justifyContent:'space-between',
+        height:'12%'
+             
+
+    },
+    menu:{
+        marginTop:-250,
+         height:"36%"
+        
+    },
+    exit:{
+        
+       backgroundColor: "white",
+       height:'12%'
+        
+    },
+    imageView:{
+       
+        backgroundColor: '#ffdd9b',
+        marginTop:-5,
+        height:'5%'
+       
+    },
+    PNGinput: {
+        width: 50,
+        height: 29,
+        marginLeft: 10,
+        marginRight: 7,
+        marginTop: 10,
+        marginBottom: 10,
+        resizeMode: "contain"
+    },
+    
+    texto:{
+        width:'50%',
+   
+        marginLeft: 10,
+        marginRight:'10%',
+        marginBottom:20,
+        marginTop:20,
+        fontWeight:'bold'
+        
+    },
+    boton:{
+        flexDirection:'row',
+        alignItems:'center',
+        justifyContent:'center',
+        width:'100%',
+        padding:3,
+        // borderBottomWidth:1,
+        // borderBottomColor:'#B3B3B3'
+        
+    },
+    containerHeader:{
+        backgroundColor:'white',
+        height:72,
+        overflow:'hidden',
+       
+    },
+    header:{
+        backgroundColor:'white',
+        height: '15%',
+
+
+    },
+    logo:{
+        marginTop: 20,
+        width: '100%',
+        height: 30,
+        resizeMode: 'contain'
+    }
+    
 });

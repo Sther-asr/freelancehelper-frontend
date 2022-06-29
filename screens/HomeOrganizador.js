@@ -16,7 +16,7 @@ const HomeOrganizador = (props) => {
   const fecha = new Date();
 
   return (
-    <ScrollView style={[{ backgroundColor: "#feb529" }]}>
+    // <ScrollView style={[{ backgroundColor: "#feb529" }]}>
       <SafeAreaView style={[StylesHome.container]}>
         <StatusBar backgroundColor="white" />
         {/**Menu Personalizado */}
@@ -36,7 +36,7 @@ const HomeOrganizador = (props) => {
         </View>
         {/* </View> */}
       </SafeAreaView>
-    </ScrollView>
+    // </ScrollView>
   );
 };
 
