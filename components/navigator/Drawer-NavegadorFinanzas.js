@@ -24,7 +24,6 @@ const Menu = ({ navigation }) => {
                 </View>
 
                 <View style={[StylesDrawer.menu, {height:'90%'}]} >
-
                     <MenuButton
                         text="Movimientos"
                         OnPress={() => navigation.navigate('ConsultaMovimientos')}

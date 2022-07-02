@@ -58,13 +58,6 @@ const HomeFinanzas = (props) => {
           />
 
           <MostrarCifra
-            titulo={"Inresos Mensuales"}
-            monto={infoMontoTotales.totalIngresos}
-            moneda={"USD"}
-            estilos={{ marginBottom: 20 }}
-          />
-
-          <MostrarCifra
             titulo={"Egresos Mensuales"}
             monto={infoMontoTotales.totalEgresos}
             moneda={"USD"}

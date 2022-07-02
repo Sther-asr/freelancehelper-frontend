@@ -58,7 +58,7 @@ const Login = (props) => {
   };
 
   const obtenerDatosPersona = async (idPersona) => {
-    console.log(idPersona+' es lo indefinido');
+    console.log(idPersona);
 
     const dataPersona = await consultaAllDatosPersona({
       sesion: true,

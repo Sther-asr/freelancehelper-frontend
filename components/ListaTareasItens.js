@@ -5,6 +5,7 @@ import Tarea from './TareaIten';
 import { consultaTareasDiarias } from "../requestBackend/API-Diarias";
 import useContextUsuario from "../hook/useContextUsuario";
 import { useIsFocused } from '@react-navigation/native';
+import Proyecto from "./ProyectoItem";
 
 
 const ListaTareasIten = (props)=>{

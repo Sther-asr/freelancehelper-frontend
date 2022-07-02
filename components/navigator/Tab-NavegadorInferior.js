@@ -28,7 +28,7 @@ const NavegadorInferior = (props)=>{
     //     console.log(JSON.stringify(datosUsuario));
     // }
     //console.log(JSON.stringify(props.route.params.datosUsuario));
-    
+   
     return(
         <ContextUsuario.Provider value={props.route.params.datosUsuario}>
             <Tab.Navigator

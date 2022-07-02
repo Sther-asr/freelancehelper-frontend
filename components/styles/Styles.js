@@ -182,7 +182,7 @@ export const StylesHome = EStyleSheet.create({
     containerBtnNueva:{
         width: ((Dimensions.get('window').width) - 40), 
         alignSelf: "center",
-        marginTop: 20,
+        // marginTop: 10,
         // backgroundColor:'#53C4DE',
     },
     botonNueva:{
@@ -369,6 +369,26 @@ export const StylesModal = EStyleSheet.create({
         fontWeight:'300',
         color: 'black'
     }
+});
+// seccion de consultar proyectos, actividades, recordatorios, tags .....
+export const StylesConsultasOrganizador = EStyleSheet.create({
+    logo:{
+        marginVertical: 80,
+        marginTop: '10%',
+        width: '100%',
+        height: 26,
+        resizeMode: "contain"
+    },
+    container: {
+        backgroundColor: 'white',
+        borderColor: 'black',
+        borderTopLeftRadius: 60,
+        borderTopRightRadius: 60,
+        height: Dimensions.get('window').height,
+        alignItems: 'center',
+        // flex: 1,
+        // justifyContent: 'center',
+    },
 });
 // seccion de crear recordatorios, tags, actividades .....
 export const StylesCrearRecordatorio = EStyleSheet.create({

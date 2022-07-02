@@ -5,9 +5,8 @@ import MenuDrawer from "../../components/MenuDrawer";
 import MenuButton from '../../components/MenuButton';
 import HomeOrganizador from '../../screens/HomeOrganizador';
 import CrearRecordatorio from '../../screens/CrearRecordatorio';
-import CrearProyecto from '../../screens/CrearProyecto';
 import CrearActividad from '../../screens/CrearActividad';
-
+import OrganizadorStack from './Organizador-Stack';
 
 const Drawer = createDrawerNavigator();
 
@@ -34,13 +33,12 @@ const Menu = ({ navigation }) => {
                     />
 
                     <MenuButton
-                        text="Proyecto"
-                        OnPress={() => navigation.navigate('CrearProyecto')}
+                        text="Proyectos"
+                        OnPress={() => navigation.navigate('OrganizadorStack')}
                         image={require('../../assets/icons/Icon-proyecto-color.png')}
                     />
-
                     <MenuButton
-                        text="CrearActividad'"
+                        text="CrearActividad"
                         OnPress={() => navigation.navigate('CrearActividad')}
                         image={require('../../assets/icons/Actividad.png')}
                     />
@@ -97,8 +95,8 @@ const NavegadorOrganizador = ()=>{
                 component={CrearRecordatorio}
             />
             <Drawer.Screen
-                name='CrearProyecto'
-                component={CrearProyecto}
+                name='OrganizadorStack'
+                component={OrganizadorStack}
             />
             <Drawer.Screen
                 name='CrearActividad'
