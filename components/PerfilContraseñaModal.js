@@ -12,6 +12,7 @@ import {
   Alert,
 } from "react-native";
 import { styles, StylesModal, StylesPerfil } from "./styles/Styles";
+import { useTogglePasswordVisibility } from "../screens/useToggle";
 
 const PerfilContrasenaModal = ({
   onPress,
@@ -26,19 +27,20 @@ const PerfilContrasenaModal = ({
   const [confirmacion, setConfirmacion] = useState("");
   const [correo, setCorreo] = useState("");
   const [activacion, setActivacion] = useState(false);
-
+  const { passwordVisibility, rightIcon, handlePasswordVisibility } =
+    useTogglePasswordVisibility();
    // trayendo info contexto
    const infoUsuario = useContextUsuario();
 
   // funcion para verificar datos antes del registro
   const validarCampos = () => {
     let resultado = validarDatosRegistroPersona({
-        correo: correo,
-        contrasena: confirmacion
+        "correo": correo,
+        "contrasena": confirmacion
     });
     if (resultado.result != true) {
       Alert.alert(
-        "Contrasena inválida.",
+        "Cambio invalido.",
         resultado.alerta,
         [{ text: "Entiendo" }]
       );
@@ -50,7 +52,9 @@ const PerfilContrasenaModal = ({
   const cambiarContrasena = async () => {
     const usuario = {
       "contrasena" : confirmacion,
-      "correo" : correo
+      "correo" : correo,
+      "sesion": true,
+      "idSession": infoUsuario.idPersona
     };
     console.log(usuario);
     // Funcion que llama la API para el cambio de contrasena
@@ -152,25 +156,44 @@ const PerfilContrasenaModal = ({
             </View>
             {/* Fin campo contrasena */}
             {/* campo confirmar contrasena*/}
-            <View
-              style={[StylesPerfil.containerInput, { marginBottom: "15%" }]}
-            >
+            {/* campo contraseña*/}
+            <View style={styles.containerInput}>
               <Image
                 source={require("../assets/icons/clave.png")}
-                style={[
-                  StylesPerfil.PNGinput,
-                  { width: 27, height: 31, marginTop: 8 },
-                ]}
+                style={[styles.PNGinput, { height: 34, marginTop: 8 }]}
               />
 
               <TextInput
                 onChangeText={setConfirmacion}
                 value={confirmacion}
-                // onChange={(ev) => validate(ev.target.value)}
-                placeholder={"confirmar contrasena"}
-                style={StylesPerfil.input}
+                placeholder="nueva contraseña"
+                style={[styles.input, { width: "68%" }]}
                 placeholderTextColor="#B3B3B3"
+                secureTextEntry={passwordVisibility}
               />
+              <TouchableOpacity onPress={handlePasswordVisibility}>
+                {
+                  //mostrar icono tachado
+                  passwordVisibility ? (
+                    <Image
+                      source={require("../assets/icons/ojoTachado.png")}
+                      style={[
+                        styles.PNGinput,
+                        { height: 22.5, width: 30, marginTop: 12 },
+                      ]}
+                    />
+                  ) : (
+                    //mostrar icono normal
+                    <Image
+                      source={require("../assets/icons/ojoNormal.png")}
+                      style={[
+                        styles.PNGinput,
+                        { height: 22.5, width: 30, marginTop: 12 },
+                      ]}
+                    />
+                  )
+                }
+              </TouchableOpacity>
             </View>
             {/* Fin campo confirmar contrasena */}
             {/* Botón guardar cambios */}

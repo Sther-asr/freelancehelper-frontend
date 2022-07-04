@@ -46,14 +46,14 @@ const ListaMovientosItems = ({datas, setEstadoActualizar, estadoActualizar, acci
                 {/**botones de rango MES */}
                 <TouchableOpacity 
                     style={[StylesListaMovimientos.botonPequeno, (fondoColor? coloresFondo.gris :coloresFondo.verde )]}
-                    onPress={()=>{accionarConsulta("Mensual"); setFondoColor(!fondoColor)}}
+                    onPress={()=>{accionarConsulta("Mensual"); setFondoColor(false)}}
                 >
                     <Text style={[styles.textlogo, {fontWeight:'600'}]}>MES</Text>
                 </TouchableOpacity>
                 {/**botones de rango AÑO */}
                 <TouchableOpacity 
                     style={[StylesListaMovimientos.botonPequeno, (fondoColor? coloresFondo.verde : coloresFondo.gris)]}
-                    onPress={()=>{accionarConsulta("Anual"); setFondoColor(!fondoColor)}}
+                    onPress={()=>{accionarConsulta("Anual"); setFondoColor(true)}}
                 >
                     <Text style={[styles.textlogo, {fontWeight:'600'}]}>AÑO</Text>
                 </TouchableOpacity>

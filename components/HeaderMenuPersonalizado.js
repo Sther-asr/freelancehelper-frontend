@@ -8,10 +8,11 @@ const HeaderMenuPersonalizado = ({
   togleMenu,
   nombreUsuario,
   saludo,
+  altura
 }) => {
   const fecha = new Date();
   return (
-    <View style={[StylesHome.header]}>
+    <View style={[StylesHome.header,(altura === undefined || altura === null ? {} : {height:altura})]}>
         {/* Logo */}
       <Image
         style={[StylesHome.logo]}
