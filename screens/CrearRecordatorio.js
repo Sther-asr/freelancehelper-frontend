@@ -6,7 +6,8 @@ import { validarDatosRegistroPersona, validarRangoFechaInicioFin } from "../fuci
 import { registrarRecordatorio } from "../requestBackend/API-Recordatorios";
 import HeaderMenuPersonalizado from "../components/HeaderMenuPersonalizado";
 import { SafeAreaView } from "react-native-safe-area-context";
-
+import { StatusBar } from "expo-status-bar";
+import ModalAlert from "../components/ModalAlert";
 
 const CrearRecordatorio = (props) =>{
     // utilizando contexto de usuario
@@ -14,7 +15,8 @@ const CrearRecordatorio = (props) =>{
     const fechaActual = new Date().toISOString().slice(0, 16);
     const [fecha, cargarFecha] = useState({"fechaInicio":fechaActual.slice(0, 10), "fechaFin":""});
     const [hora, cargarHora] = useState({"horaInicio":fechaActual.slice(11, 16), "horaFin":""});
-
+    const [visual, setVisual] = useState(false);
+    const [info, setInfo] = useState({"titulo":"","subTitulo":"", "parrafo":""});
     const [infoRecordatorio, cargarinfoRecordatorio] = useState({
         "sesion": true,
         "idSesion": infousuario.idPersona,
@@ -23,6 +25,11 @@ const CrearRecordatorio = (props) =>{
         "fechaFin": "",
         "estado": "Activo"
     });
+    // efecto para llamar el modal
+    useEffect(()=>{
+        if(info.subTitulo==="" || info.parrafo ==="" || info.titulo===""){return}
+        setVisual(true);
+    },[info]);
     // funcion para restablecer los campos input
     const restablecerCampos = ()=>{
         cargarinfoRecordatorio({
@@ -36,6 +43,12 @@ const CrearRecordatorio = (props) =>{
         cargarFecha({"fechaInicio":fechaActual.slice(0, 10), "fechaFin":""});
         cargarHora({"horaInicio":fechaActual.slice(11, 16), "horaFin":""});
     }
+    //limpiar la info del modal al ocultarla
+    useEffect(()=>{
+        if(visual === false){
+            setInfo({"titulo":"","subTitulo":"","parrafo":""});
+        }
+    },[visual]);
     //funcion para actualizar cada uno de los elementos del estado inicial
     const handleCargarEstado = (index,valor, tipoState) =>{
         if(tipoState === "infoRecordatorio"){
@@ -53,23 +66,18 @@ const CrearRecordatorio = (props) =>{
     // funcion para validar los campos antes de enviar
     const validarCampos = () =>{
         if(infoRecordatorio.descripcion===''|| infoRecordatorio.descripcion ===null){
-            Alert.alert(
-                'Descripcion invalida', 'El campo \'descripción\' no puede estar vacio',[{text:'Entiendo'}]
-            );
+            setInfo({"titulo":"Alerta","subTitulo":"Descripcion invalida", "parrafo":"El campo \'descripción\' no puede estar vacio"});
             return;
         }
         let resultado = validarDatosRegistroPersona(fecha);
         if(resultado.result != true){
-            Alert.alert(
-                'Fecha invalida', resultado.alerta,[{text:'Entiendo'}]
-            );
+            setInfo({"titulo":"Alerta","subTitulo":"Fecha invalida", "parrafo":resultado.alerta});
             return;
         }
         resultado = validarDatosRegistroPersona(hora);
         if(resultado.result != true){
-            Alert.alert(
-                'Hora invalida', resultado.alerta,[{text:'Entiendo'}]
-            );
+            setInfo({"titulo":"Alerta","subTitulo":"Hora invalida", "parrafo":resultado.alerta});
+            
             return;
         }
         ////////////////////////////////////
@@ -79,9 +87,7 @@ const CrearRecordatorio = (props) =>{
     useEffect(()=>{
         if(infoRecordatorio.fechaFin !=="" && infoRecordatorio.fechaInicio!==""){
             if(!validarRangoFechaInicioFin(infoRecordatorio)){
-                Alert.alert(
-                    'Rango de tiempo invalido', `La fecha incial "${infoRecordatorio.fechaInicio}" no puede ser mayor a la fecha final "${infoRecordatorio.fechaFin}"`,[{text:'Entiendo'}]
-                );
+                setInfo({"titulo":"Alerta","subTitulo":"Rango de tiempo invalido", "parrafo":`La fecha incial "${infoRecordatorio.fechaInicio}" no puede ser mayor a la fecha final "${infoRecordatorio.fechaFin}"`});
                 cargarinfoRecordatorio({...infoRecordatorio, "fechaInicio":"", "fechaFin":""});
                 return;
             }
@@ -96,19 +102,18 @@ const CrearRecordatorio = (props) =>{
         const respuesta = await registrarRecordatorio(infoRecordatorio);
         if(!respuesta.registro === true){
             Vibration.vibrate(1500);
-            Alert.alert(
-                'El recordatorio no se pudo crear', `Situacion:\n ${respuesta.resultado === undefined? JSON.stringify(respuesta): JSON.stringify(respuesta.resultado)}`,[{text:'Entiendo'}]
-            );
+            setInfo({"titulo":"Error registro","subTitulo":"El recordatorio no se pudo crear", "parrafo":`Situacion:\n ${respuesta.resultado === undefined? JSON.stringify(respuesta): JSON.stringify(respuesta.resultado)}`});
+            
         }else{
             Vibration.vibrate(200);
-            Alert.alert(
-                '¡Aviso!', 'Recordatorio creado con exito',[{text:'Entiendo', onPress: ()=>restablecerCampos()}]
-            );
+            setInfo({"titulo":"Crear recordatorio","subTitulo":"Registro exitoso", "parrafo":`El recordatorio: "${infoRecordatorio.descripcion}" fue creado exitosamente`});
+            restablecerCampos();
         }
     }
 
     return (
         <ScrollView style={[StylesHome.container]}>
+            <StatusBar backgroundColor="white" translucent={true}/>
             <SafeAreaView style={[StylesConsultaMovimientos.todoAlto]}>
 
                 {/* Logo */}
@@ -222,6 +227,16 @@ const CrearRecordatorio = (props) =>{
                         <Text style={[styles.textBoton, { color: 'white' }]}>Guardar</Text>
                     </TouchableOpacity>
                 </View>
+                {/**modal */}
+                <ModalAlert
+                    VisibleModal={visual}
+                    setVisibleModal={()=>setVisual(!visual)}
+                    textTitleModal={info.titulo}
+                    textSubtilulo={info.subTitulo}
+                    textParrafo={info.parrafo}
+                    backgroundColor="#A3A3A380"
+                    backgroundColorButton="#ffdd9b"
+                />
             </SafeAreaView>
         </ScrollView>
     );

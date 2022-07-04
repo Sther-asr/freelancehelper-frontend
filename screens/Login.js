@@ -16,6 +16,7 @@ import { inicioSesion } from "../requestBackend/API-Usuarios";
 import { consultaAllDatosPersona } from "../requestBackend/API-Persona";
 import { useTogglePasswordVisibility } from "./useToggle";
 import { validarContrasena } from "../fuciones/validador";
+import ModalAlert from "../components/ModalAlert";
 
 EStyleSheet.build();
 
@@ -26,16 +27,33 @@ const Login = (props) => {
   const [contrasena, cargarContrasena] = useState("");
   const { passwordVisibility, rightIcon, handlePasswordVisibility } =
     useTogglePasswordVisibility();
-  const [errores, setErrores] = useState({ usuario: false, contrasena: false });
+  const [visual, setVisual] = useState(false);
   // almacenar info estado
   const [datosUsuario, setDatosUsuario] = useState({});
+  // estado almacenar info 
+  const [info, setInfo] = useState({"subTitulo":"", "parrafo":""});
+
+  // efecto para llamar el modal
+  useEffect(()=>{
+    if(info.subTitulo==="" || info.parrafo ===""){return}
+    setVisual(true);
+  },[info]);
+
+  //funcion restablecer campos
+  const restablecerCampos = () =>{
+    setInfo({"subTitulo":"", "parrafo":""});
+    cargarUsuario("");
+    cargarContrasena("");
+    setVisual(false);
+    handlePasswordVisibility(true);
+  }
 
   // Funcion para que pase al home después de modificar los useState
   useEffect(() => {
     if(JSON.stringify(datosUsuario) === "{}") return;
-    console.log("Hola useEffect");
     console.log(JSON.stringify(datosUsuario));
     props.navigation.navigate("Organizador", { datosUsuario });
+    restablecerCampos();
   }, [datosUsuario]);
 
   const solicitudLogin = async (pantalla) => {
@@ -50,11 +68,8 @@ const Login = (props) => {
       obtenerDatosPersona(dataUsuario.persona_idPersona);
       return;
     }
-
-    Alert.alert("Inicio de sesion dice", `${JSON.stringify(dataUsuario)}`, [
-      { text: "Ok", onPress: () => console.log("los datos") },
-    ]);
-    console.log(JSON.stringify(dataUsuario));
+    setInfo({"subTitulo":"Error de datos", "parrafo":dataUsuario.respuesta});
+    console.log("login dice: "+JSON.stringify(dataUsuario));
   };
 
   const obtenerDatosPersona = async (idPersona) => {
@@ -71,17 +86,17 @@ const Login = (props) => {
   };
 
   const validarCampos = () => {
-    let resultado = validarContrasena(contrasena);
-    if (resultado != true) {
-      Alert.alert("Contraseña no permitida", resultado.contrasena, [
-        { text: "Entiendo" },
-      ]);
+    
+    if (usuario === "" || usuario === null) {
+      setInfo({"subTitulo":"Usuario invalido", "parrafo":"El campo usuario no puede estar vacio"});
       return;
     }
-    if (usuario === "" || usuario === null) {
-      Alert.alert("Usuario invalido", "El campo usuario no puede estar vacio", [
-        { text: "Entiendo" },
-      ]);
+    let resultado = validarContrasena(contrasena);
+    if (resultado != true) {
+      // Alert.alert("Contraseña no permitida", resultado.contrasena, [
+      //   { text: "Entiendo" },
+      // ]);
+      setInfo({"subTitulo":"Contraseña no permitida", "parrafo":resultado.contrasena});
       return;
     }
     solicitudLogin();
@@ -129,7 +144,7 @@ const Login = (props) => {
             <TextInput
               onChangeText={cargarUsuario}
               value={usuario}
-              placeholder="usuario"
+              placeholder="usuario / correo"
               style={styles.input}
               placeholderTextColor="#B3B3B3"
             />
@@ -198,6 +213,18 @@ const Login = (props) => {
               </Text>
             </TouchableOpacity>
           </View>
+
+          {/**modal */}
+          <ModalAlert
+            VisibleModal={visual}
+            setVisibleModal={()=>setVisual(!visual)}
+            textTitleModal="Inicio de sesión"
+            textSubtilulo={info.subTitulo}
+            textParrafo={info.parrafo}
+            backgroundColor="#A3A3A380"
+            backgroundColorButton="#F56783"
+          />
+
         </View>
       </SafeAreaView>
     </ScrollView>

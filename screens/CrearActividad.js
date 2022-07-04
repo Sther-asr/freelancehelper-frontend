@@ -8,6 +8,7 @@ import {styles, StylesCrearRecordatorio, StylesHome, StylesConsultaMovimientos} 
 import { StatusBar } from 'expo-status-bar';
 import SelectDropdown from 'react-native-select-dropdown';
 import { useIsFocused } from '@react-navigation/native';
+import ModalAlert from "../components/ModalAlert";
 
 const CrearActividad = (props) =>{
     // utilizando contexto de usuario
@@ -26,6 +27,19 @@ const CrearActividad = (props) =>{
     const [fecha, cargarFecha] = useState({"fechaInicio":fechaActual.slice(0, 10), "fechaFin":""});
     const [hora, cargarHora] = useState({"horaInicio":fechaActual.slice(11, 16), "horaFin":""});
     const isFocus = useIsFocused();
+    const [visual, setVisual] = useState(false);
+    const [info, setInfo] = useState({"titulo":"","subTitulo":"", "parrafo":""});
+    // efecto para llamar el modal
+    useEffect(()=>{
+        if(info.subTitulo==="" || info.parrafo ==="" || info.titulo===""){return}
+        setVisual(true);
+    },[info]);
+    //limpiar la info del modal al ocultarla
+    useEffect(()=>{
+        if(visual === false){
+            setInfo({"titulo":"","subTitulo":"","parrafo":""});
+        }
+    },[visual]);
     // llamar los proyetos al entrar a la pantalla
     const traerDataProyectos = async () =>{
         const data = await consultaProyecto({"sesion": true, "idSesion" : infousuario.idPersona});
@@ -49,6 +63,7 @@ const CrearActividad = (props) =>{
         cargarFecha({"fechaInicio":fechaActual.slice(0, 10), "fechaFin":""});
         cargarHora({"horaInicio":fechaActual.slice(11, 16), "horaFin":""});
         selectListRestablecer();
+        //setInfo({"titulo":"","subTitulo":"", "parrafo":""});
     }
     // restablecer el select list al estado defecto
     const referenciaSelectList = useRef({});
@@ -69,34 +84,26 @@ const CrearActividad = (props) =>{
     // funcion para validar los campos antes de enviar
     const validarCampos = () =>{
         if(infoActividad.proyecto_idProyecto===''|| infoActividad.proyecto_idProyecto ===null){
-            Alert.alert(
-                'Proyecto invalido', 'En el campo \'proyecto\' debe seleccionar un proyecto',[{text:'Entiendo'}]
-            );
+            setInfo({"titulo":"Alerta","subTitulo":"Proyecto invalido", "parrafo":"En el campo \'proyecto\' debe seleccionar un proyecto"});
             return;
         }
         let resultado = validarDatosRegistroPersona(fecha);
         if(resultado.result != true){
-            Alert.alert(
-                'Fecha invalida', resultado.alerta,[{text:'Entiendo'}]
-            );
+            setInfo({"titulo":"Alerta","subTitulo":"Fecha invalida", "parrafo":resultado.alerta});
             return;
         }
         resultado = validarDatosRegistroPersona(hora);
         if(resultado.result != true){
-            Alert.alert(
-                'Hora invalida', resultado.alerta,[{text:'Entiendo'}]
-            );
+            setInfo({"titulo":"Alerta","subTitulo":"Hora invalida", "parrafo":resultado.alerta});
+            return;
+        }
+        if(infoActividad.descripcion===''|| infoActividad.descripcion ===null){
+            setInfo({"titulo":"Alerta","subTitulo":"Descripcion invalida", "parrafo":"El campo \'descripción\' no puede estar vacio"});
             return;
         }
         ////////////////////////////////////
         cargarInfoActividad({...infoActividad, "fechaInicio":`${fecha.fechaInicio}T${hora.horaInicio}:00`, "fechaFin":`${fecha.fechaFin}T${hora.horaFin}:00`});
         /////////////////////////////////
-        if(infoActividad.descripcion===''|| infoActividad.descripcion ===null){
-            Alert.alert(
-                'Descripcion invalida', 'El campo \'descripción\' no puede estar vacio',[{text:'Entiendo'}]
-            );
-            return;
-        }
         
     }
     // funcion para validar los rangos de fechas una vez cargados
@@ -104,9 +111,7 @@ const CrearActividad = (props) =>{
         console.log("Me he ejecutado");
         if(infoActividad.fechaInicio!=="" && infoActividad.fechaFin!==""){
             if(!validarRangoFechaInicioFin(infoActividad)){
-                Alert.alert(
-                    'Rango de tiempo invalido', `La fecha incial "${infoActividad.fechaInicio}" no puede ser mayor a la fecha final "${infoActividad.fechaFin}"`,[{text:'Entiendo'}]
-                );
+                setInfo({"titulo":"Alerta","subTitulo":"Rango de tiempo invalido", "parrafo":`La fecha incial "${infoActividad.fechaInicio}" no puede ser mayor a la fecha final "${infoActividad.fechaFin}"`});
                 cargarInfoActividad({...infoActividad, "fechaInicio":"", "fechaFin":""});
                 return;
             }
@@ -119,10 +124,11 @@ const CrearActividad = (props) =>{
         console.log(infoActividad);
         const data = await registrarActividad(infoActividad);
         if(data.registro === true){
-            Alert.alert('Informacón de registro', `Actividad : "${infoActividad.descripcion}" para el proyecto: "${infoActividad.proyecto_idProyecto}"\n CREADA CON EXITO`,[{title:'OK'}]);
+            setInfo({"titulo":"Registro actividad","subTitulo":"Información de registro", "parrafo":`Actividad : "${infoActividad.descripcion}" para el proyecto: "${infoActividad.proyecto_idProyecto}"\n CREADA CON EXITO`});
+
             restablecerCampos();
         }else{
-            Alert.alert('Informacón de registro', `Ha ocurrido un error durante el registro: ${data.resultado}`,[{title:'OK'}])
+            setInfo({"titulo":"Error de registro","subTitulo":"Información de error", "parrafo":`Ha ocurrido un error durante el registro: ${data.resultado}`});
         }
     }
     return (
@@ -131,7 +137,7 @@ const CrearActividad = (props) =>{
             
             <SafeAreaView  style={[StylesConsultaMovimientos.todoAlto]}>
                 
-                {/* <StatusBar backgroundColor="#ffdb6f" translucent={true} /> */}
+                {<StatusBar backgroundColor="white" translucent={true} /> }
                 {/* Logo */}
                 <Image style={[StylesCrearRecordatorio.logo]} source={require('../assets/icons/Logo-sup.png')}/>
                 
@@ -276,6 +282,16 @@ const CrearActividad = (props) =>{
                         <Text style={[styles.textBoton, {color:'white'}]}>Guardar</Text>
                     </TouchableOpacity>
                 </View>
+                {/**Modal alert */}
+                <ModalAlert
+                    VisibleModal={visual}
+                    setVisibleModal={()=>setVisual(!visual)}
+                    textTitleModal={info.titulo}
+                    textSubtilulo={info.subTitulo}
+                    textParrafo={info.parrafo}
+                    backgroundColor="#A3A3A380"
+                    backgroundColorButton="#ffdd9b"
+                />
             </SafeAreaView>
         </ScrollView>
     );

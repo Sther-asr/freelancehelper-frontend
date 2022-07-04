@@ -55,7 +55,7 @@ const ConsultaProyectos = (props) => {
   };
   return (
     <SafeAreaView style={[{ backgroundColor: "#FFDD9B" }, styles.container]}>
-      <StatusBar translucent={true} backgroundColor="#FFDD9B" />
+      <StatusBar backgroundColor="white" translucent={true} />
       {/* Logo */}
       <Image
         style={StylesConsultasOrganizador.logo}

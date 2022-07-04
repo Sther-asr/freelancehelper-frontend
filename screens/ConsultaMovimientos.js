@@ -8,6 +8,7 @@ import { consultaMovimientos } from "../requestBackend/API-Diarias";
 import ListaMovientosItems from "../components/ListaMovientosItems";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useIsFocused } from '@react-navigation/native';
+import ModalAlert from "../components/ModalAlert";
 
 
 const ConsultaMovimientos = (props) =>{
@@ -38,6 +39,19 @@ const ConsultaMovimientos = (props) =>{
         obtenerMovimientos("Mensual");
     },[isFocus]);
 
+    const [visual, setVisual] = useState(false);
+    const [info, setInfo] = useState({"titulo":"","subTitulo":"", "parrafo":""});
+    // efecto para llamar el modal
+    useEffect(()=>{
+        if(info.subTitulo==="" || info.parrafo ==="" || info.titulo===""){return}
+        setVisual(true);
+    },[info]);
+    //limpiar la info del modal al ocultarla
+    useEffect(()=>{
+        if(visual === false){
+            setInfo({"titulo":"","subTitulo":"","parrafo":""});
+        }
+    },[visual]);
     // funcion para restablecer los campos input
     const restablecerCampos = ()=>{
         cargarfechasMovimientos({
@@ -56,19 +70,27 @@ const ConsultaMovimientos = (props) =>{
         
         let resultado = validarDatosRegistroPersona(fechasMovimientos)
         if(resultado.result !== true){
-            Alert.alert(
-                'Fecha invalida', resultado.alerta ,[{text:'Entiendo'}]
-            );
+            setInfo({"titulo":"Consulta movimientos","subTitulo":"Fecha invalida", "parrafo":resultado.alerta});
             return;
         }
 
         if(!validarRangoFechaInicioFin(fechasMovimientos)){
-            Alert.alert(
-                'Rango de tiempo invalido', `La fecha incial "${fechasMovimientos.fechaInicio}" no puede ser mayor a la fecha final "${fechasMovimientos.fechaFin}"`,[{text:'Entiendo'}]
-            );
+            setInfo({"titulo":"Consulta movimiento","subTitulo":"Rango de tiempo invalido", "parrafo":`La fecha incial "${fechasMovimientos.fechaInicio}" no puede ser mayor a la fecha final "${fechasMovimientos.fechaFin}"`});
             return;
         }
         obtenerMovimientos("Rango")
+    }
+
+    // funcion para cargar movimiento de mensaje
+    const cargarMovimientoDefault = () => {
+        setDataMovimientos([
+            {"motivo":"No posee movimientos", 
+            "monto":"0,00", 
+            "fecha":"0000/00/00 00:00", 
+            "proyecto_idProyecto":null, 
+            "persona_idPersona":null, 
+            "idEgreso":null}
+        ]);
     }
 
     // funcion para realizar la consulta
@@ -80,9 +102,26 @@ const ConsultaMovimientos = (props) =>{
                 "fecha": fechaActual,
                 "tipo": "Mensual"
             });
-            console.log(JSON.stringify(data));
+            //console.log(JSON.stringify(data));
             if(data.length !== 0){
                 setDataMovimientos(data);
+            }else{
+                cargarMovimientoDefault();
+            }
+        }
+
+        if(periodo === "Anual"){
+            const data = await consultaMovimientos({
+                "sesion": true,
+                "idSession": infoUsuario.idPersona,
+                "fecha": fechaActual,
+                "tipo": "Anual"
+            });
+            //console.log(JSON.stringify(data));
+            if(data.length !== 0){
+                setDataMovimientos(data);
+            }else{
+                cargarMovimientoDefault();
             }
         }
 
@@ -94,9 +133,11 @@ const ConsultaMovimientos = (props) =>{
                 "fechaFin":fechasMovimientos.fechaFin,
                 "tipo": "Rango"
             });
-            console.log(JSON.stringify(data));
+            //console.log(JSON.stringify(data));
             if(data.length !== 0){
                 setDataMovimientos(data);
+            }else{
+                cargarMovimientoDefault();
             }
         }
 
@@ -157,6 +198,16 @@ const ConsultaMovimientos = (props) =>{
                         accionarConsulta={obtenerMovimientos}
                     />
                 </View>
+                {/**Modal alert */}
+                <ModalAlert
+                    VisibleModal={visual}
+                    setVisibleModal={()=>setVisual(!visual)}
+                    textTitleModal={info.titulo}
+                    textSubtilulo={info.subTitulo}
+                    textParrafo={info.parrafo}
+                    backgroundColor="#A3A3A380"
+                    backgroundColorButton="#97e5d0"
+                />
             </SafeAreaView>
         </View>
     );

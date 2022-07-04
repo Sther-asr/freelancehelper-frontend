@@ -5,6 +5,7 @@ import { validarDatosRegistroPersona, validarCifrasNumericas } from "../fuciones
 import { registrarEgreso } from "../requestBackend/API-Egresos";
 import {styles, StylesCrearRecordatorio, StylesHome, StylesConsultaMovimientos, StylesHomeFinanzas} from '../components/styles/Styles'
 import { SafeAreaView } from "react-native-safe-area-context";
+import ModalAlert from "../components/ModalAlert";
 
 
 const CrearEgreso = (props) =>{
@@ -23,6 +24,21 @@ const CrearEgreso = (props) =>{
         "fecha":"",
         "persona_idPersona" : infousuario.idPersona
     });
+
+    const [visual, setVisual] = useState(false);
+    const [info, setInfo] = useState({"titulo":"","subTitulo":"", "parrafo":""});
+    // efecto para llamar el modal
+    useEffect(()=>{
+        if(info.subTitulo==="" || info.parrafo ==="" || info.titulo===""){return}
+        setVisual(true);
+    },[info]);
+    //limpiar la info del modal al ocultarla
+    useEffect(()=>{
+        if(visual === false){
+            setInfo({"titulo":"","subTitulo":"","parrafo":""});
+        }
+    },[visual]);
+
     // funcion para restablecer los campos input
     const restablecerCampos = ()=>{
         cargarInfoEgreso({
@@ -53,35 +69,25 @@ const CrearEgreso = (props) =>{
     // funcion para validar los campos antes de enviar
     const validarCampos = () =>{
         if(infoEgreso.motivo===''|| infoEgreso.motivo ===null){
-            Alert.alert(
-                'Motivo invalida', 'El campo \'Motivo\' no puede estar vacio',[{text:'Entiendo'}]
-            );
+            setInfo({"titulo":"Alerta","subTitulo":"Motivo invalido", "parrafo":"El campo \'Motivo\' no puede estar vacio"});
             return;
         }
         if(infoEgreso.monto == '' || infoEgreso.monto===null){
-            Alert.alert(
-                'Monto invalido', 'El campo \'monto\' no puede estar vacio',[{text:'Entiendo'}]
-            );
+            setInfo({"titulo":"Alerta","subTitulo":"Monto invalido", "parrafo":"El campo \'monto\' no puede estar vacio"});
             return;
         }
         if(validarCifrasNumericas(infoEgreso.monto)){
-            Alert.alert(
-                'Monto invalido', 'El campo \'monto\' solo permite numeros, comas y puntos (0-9 "," ".") y un maximo de 2 decimales, ejemplo: "10.32"',[{text:'Entiendo'}]
-            );
+            setInfo({"titulo":"Alerta","subTitulo":"Monto invalido", "parrafo":"El campo \'monto\' solo permite numeros, comas y puntos (0-9 \",\" \".\") y un maximo de 2 decimales, ejemplo: \"10.32\""});
             return;
         }
         let resultado = validarDatosRegistroPersona(fecha);
         if(resultado.result != true){
-            Alert.alert(
-                'Fecha invalida', resultado.alerta,[{text:'Entiendo'}]
-            );
+            setInfo({"titulo":"Alerta","subTitulo":"Fecha invalida", "parrafo":resultado.alerta});
             return;
         }
         resultado = validarDatosRegistroPersona(hora);
         if(resultado.result != true){
-            Alert.alert(
-                'Hora invalida', resultado.alerta,[{text:'Entiendo'}]
-            );
+            setInfo({"titulo":"Alerta","subTitulo":"Hora invalida", "parrafo":resultado.alerta});
             return;
         }
         ////////////////////////////////////
@@ -103,15 +109,12 @@ const CrearEgreso = (props) =>{
     const handleCrearEgreso = async () =>{
         const respuesta = await registrarEgreso(infoEgreso);
         if(!respuesta.registro === true){
-            Vibration.vibrate(1500);
-            Alert.alert(
-                'El egreso no se pudo crear', `Situacion:\n ${respuesta.resultado === undefined? JSON.stringify(respuesta): JSON.stringify(respuesta.resultado)}`,[{text:'Entiendo'}]
-            );
+            //Vibration.vibrate(1500);
+            setInfo({"titulo":"Error","subTitulo":"El egreso no se pudo crear", "parrafo":`Situacion:\n ${respuesta.resultado === undefined? JSON.stringify(respuesta): JSON.stringify(respuesta.resultado)}`});
         }else{
-            Vibration.vibrate(200);
-            Alert.alert(
-                '¡Aviso!', 'Egreso creado con exito',[{text:'Entiendo', onPress: ()=>restablecerCampos()}]
-            );
+            //Vibration.vibrate(200);
+            restablecerCampos();
+            setInfo({"titulo":"Crear egreso","subTitulo":"¡Aviso!", "parrafo":"Egreso creado con exito"});
         }
     }
 
@@ -209,6 +212,16 @@ const CrearEgreso = (props) =>{
                     </TouchableOpacity>
                 </View>
             </SafeAreaView>
+            {/**Modal alert */}
+            <ModalAlert
+                    VisibleModal={visual}
+                    setVisibleModal={()=>setVisual(!visual)}
+                    textTitleModal={info.titulo}
+                    textSubtilulo={info.subTitulo}
+                    textParrafo={info.parrafo}
+                    backgroundColor="#A3A3A380"
+                    backgroundColorButton="#97e5d0"
+                />
         </ScrollView>
     );
 }

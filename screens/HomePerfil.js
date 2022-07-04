@@ -100,7 +100,7 @@ const HomePerfil = (props) => {
     const respuesta = await actualizarPerfil(perfil);
     if (!respuesta.resultado === true) {
       
-      Vibration.vibrate(1500);
+      //Vibration.vibrate(1500);
       Alert.alert(
         "El perfil no se pudo actualizar",
         `Situacion:\n ${
