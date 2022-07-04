@@ -18,7 +18,7 @@ export const registrarRecordatorio = async (infoSolicitud) =>{
 }
 
 //funion de actualizar recordatorio
-export const actualizarRecordatorio = async (infoSolicitud) =>{
+export const actualizarRecordatorios = async (infoSolicitud) =>{
     const respuesta = await fetch(
         `${APISERVER}/recordatorios/actualizar`,
         {
@@ -29,6 +29,37 @@ export const actualizarRecordatorio = async (infoSolicitud) =>{
     )
     .catch(function(error) {
         console.log('Error durante la promesa actualizar recordatorios' + error.message);
+        });
+    return await respuesta.json();
+}
+
+//consultar recordatorio nuevo
+export const consultarRecordatorios = async (infoSolicitud) =>{
+    const respuesta = await fetch(
+        `${APISERVER}/recordatorios/consulta`,
+        {
+            method:"POST",
+            headers: {Accept:"application/json", "Content-Type":"application/json"},
+            body: JSON.stringify(infoSolicitud)
+        }
+    )
+    .catch(function(error) {
+        console.log('Error durante la promesa de consulta de recordatorios' + error.message);
+        });
+    return await respuesta.json();
+}
+//consultar recordatorio nuevo
+export const eliminarRecordatorio = async (infoSolicitud) =>{
+    const respuesta = await fetch(
+        `${APISERVER}/recordatorios/eliminar`,
+        {
+            method:"DELETE",
+            headers: {Accept:"application/json", "Content-Type":"application/json"},
+            body: JSON.stringify(infoSolicitud)
+        }
+    )
+    .catch(function(error) {
+        console.log('Error durante la promesa de eliminar de recordatorio' + error.message);
         });
     return await respuesta.json();
 }

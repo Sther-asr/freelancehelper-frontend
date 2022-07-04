@@ -10,27 +10,31 @@ import {
 } from "react-native";
 import { StylesTarea } from "./styles/Styles";
 import useContextUsuario from "../hook/useContextUsuario";
-import { eliminarProyectos } from "../requestBackend/API-Proyectos";
+import { eliminarActividad } from "../requestBackend/API-Actividad";
 import AlertModalInfo from "./AlertModalInfo";
 import {
   responsiveScreenHeight,
   responsiveScreenFontSize,
 } from "react-native-responsive-dimensions";
 
-const Proyecto = ({infoProyecto, navegar}) => {
+const Actividad = ({ infoActividad, idProyecto, actualizar}) => {
 
   //contexto con informacion de sesion
   const infoUsuario = useContextUsuario();
   const [modalVisible, setModalVisible] = useState(false);
 
-  const eliminarProyecto = async (id) => {
-    const data = await eliminarProyectos({
+  const eliminaActividad = async (id) => {
+    const data = await eliminarActividad({
       sesion: true,
       idSession: infoUsuario.idPersona,
-      idProyecto: id,
+      idProyecto: idProyecto,
+      idActividad: id,
     });
-    // console.log("idProyecto", id);
-    // console.log(data);
+    if (data.affectedRows != 0) {
+      console.log("idActividad", id);
+      console.log(data);
+      actualizar();
+    }
   };
 
   return (
@@ -44,8 +48,8 @@ const Proyecto = ({infoProyecto, navegar}) => {
         }}
       >
         <AlertModalInfo
-          onPress={() => setModalVisible(!modalVisible)}
-          informacion={infoProyecto.item}
+          onPress={() => {setModalVisible(!modalVisible); actualizar();}}
+          informacion={infoActividad.item}
           textBtn={"Cerrar"}
           colorBtnOcultar="pink"
           colorFondoModal="#afafaf70"
@@ -55,30 +59,22 @@ const Proyecto = ({infoProyecto, navegar}) => {
 
       <TouchableOpacity
         style={[StylesTarea.containerInfo]}
-        onPress={() => navegar.navigate('Actividades', {"idProyecto":infoProyecto.item.idProyecto})}
+        onPress={() => setModalVisible(!modalVisible)}
       >
         <Text style={[StylesTarea.titulo, { color: "#666666", fontSize: 17 }]}>
-          # {infoProyecto.item.descripcion}
+          # {infoActividad.item.descripcion}
         </Text>
 
         <View style={StylesTarea.containerFlex}>
           <Text style={StylesTarea.hora}>
-            {infoProyecto.item.fechaFin.slice(11, 16)}
+            {infoActividad.item.fechaFin.slice(11, 16)}
           </Text>
 
-          <Text style={StylesTarea.hora}>{infoProyecto.item.estado}</Text>
+          <Text style={StylesTarea.hora}>{infoActividad.item.estado}</Text>
         </View>
       </TouchableOpacity>
       <TouchableOpacity
-       onPress={() => setModalVisible(!modalVisible)}
-      >
-        <Image
-          source={require("../assets/icons/Peril-Editar.png")}
-          style={[{ height: 22, width: 22, marginRight: 8 }]}
-        />
-      </TouchableOpacity>
-      <TouchableOpacity
-        onPress={() => eliminarProyecto(infoProyecto.item.idProyecto)}
+        onPress={() => eliminaActividad(infoActividad.item.idActividad)}
       >
         <Image source={require("../assets/icons/trash.png")} />
       </TouchableOpacity>
@@ -86,4 +82,4 @@ const Proyecto = ({infoProyecto, navegar}) => {
   );
 };
 
-export default Proyecto;
+export default Actividad;

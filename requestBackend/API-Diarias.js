@@ -22,9 +22,9 @@ export const consultaTareasDiarias = async (idPersona) =>{
 //actualizar estado de recordatorio/actividad
 export const actualizarEstado = async (infoSolicitud) =>{
     const respuesta = await fetch(
-        `${APISERVER}/consultas/actualizarEstado`,
+        `${APISERVER}/consultas/actualizar/estado`,
         {
-            method:"PUT",
+            method:"POST",
             headers: {Accept:"application/json", "Content-Type":"application/json"},
             body: JSON.stringify(infoSolicitud)
         }

@@ -1,47 +1,52 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Text, View, FlatList, RefreshControl } from "react-native";
 import { styles, StylesListaTareas } from "./styles/Styles";
-import Proyecto from "./ProyectoItem";
-import { consultaProyectos } from "../requestBackend/API-Proyectos";
+import { consultarActividades } from "../requestBackend/API-Actividad";
 import useContextUsuario from "../hook/useContextUsuario";
 import { useIsFocused } from "@react-navigation/native";
+import Actividad from "./ActividadItem";
 
-const ListaProyectosItem = (props) => {
-  
+const ListaProyectosItem = ({idProyecto}) => {
   // control estado actualizar
   // const [estadoActualizar, setEstadoActualizar] = useState(false);
   // informacion del contexto de usuario
   const infoUsuario = useContextUsuario();
   //variable para las tareas obtenidas de la bdd
-  const [dataProyectos, setDataProyectos] = useState([]);
+  const [dataActividades, setDataActividades] = useState([]);
+  const [actualizar, setActualizar] = useState(false);
 
   const isFocus = useIsFocused();
 
   useEffect(() => {
-    consultarProyectos();
+    consultaActividades();
   }, [isFocus]);
 
-  const consultarProyectos = async () => {
+  useEffect(() => {
+    consultaActividades();
+  }, [actualizar]);
+
+  const consultaActividades = async () => {
     const infoSolicitud = {
       sesion: true,
       idSesion: infoUsuario.idPersona,
+      idProyecto: idProyecto
     };
-    // console.log(JSON.stringify(infoSolicitud));
-    const data = await consultaProyectos(infoSolicitud);
+    console.log(JSON.stringify(infoSolicitud));
+    const data = await consultarActividades(infoSolicitud);
+    //console.log(JSON.stringify(data));
     if (data[0] == undefined) {
-      setDataProyectos([
+        setDataActividades([
         {
           idProyecto: "01",
-          descripcion: "Usted no posee proyectos, ¡ingrese unos!",
+          descripcion: "Usted no posee actividades en este proyecto, ¡ingrese unos!",
           fechaFin: "Hoy",
           fechaInicio: "Hoy",
-          monto: "00",
           estado: "activo",
-          persona_idPersona: infoUsuario.idPersona,
+          idActividad:"01"
         },
       ]);
     } else {
-      setDataProyectos(data);
+        setDataActividades(data);
     }
   };
 
@@ -56,18 +61,18 @@ const ListaProyectosItem = (props) => {
   });
 
   //funcion que dibuja cada elemento pasado a traves del llamado del flatList
-  const dibujarItems = (proyecto) => {
-    return <Proyecto 
-    infoProyecto={proyecto}
-    navegar={props.navegar} />;
+  const dibujarItems = (actividad) => {
+    return <Actividad 
+    infoActividad={actividad}
+    idProyecto={idProyecto}
+    actualizar={()=> setActualizar(!actualizar)} />;
   };
 
   return (
     <View style={StylesListaTareas.container}>
       <FlatList
-        data={dataProyectos}
-        keyExtractor={(item) => item.idProyecto}
-        // keyExtractor={(item) => {return(item.fechaInicio + '_' + item.fechaFin + Math.random())}}
+        data={dataActividades}
+        keyExtractor={(item) => item.idActividad}
         renderItem={dibujarItems}
         // refreshControl={
         //     <RefreshControl

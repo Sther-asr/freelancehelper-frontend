@@ -1,0 +1,497 @@
+import React, { useState, useEffect } from "react";
+import {
+  Text,
+  ScrollView,
+  View,
+  TouchableOpacity,
+  TextInput,
+  Dimensions,
+  Image,
+  Vibration,
+  Alert,
+} from "react-native";
+import {
+  responsiveScreenHeight,
+  responsiveScreenFontSize,
+} from "react-native-responsive-dimensions";
+import { styles, StylesModal, StylesPerfil } from "./styles/Styles";
+import useContextUsuario from "../hook/useContextUsuario";
+import {
+  validarDatosRegistroPersona,
+  validarRangoFechaInicioFin,
+  validarCifrasNumericas,
+} from "../fuciones/validador";
+import { actualizarProyectos } from "../requestBackend/API-Proyectos";
+import { actualizarRecordatorios } from "../requestBackend/API-Recordatorios";
+import { actualizarActividad } from "../requestBackend/API-Actividad";
+
+const AlertModalInfo = ({
+  onPress,
+  informacion,
+  colorBtnOcultar,
+  textBtn,
+  colorFondoModal,
+  altura,
+}) => {
+  // Si proyecto está, no colocar los inputs de hora
+  const proyect = informacion.idProyecto !== undefined ? true : false;
+  console.log(informacion, "Modal");
+  //contexto con informacion de sesion
+  const infoUsuario = useContextUsuario();
+  //Estado para habilitar or desabilitar TextInput
+  const [isEditable, setIsEditable] = useState(false);
+  // Datos
+  const [descripcion, setDescripcion] = useState(informacion.descripcion);
+  const [estado, setEstado] = useState(informacion.estado);
+  const [monto, setMonto] = useState(informacion.monto);
+  const [fechaInicio, setFechaInicio] = useState(
+    informacion.fechaInicio.slice(0, 10)
+  );
+  const [fechaFin, setFechaFin] = useState(informacion.fechaFin.slice(0, 10));
+  const [horaInicio, setHoraInicio] = useState(
+    informacion.fechaInicio.slice(11, 16)
+  );
+  const [horaFin, setHoraFin] = useState(informacion.fechaFin.slice(11, 16));
+
+  // Array para guardar los nuevos datos
+  const [datos, setDatos] = useState({
+    sesion: true,
+    idSesion: infoUsuario.idPersona,
+    proyecto_idProyecto: informacion.proyecto_idProyecto,
+    idProyecto: informacion.idProyecto,
+    idRecordatorio: informacion.idRecordatorio,
+    idActividad: informacion.idActividad,
+    descripcion: "",
+    estado: "",
+    monto: "",
+    fechaFin: "",
+    fechaInicio: "",
+  });
+
+  // UseEffect
+  useEffect(() => {
+    console.log(datos);
+    if (datos.estado === "" || datos.fechaFin === "" || datos.monto === "")
+      return;
+    handleUpdate();
+  }, [datos]);
+  //función para habilitar/desabilitar la edicion
+  const enableInputs = () => {
+    setIsEditable(!isEditable);
+  };
+  // funcion para validar los campos antes de enviar
+  const validarCampos = () => {
+    console.log("Validar campos");
+
+    // Validar descripción
+    if (descripcion == "" || descripcion === null) {
+      Alert.alert(
+        "Descripcion invalida",
+        "El campo 'descripción' no puede estar vacio",
+        [{ text: "Entiendo" }]
+      );
+      return;
+    }
+    // Validar monto
+    if (proyect === true) {
+      if (monto == "" || monto === null) {
+        Alert.alert("Monto invalido", "El campo 'monto' no puede estar vacio", [
+          { text: "Entiendo" },
+        ]);
+        return;
+      } else if (validarCifrasNumericas(monto)) {
+        Alert.alert(
+          "Monto inválido",
+          "El campo 'monto' solo permite numeros y puntos, ejemplo: \"10.32\"",
+          [{ text: "Entiendo" }]
+        );
+        return;
+      }
+    }
+
+    // Validar fechas
+    let resultado = validarDatosRegistroPersona({
+      fechaInicio: fechaInicio,
+      fechaFin: fechaFin,
+      horaInicio: horaInicio,
+      horaFin: horaFin,
+    });
+
+    if (resultado.result !== true) {
+      console.log("Error");
+      Alert.alert("Actualización inválida", resultado.alerta, [
+        { text: "Entiendo" },
+      ]);
+      return;
+    } else {
+      setDatos({
+        ...datos,
+        descripcion: descripcion,
+        estado: estado,
+        monto: monto,
+        fechaInicio: `${fechaInicio}T${horaInicio}:00`,
+        fechaFin: `${fechaFin}T${horaFin}:00`,
+        // fechaInicio: fechaInicio,
+        // fechaFin: fechaFin
+      });
+    }
+  };
+  // funcion para realizar el registro
+  const handleUpdate = async () => {
+    let tipo;
+    let respuesta;
+    if (
+      informacion.idProyecto &&
+      informacion.idRecordatorio == undefined &&
+      informacion.idActividad == undefined
+    ) {
+      tipo = "Proyecto";
+      respuesta = await actualizarProyectos(datos);
+    } else if (
+      informacion.idProyecto == undefined &&
+      informacion.idRecordatorio &&
+      informacion.idActividad == undefined
+    ) {
+      tipo = "Recordatorio";
+      respuesta = await actualizarRecordatorios(datos);
+    } else {
+      tipo = "Actividad";
+      respuesta = await actualizarActividad(datos);
+    }
+
+    if (!respuesta.resultado === true) {
+      Vibration.vibrate(1500);
+      Alert.alert(
+        `El ${tipo} no se pudo actualizar`,
+        `Situacion:\n ${
+          respuesta.resultado === undefined
+            ? JSON.stringify(respuesta)
+            : JSON.stringify(respuesta.resultado)
+        }`,
+        [{ text: "Entiendo" }]
+      );
+    } else {
+      Vibration.vibrate(200);
+      Alert.alert("¡Aviso!", `${tipo} actualizado con exito`, [
+        { text: "Entiendo" },
+      ]);
+      setIsEditable(false);
+    }
+  };
+
+  return (
+    // View principal
+    <View
+      style={[
+        StylesModal.container,
+        {
+          backgroundColor:
+            colorFondoModal === undefined ? "#AAAAAA50" : colorFondoModal,
+        },
+      ]}
+    >
+      {/* View que contiene el botón y lo demás */}
+      <View
+        style={[
+          StylesModal.containerCuerpo,
+          {
+            height:
+              altura === undefined
+                ? StylesModal.containerCuerpo.height
+                : altura,
+          },
+        ]}
+      >
+        {/* Boton OK en parte superior */}
+        <TouchableOpacity
+          style={[
+            StylesModal.botonCerrar,
+            {
+              backgroundColor:
+                colorBtnOcultar === undefined ? "orange" : colorBtnOcultar,
+              margin: 0,
+            },
+          ]}
+          onPress={onPress}
+        >
+          {/* Texto del botón */}
+          <Text style={[styles.textlogo, { fontWeight: "600" }]}>
+            {textBtn === undefined ? "OCULTAR" : textBtn}
+          </Text>
+        </TouchableOpacity>
+
+        {/* Img Editar */}
+        <View style={[StylesPerfil.vieweditar, { margin: 0 }]}>
+          <TouchableOpacity onPress={() => enableInputs()}>
+            <Image
+              source={require("../assets/icons/Peril-Editar.png")}
+              style={[
+                StylesPerfil.PNGinput,
+                { width: 25, height: 25, margin: 5 },
+              ]}
+            />
+          </TouchableOpacity>
+        </View>
+
+        {/* View de la información */}
+        <View
+          style={[
+            StylesModal.cuerpoInformacion,
+            { height: responsiveScreenHeight(altura - 495) },
+          ]}
+        >
+          <ScrollView>
+            {/* Descripción */}
+            <Text style={[StylesModal.subtitulo]}>Descripción:</Text>
+            <View
+              style={[
+                {
+                  width: Dimensions.get("window").width - 120,
+                  borderBottomWidth: 1,
+                  borderColor: "#B3B3B3",
+                },
+              ]}
+            >
+              <TextInput
+                onChangeText={setDescripcion}
+                value={descripcion}
+                placeholder={"descripcion"}
+                style={[
+                  {
+                    marginLeft: 5,
+                    fontSize: 16,
+                    color: "#808080",
+                  },
+                ]}
+                placeholderTextColor="#B3B3B3"
+                editable={isEditable}
+              />
+            </View>
+            {/* Estado */}
+            <Text style={[StylesModal.subtitulo]}>Estado:</Text>
+            <View
+              style={[
+                // StylesPerfil.containerInput,
+                {
+                  width: Dimensions.get("window").width - 120,
+                  borderBottomWidth: 1,
+                  borderColor: "#B3B3B3",
+                },
+              ]}
+            >
+              <TextInput
+                onChangeText={setEstado}
+                value={estado}
+                placeholder={"estado"}
+                style={[
+                  {
+                    marginLeft: 5,
+                    fontSize: 16,
+                    color: "#808080",
+                  },
+                ]}
+                placeholderTextColor="#B3B3B3"
+                editable={isEditable}
+              />
+            </View>
+
+            {/* Fecha Inicio */}
+            <Text style={[StylesModal.subtitulo]}>Fecha inicio:</Text>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                width: Dimensions.get("window").width - 120,
+              }}
+            >
+              {/* Fecha */}
+              <View
+                style={[
+                  {
+                    width: proyect
+                      ? Dimensions.get("window").width - 120
+                      : "45%",
+                    borderBottomWidth: 1,
+                    borderColor: "#B3B3B3",
+                  },
+                ]}
+              >
+                <TextInput
+                  onChangeText={setFechaInicio}
+                  value={fechaInicio}
+                  placeholder={"fecha de inicio"}
+                  style={[
+                    {
+                      marginLeft: 5,
+                      fontSize: 16,
+                      color: "#808080",
+                    },
+                  ]}
+                  placeholderTextColor="#B3B3B3"
+                  editable={isEditable}
+                />
+              </View>
+              {/* Hora */}
+              <View
+                style={[
+                  proyect
+                    ? ""
+                    : {
+                        width: "45%",
+                        borderBottomWidth: 1,
+                        borderColor: "#B3B3B3",
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                      },
+                ]}
+              >
+                <TextInput
+                  onChangeText={setHoraInicio}
+                  value={proyect ? "" : horaInicio}
+                  placeholder={proyect ? "" : "hora de inicio"}
+                  style={[
+                    {
+                      marginLeft: 5,
+                      fontSize: 16,
+                      color: "#808080",
+                    },
+                  ]}
+                  placeholderTextColor="#B3B3B3"
+                  editable={isEditable}
+                />
+              </View>
+            </View>
+
+            {/* Fecha Fin */}
+            <Text style={[StylesModal.subtitulo]}>Fecha fin:</Text>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                width: Dimensions.get("window").width - 120,
+              }}
+            >
+              {/* Fecha */}
+              <View
+                style={[
+                  {
+                    width: proyect
+                      ? Dimensions.get("window").width - 120
+                      : "45%",
+                    borderBottomWidth: 1,
+                    borderColor: "#B3B3B3",
+                  },
+                ]}
+              >
+                <TextInput
+                  onChangeText={setFechaFin}
+                  value={fechaFin}
+                  placeholder={"fecha de fin"}
+                  style={[
+                    {
+                      marginLeft: 5,
+                      fontSize: 16,
+                      color: "#808080",
+                    },
+                  ]}
+                  placeholderTextColor="#B3B3B3"
+                  editable={isEditable}
+                />
+              </View>
+              {/* Hora */}
+              <View
+                style={[
+                  proyect
+                    ? ""
+                    : {
+                        width: "45%",
+                        borderBottomWidth: 1,
+                        borderColor: "#B3B3B3",
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                      },
+                ]}
+              >
+                <TextInput
+                  onChangeText={setHoraFin}
+                  value={proyect ? "" : horaFin}
+                  placeholder={proyect ? "" : "hora de fin"}
+                  style={[
+                    {
+                      marginLeft: 5,
+                      fontSize: 16,
+                      color: "#808080",
+                    },
+                  ]}
+                  placeholderTextColor="#B3B3B3"
+                  editable={isEditable}
+                />
+              </View>
+            </View>
+
+            {/* Monto */}
+            <Text style={[StylesModal.subtitulo]}>
+              {proyect ? "Monto:" : ""}
+            </Text>
+            <View
+              style={[
+                proyect
+                  ? {
+                      width: Dimensions.get("window").width - 120,
+                      borderBottomWidth: 1,
+                      borderColor: "#B3B3B3",
+                      marginBottom: 25,
+                    }
+                  : "",
+              ]}
+            >
+              <TextInput
+                onChangeText={setMonto}
+                value={proyect ? monto.toString() : ""}
+                placeholder={proyect ? "monto" : ""}
+                style={[
+                  {
+                    marginLeft: 5,
+                    fontSize: 16,
+                    color: "#808080",
+                  },
+                ]}
+                placeholderTextColor="#B3B3B3"
+                keyboardType="numeric"
+                editable={isEditable}
+              />
+            </View>
+            {/* Botón guardar cambios */}
+            <TouchableOpacity
+              style={
+                isEditable
+                  ? [
+                      StylesPerfil.saveChanges,
+                      {
+                        marginVertical: 10,
+                        width: Dimensions.get("window").width - 120,
+                        alignSelf: "center",
+                      },
+                    ]
+                  : [
+                      StylesPerfil.saveChanges,
+                      {
+                        backgroundColor: "#B3B3B3",
+                        marginVertical: 10,
+                        width: Dimensions.get("window").width - 120,
+                        alignSelf: "center",
+                      },
+                    ]
+              }
+              onPress={isEditable ? validarCampos : () => {}}
+            >
+              <Text style={[StylesPerfil.textSaveChange]}>Guardar cambios</Text>
+            </TouchableOpacity>
+          </ScrollView>
+        </View>
+      </View>
+    </View>
+  );
+};
+
+export default AlertModalInfo;
