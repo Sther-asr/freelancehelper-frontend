@@ -3,7 +3,7 @@ import { View, Text, ScrollView, TextInput, Image , TouchableOpacity, Alert, Vib
 import useContextUsuario from "../hook/useContextUsuario";
 import { validarDatosRegistroPersona, validarRangoFechaInicioFin, validarHora } from "../fuciones/validador";
 import { registrarActividad} from "../requestBackend/API-Actividad";
-import { consultaProyecto } from "../requestBackend/API-Proyectos";
+import { consultaProyectos } from "../requestBackend/API-Proyectos";
 import {styles, StylesCrearRecordatorio, StylesHome, StylesConsultaMovimientos} from '../components/styles/Styles'
 import { StatusBar } from 'expo-status-bar';
 import SelectDropdown from 'react-native-select-dropdown';
@@ -42,7 +42,7 @@ const CrearActividad = (props) =>{
     },[visual]);
     // llamar los proyetos al entrar a la pantalla
     const traerDataProyectos = async () =>{
-        const data = await consultaProyecto({"sesion": true, "idSesion" : infousuario.idPersona});
+        const data = await consultaProyectos({"sesion": true, "idSesion" : infousuario.idPersona});
         cargarProyectos(data);
     }
     useEffect(()=>{
