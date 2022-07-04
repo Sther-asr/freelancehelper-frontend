@@ -70,3 +70,18 @@ export const consultaMontoTotalMovimientos= async (infoSolicitud) =>{
     //console.log('Este es el resultado' +  JSON.stringify(respuesta));
     return await respuesta.json();
 }
+//actualizar perfil del usuario
+export const actualizarPerfil = async (infoSolicitud) =>{
+    const respuesta = await fetch(
+        `${APISERVER}/consultas/actualizar/perfil`,
+        {
+            method:"POST",
+            headers: {Accept:"application/json", "Content-Type":"application/json"},
+            body: JSON.stringify(infoSolicitud)
+        }
+    )
+    .catch(function(error) {
+        console.log('Error durante la promesa de actualizacion de perfil' + error.message);
+        });
+    return await respuesta.json();
+}

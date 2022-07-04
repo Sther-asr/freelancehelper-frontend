@@ -6,6 +6,7 @@ import {registrarPersona} from '../requestBackend/API-Personas';
 import {useTogglePasswordVisibility} from "./useToggle";
 import InfoModalAyudaRegistro from "../components/InfoModalAyudaRegistro";
 import { validarDatosRegistroPersona} from '../fuciones/validador';
+import ModalAlert from "../components/ModalAlert";
 
 const Logup = (props) =>{
     /*Delaracion de estados */
@@ -28,7 +29,15 @@ const Logup = (props) =>{
         cargarFechaNacimiento("");
         cargarDatosPersona("");
         handlePasswordVisibility(true);
+        setInfo({"titulo":"","subTitulo":"","parrafo":""});
     }
+    const [visual, setVisual] = useState(false);
+    const [info, setInfo] = useState({"titulo":"","subTitulo":"", "parrafo":""});
+    // efecto para llamar el modal
+    useEffect(()=>{
+        if(info.subTitulo==="" || info.parrafo ==="" || info.titulo===""){return}
+        setVisual(true);
+    },[info]);
 
 
     //funcion registrar
@@ -45,22 +54,18 @@ const Logup = (props) =>{
         const resultado = await registrarPersona(persona);
         console.log(resultado.registro);
         if(resultado.registro == true ) {
-            Alert.alert(
-                "Registro exitoso, dirijase a inicio",
-                `Bienvenido "${persona.nombrePersona + ' ' + persona.apellidoPersona}"`,
-                [
-                    {text:"Ok", onPress: ()=>props.navigation.navigate('Login')}
-                ]
-            );
+            // Alert.alert(
+            //     "Registro exitoso, dirijase a inicio",
+            //     `Bienvenido "${persona.nombrePersona + ' ' + persona.apellidoPersona}"`,
+            //     [
+            //         {text:"Ok", onPress: ()=>props.navigation.navigate('Login')}
+            //     ]
+            // );
             restablecerCampos();
+            props.navigation.navigate('Login')
+            
             }else{
-            Alert.alert(
-                            "Registro invalido",
-                            "Revise sus datos, Usuario o correo ya existente",
-                            [
-                                {text:"Entendido"}
-                            ]
-                        );
+            setInfo({"titulo":"Registro","subTitulo":"Registro invalido", "parrafo":"Revise sus datos, Usuario o correo ya existente"});
         }
     }
 
@@ -75,9 +80,7 @@ const Logup = (props) =>{
             "contrasena" : contrasena
         });
         if(resultado.result != true){
-            Alert.alert(
-                'Aviso de registro invalido', resultado.alerta,[{text:'Entiendo'}]
-            );
+            setInfo({"titulo":"Registro","subTitulo":"Aviso de registro invalido", "parrafo":resultado.alerta});
             return;
         }
         registrarNuevoUsuario();
@@ -236,7 +239,7 @@ const Logup = (props) =>{
                         <Text style={[styles.textBoton, {color:'white'}]}>Registrarse</Text>
                     </TouchableOpacity>
 
-                    {/**Modal de ayusa */}
+                    {/**Modal de ayuda */}
                     
                         <Modal
                             animationType="slide"
@@ -257,8 +260,18 @@ const Logup = (props) =>{
                     >
                         <Text style={[styles.textBoton, { color: '#a197ff', textDecorationLine:'underline' }]}>Ayuda</Text>
                     </TouchableOpacity>
-                    
                 </View>
+
+                {/**modal validaciones */}
+                <ModalAlert
+                    VisibleModal={visual}
+                    setVisibleModal={() => setVisual(!visual)}
+                    textTitleModal={info.titulo}
+                    textSubtilulo={info.subTitulo}
+                    textParrafo={info.parrafo}
+                    backgroundColor="#A3A3A380"
+                    backgroundColorButton="#a197ff80"
+                />
             </View>
         </ScrollView>
     );

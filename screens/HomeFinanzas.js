@@ -1,9 +1,9 @@
 import React,{useEffect, useState} from "react";
 import { StatusBar } from "expo-status-bar";
-import { View, ScrollView, TouchableOpacity, Text } from "react-native";
+import { View, ScrollView, TouchableOpacity, Text, Image } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import useContextUsuario from "../hook/useContextUsuario";
-import { StylesHome, StylesHomeFinanzas, styles, StylesConsultaMovimientos } from "../components/styles/Styles";
+import { StylesHome, StylesHomeFinanzas, styles, StylesConsultaMovimientos, StylesMostrarCifras } from "../components/styles/Styles";
 import HeaderMenuPersonalizado from "../components/HeaderMenuPersonalizado";
 import MostrarCifra from "../components/MostrarCifra";
 import { consultaMontoTotalMovimientos } from "../requestBackend/API-Diarias";
@@ -38,14 +38,16 @@ const HomeFinanzas = (props) => {
 
 
   return (
-    <ScrollView style={[{ backgroundColor: "#feb529" }]}>
-      <SafeAreaView style={[StylesHome.container, StylesHomeFinanzas.colorFondo, StylesConsultaMovimientos.todoAlto]}>
+    <ScrollView>
+      <SafeAreaView style={[StylesHome.container, StylesHomeFinanzas.colorFondo, StylesConsultaMovimientos.todoAlto,{height:'100%'}]}>
         <StatusBar backgroundColor="white" />
         {/**Menu Personalizado */}
         <HeaderMenuPersonalizado
-          //   saludo="❤Hola, "
-          togleMenu={() => props.navigation.openDrawer()}
+          //saludo="Bienvenido a Finanzas"
+          nombreUsuario={""}
+          //togleMenu={() => props.navigation.openDrawer()}
           propfecha={false}
+          altura={70}
         />
         {/* </View> */}
         <View style={[{ width: '84%', marginHorizontal: '8%', alignItems: 'center' }]}>
@@ -58,7 +60,7 @@ const HomeFinanzas = (props) => {
           />
 
           <MostrarCifra
-            titulo={"Inresos Mensuales"}
+            titulo={"Ingresos Mensuales"}
             monto={infoMontoTotales.totalIngresos}
             moneda={"USD"}
             estilos={{ marginBottom: 20 }}
@@ -80,11 +82,26 @@ const HomeFinanzas = (props) => {
 
           {/*Button */}
           <TouchableOpacity
-            style={[styles.boton, { backgroundColor: '#EF7F9D', width: '85%' }]}
+            style={[styles.boton, { backgroundColor: '#EF7F9D', width: '85%' , marginBottom:30}]}
             onPress={() => props.navigation.navigate("ConsultaMovimientos")}
           >
             <Text style={[styles.textBoton, { color: 'white' }]}>Consultar</Text>
           </TouchableOpacity>
+          
+          {/**button nuevo egreso */}
+          <View style={[StylesMostrarCifras.containerCifras, { marginBottom:50, justifyContent:'flex-end', width:'95%' }]}>
+
+              <TouchableOpacity
+                style={[{height:'100%'}]}
+                onPress={()=>props.navigation.navigate('CrearEgreso')}
+              >
+                <Image
+                  style={[{width:50, height:50, resizeMode:'contain'}]}
+                  source={require('../assets/icons/plus.png')}
+                />
+              </TouchableOpacity>
+
+          </View>
         </View>
       </SafeAreaView>
     </ScrollView>

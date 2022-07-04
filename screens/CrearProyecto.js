@@ -5,6 +5,7 @@ import { validarDatosRegistroPersona, validarRangoFechaInicioFin, validarCifrasN
 import { registrarProyecto} from "../requestBackend/API-Proyectos";
 import {styles, StylesCrearRecordatorio, StylesHome, StylesConsultaMovimientos} from '../components/styles/Styles'
 import { SafeAreaView } from "react-native-safe-area-context";
+import { StatusBar } from "expo-status-bar";
 
 
 const CrearProyecto = (props) =>{
@@ -123,6 +124,7 @@ const CrearProyecto = (props) =>{
 
     return (
         <ScrollView style={[StylesHome.container]}>
+            <StatusBar backgroundColor="white" translucent={true}/>
             <SafeAreaView style={[StylesConsultaMovimientos.todoAlto]}>
                 {/* Logo */}
                 <Image style={[StylesCrearRecordatorio.logo]} source={require('../assets/icons/Logo-sup.png')} />
