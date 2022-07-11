@@ -252,6 +252,12 @@ export const StylesTarea = EStyleSheet.create({
         width:'20%',  
         justifyContent:'center',  
         paddingLeft:'6%'
+    },
+    etiqueta:{
+        paddingVertical:1,
+        paddingHorizontal:5,
+        borderRadius:6,
+        textAlign:'center'
     }
 });
 

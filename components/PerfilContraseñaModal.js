@@ -138,10 +138,10 @@ const PerfilContrasenaModal = ({
             {/* campo contrasena*/}
             <View style={StylesPerfil.containerInput}>
               <Image
-                source={require("../assets/icons/clave.png")}
+                source={require("../assets/icons/email.png")}
                 style={[
                   StylesPerfil.PNGinput,
-                  { width: 27, height: 31, marginTop: 8 },
+                  { width: 30, height: 22, marginTop: 12 },
                 ]}
               />
 

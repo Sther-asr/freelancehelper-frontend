@@ -17,7 +17,7 @@ const ListaTareasIten = (props)=>{
     // obteniendo la fecha actual del dispositivo
     const fechaActual = new Date().toISOString().slice(0, 10);
     const isFocus = useIsFocused();
-    console.log(fechaActual);
+    //console.log(fechaActual);
     
     
     useEffect(()=>{
@@ -32,7 +32,7 @@ const ListaTareasIten = (props)=>{
             "fechaFin" : fechaActual,
             "estado": 1
         }
-        console.log(JSON.stringify(infoSolicitud));
+        //console.log(JSON.stringify(infoSolicitud));
         const data = await consultaTareasDiarias(infoSolicitud);
         //console.log(JSON.stringify(data));
         if(data[0]==undefined){
@@ -66,7 +66,7 @@ const ListaTareasIten = (props)=>{
     //funcion que dibuja cada elemento pasado a traves del llamado del flatList
     const dibujarItens = (tarea) =>{
         return(
-         <Tarea infoTarea={tarea}/>
+         <Tarea infoTarea={tarea} actualizarLista={actualizarActiva}/>
         );
     }
 
