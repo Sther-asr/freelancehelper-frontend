@@ -87,7 +87,7 @@ const Proyecto = ({infoProyecto, navegar, actualizar}) => {
 
         <View style={StylesTarea.containerFlex}>
           <Text style={StylesTarea.hora}>
-            {infoProyecto.item.fechaFin}
+            {(infoProyecto.item.fechaFin).slice(0, 10) +" "+(infoProyecto.item.fechaFin).slice(11, 16)}
           </Text>
 
           <Text style={StylesTarea.hora}>{infoProyecto.item.estado}</Text>
