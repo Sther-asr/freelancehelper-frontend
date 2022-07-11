@@ -42,7 +42,7 @@ const Recordatorio = ({ infoRecordatorio, actualizar }) => {
     const data = await eliminarRecordatorio({
       sesion: true,
       idSesion: infoUsuario.idPersona,
-      idRecordatorio: id,
+      idRecordatorio: id
     });
     if (data.affectedRows != 0) {
       console.log("idActividad", id);
@@ -103,7 +103,7 @@ const Recordatorio = ({ infoRecordatorio, actualizar }) => {
 
         <View style={StylesTarea.containerFlex}>
           <Text style={StylesTarea.hora}>
-            {infoRecordatorio.item.fechaFin.slice(11, 16)}
+            {(infoRecordatorio.item.fechaFin).slice(0, 10) +" "+(infoRecordatorio.item.fechaFin).slice(11, 16)}
           </Text>
 
           <Text style={StylesTarea.hora}>{infoRecordatorio.item.estado}</Text>
