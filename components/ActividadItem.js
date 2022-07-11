@@ -4,7 +4,6 @@ import {
   View,
   TouchableOpacity,
   Image,
-  Alert,
   ScrollView,
   Modal,
 } from "react-native";
@@ -18,23 +17,25 @@ import {
   responsiveScreenFontSize,
 } from "react-native-responsive-dimensions";
 
-const Actividad = ({ infoActividad, idProyecto, actualizar}) => {
-
+const Actividad = ({ infoActividad, idProyecto, actualizar }) => {
   //contexto con informacion de sesion
   const infoUsuario = useContextUsuario();
   const [modalVisible, setModalVisible] = useState(false);
+
   //estados para utilizar el ModalAlert
   const [visual, setVisual] = useState(false);
-  const [info, setInfo] = useState({"titulo":"","subTitulo":"", "parrafo":""});
+  const [info, setInfo] = useState({ titulo: "", subTitulo: "", parrafo: "" });
   // efecto para llamar el modal
   useEffect(() => {
-    if (info.subTitulo === "" || info.parrafo === "" || info.titulo === "") { return }
+    if (info.subTitulo === "" || info.parrafo === "" || info.titulo === "") {
+      return;
+    }
     setVisual(true);
   }, [info]);
   //limpiar la info del modal al ocultarla
   useEffect(() => {
     if (visual === false) {
-      setInfo({ "titulo": "", "subTitulo": "", "parrafo": "" });
+      setInfo({ titulo: "", subTitulo: "", parrafo: "" });
     }
   }, [visual]);
 
@@ -53,7 +54,17 @@ const Actividad = ({ infoActividad, idProyecto, actualizar}) => {
   };
 
   return (
-    <View style={[StylesTarea.container, { borderTopWidth: 0, }]}>
+    <View style={[StylesTarea.container, { borderTopWidth: 0 }]}>
+      {/**Modal alert */}
+      <ModalAlert
+        VisibleModal={visual}
+        setVisibleModal={() => setVisual(!visual)}
+        textTitleModal={info.titulo}
+        textSubtilulo={info.subTitulo}
+        textParrafo={info.parrafo}
+        backgroundColor="#A3A3A380"
+        backgroundColorButton="#ffdd9b"
+      />
       <Modal
         animationType="fade"
         transparent={true}
@@ -63,7 +74,10 @@ const Actividad = ({ infoActividad, idProyecto, actualizar}) => {
         }}
       >
         <AlertModalInfo
-          onPress={() => {setModalVisible(!modalVisible); actualizar();}}
+          onPress={() => {
+            setModalVisible(!modalVisible);
+            actualizar();
+          }}
           informacion={infoActividad.item}
           textBtn={"Cerrar"}
           colorBtnOcultar="pink"
@@ -73,11 +87,17 @@ const Actividad = ({ infoActividad, idProyecto, actualizar}) => {
       </Modal>
 
       <TouchableOpacity
-        style={[StylesTarea.containerInfo, {marginRight:'9%'}]}
+        style={[StylesTarea.containerInfo, {marginRight: "9%"}]}
         onPress={() => {
-          infoActividad.item.monto === "00.00" && infoActividad.item.idProyecto ==="00" && infoActividad.item.idProyecto==="00" ?
-          setInfo({"titulo":"Alerta","subTitulo":"Actividad invalida", "parrafo":"Esto no es una actividad ¡Cree una!"}):
-          setModalVisible(!modalVisible)
+          infoActividad.item.monto === "00.00" &&
+          infoActividad.item.idProyecto === "00" &&
+          infoActividad.item.idProyecto === "00"
+            ? setInfo({
+                titulo: "Alerta",
+                subTitulo: "Actividad invalida",
+                parrafo: "Esto no es una actividad, ¡cree una!",
+              })
+            : setModalVisible(!modalVisible);
         }}
       >
         <Text style={[StylesTarea.titulo, { color: "#666666", fontSize: 17 }]}>
@@ -92,32 +112,23 @@ const Actividad = ({ infoActividad, idProyecto, actualizar}) => {
           <Text style={StylesTarea.hora}>{infoActividad.item.estado}</Text>
         </View>
       </TouchableOpacity>
-      {
-        infoActividad.item.estado !== "Terminado" ?
-        (
-            <TouchableOpacity
-              onPress={() => {
-                infoActividad.item.monto === "00.00" && infoActividad.item.idProyecto === "00" && infoActividad.item.idProyecto === "00" ?
-                  setInfo({ "titulo": "Alerta", "subTitulo": "Actividad invalida", "parrafo": "Esto no es una actividad ¡No se puede eliminar!" }) :
-                  eliminaActividad(infoActividad.item.idActividad)
-              }}
-            >
-              <Image source={require("../assets/icons/trash.png")} />
-            </TouchableOpacity>
-        ):(
-            <View></View>
-        )
-      }
-      {/**Modal alert */}
-      <ModalAlert
-        VisibleModal={visual}
-        setVisibleModal={() => setVisual(!visual)}
-        textTitleModal={info.titulo}
-        textSubtilulo={info.subTitulo}
-        textParrafo={info.parrafo}
-        backgroundColor="#A3A3A380"
-        backgroundColorButton="#ffdd9b"
-      />
+
+      <TouchableOpacity
+        onPress={() => {
+          infoActividad.item.monto === "00.00" &&
+          infoActividad.item.idProyecto === "00" &&
+          infoActividad.item.idProyecto === "00"
+            ? setInfo({
+                titulo: "Alerta",
+                subTitulo: "Actividad invalida",
+                parrafo: "Esto no es una actividad ¡No se puede eliminar!",
+              })
+            : eliminaActividad(infoActividad.item.idActividad);
+        }}
+      >
+        <Image source={require("../assets/icons/trash.png")} />
+      </TouchableOpacity>
+
     </View>
   );
 };
