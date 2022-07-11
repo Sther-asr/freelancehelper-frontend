@@ -106,7 +106,7 @@ const Actividad = ({ infoActividad, idProyecto, actualizar }) => {
 
         <View style={StylesTarea.containerFlex}>
           <Text style={StylesTarea.hora}>
-            {infoActividad.item.fechaFin.slice(11, 16)}
+            {(infoActividad.item.fechaFin).slice(0, 10) +" "+(infoActividad.item.fechaFin).slice(11, 16)}
           </Text>
 
           <Text style={StylesTarea.hora}>{infoActividad.item.estado}</Text>
