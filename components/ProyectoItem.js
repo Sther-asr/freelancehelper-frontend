@@ -4,6 +4,7 @@ import {
   View,
   TouchableOpacity,
   Image,
+  Alert,
   ScrollView,
   Modal,
 } from "react-native";
@@ -17,12 +18,11 @@ import {
   responsiveScreenFontSize,
 } from "react-native-responsive-dimensions";
 
-const Proyecto = ({infoProyecto, navegar, actualizar}) => {
+const Proyecto = ({infoProyecto, navegar, actualizarLista}) => {
 
   //contexto con informacion de sesion
   const infoUsuario = useContextUsuario();
   const [modalVisible, setModalVisible] = useState(false);
-
   //estados para utilizar el ModalAlert
   const [visual, setVisual] = useState(false);
   const [info, setInfo] = useState({"titulo":"","subTitulo":"", "parrafo":""});
@@ -44,11 +44,9 @@ const Proyecto = ({infoProyecto, navegar, actualizar}) => {
       idSession: infoUsuario.idPersona,
       idProyecto: id,
     });
-    if (data.affectedRows != 0) {
-      console.log("idActividad", id);
-      console.log(data);
-      actualizar();
-    }
+    actualizarLista();
+    // console.log("idProyecto", id);
+    // console.log(data);
   };
 
   return (
@@ -62,7 +60,7 @@ const Proyecto = ({infoProyecto, navegar, actualizar}) => {
         }}
       >
         <AlertModalInfo
-          onPress={() => {setModalVisible(!modalVisible); actualizar();}}
+          onPress={() => setModalVisible(!modalVisible)}
           informacion={infoProyecto.item}
           textBtn={"Cerrar"}
           colorBtnOcultar="pink"
@@ -74,7 +72,6 @@ const Proyecto = ({infoProyecto, navegar, actualizar}) => {
       <TouchableOpacity
         style={[StylesTarea.containerInfo]}
         onPress={() => {
-            console.log("Nah, no hace caso");
             infoProyecto.item.idProyecto===0 && infoProyecto.item.persona_idPersona===undefined ?
             setInfo({"titulo":"Alerta","subTitulo":"Proyecto invalido", "parrafo":"Esto no es un proyecto ¡Cree uno!"}):
             navegar.navigate('Actividades', {"idProyecto":infoProyecto.item.idProyecto})
@@ -87,16 +84,33 @@ const Proyecto = ({infoProyecto, navegar, actualizar}) => {
 
         <View style={StylesTarea.containerFlex}>
           <Text style={StylesTarea.hora}>
-            {infoProyecto.item.fechaFin}
+            {(infoProyecto.item.fechaFin).slice(0, 10) +" "+(infoProyecto.item.fechaFin).slice(11, 16)}
           </Text>
 
           <Text style={StylesTarea.hora}>{infoProyecto.item.estado}</Text>
         </View>
       </TouchableOpacity>
+      {
+        infoProyecto.item.estado !== "Terminado" ?
+        (
+            <TouchableOpacity
+              onPress={() => {
+                infoProyecto.item.idProyecto === 0 && infoProyecto.item.persona_idPersona === undefined ?
+                  setInfo({ "titulo": "Alerta", "subTitulo": "Proyecto invalido", "parrafo": "Esto no es un proyecto ¡No se puede borrar!" }) :
+                  eliminarProyecto(infoProyecto.item.idProyecto)
+
+              }
+              }
+            >
+              <Image source={require("../assets/icons/trash.png")} />
+            </TouchableOpacity>
+        ):(
+          <View style={[{ height: 22, width: 29, marginRight: 0 }]}></View>
+        )
+      }
       <TouchableOpacity
        onPress={() => {
-          
-          infoProyecto.item.idProyecto==="00" && infoProyecto.item.persona_idPersona===undefined ?
+          infoProyecto.item.idProyecto===0 && infoProyecto.item.persona_idPersona===undefined ?
           setInfo({"titulo":"Alerta","subTitulo":"Proyecto invalido", "parrafo":"Esto no es un proyecto ¡No se puede editar!"}) :
           setModalVisible(!modalVisible)
         }
@@ -104,19 +118,8 @@ const Proyecto = ({infoProyecto, navegar, actualizar}) => {
       >
         <Image
           source={require("../assets/icons/ojoNormal.png")}
-          style={[{ height: 22, width: 29, marginRight: 8}]}
+          style={[{ height: 22, width: 29, marginRight: 8, }]}
         />
-      </TouchableOpacity>
-      <TouchableOpacity
-        onPress={() => {
-          infoProyecto.item.idProyecto===0 && infoProyecto.item.persona_idPersona===undefined ?
-          setInfo({"titulo":"Alerta","subTitulo":"Proyecto invalido", "parrafo":"Esto no es un proyecto ¡No se puede borrar!"}) :
-          eliminarProyecto(infoProyecto.item.idProyecto)
-        
-        }
-      }
-      >
-        <Image source={require("../assets/icons/trash.png")} />
       </TouchableOpacity>
       {/**Modal alert */}
       <ModalAlert
