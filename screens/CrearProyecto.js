@@ -6,6 +6,7 @@ import { registrarProyecto} from "../requestBackend/API-Proyectos";
 import {styles, StylesCrearRecordatorio, StylesHome, StylesConsultaMovimientos} from '../components/styles/Styles'
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
+import ModalAlert from "../components/ModalAlert";
 
 
 const CrearProyecto = (props) =>{
@@ -15,6 +16,21 @@ const CrearProyecto = (props) =>{
 
     const [fecha, cargarFecha] = useState({"fechaInicio":fechaActual.slice(0, 10), "fechaFin":""});
     const [hora, cargarHora] = useState({"horaInicio":fechaActual.slice(11, 16), "horaFin":""});
+
+    //estados para utilizar el ModalAlert
+    const [visual, setVisual] = useState(false);
+    const [info, setInfo] = useState({ "titulo": "", "subTitulo": "", "parrafo": "" });
+    // efecto para llamar el modal
+    useEffect(() => {
+        if (info.subTitulo === "" || info.parrafo === "" || info.titulo === "") { return }
+        setVisual(true);
+    }, [info]);
+    //limpiar la info del modal al ocultarla
+    useEffect(() => {
+        if (visual === false) {
+            setInfo({ "titulo": "", "subTitulo": "", "parrafo": "" });
+        }
+    }, [visual]);
 
     const [infoProyecto, cargarInfoProyecto] = useState({
         "sesion": true,
@@ -56,35 +72,26 @@ const CrearProyecto = (props) =>{
     // funcion para validar los campos antes de enviar
     const validarCampos = () =>{
         if(infoProyecto.descripcion===''|| infoProyecto.descripcion ===null){
-            Alert.alert(
-                'Descripcion invalida', 'El campo \'descripción\' no puede estar vacio',[{text:'Entiendo'}]
-            );
+            
+            setInfo({"titulo":"Campo \"descripción\"","subTitulo":"Descripcion invalida", "parrafo":"El campo \"descripción\" no puede estar vacio"});
             return;
         }
         if(infoProyecto.monto == '' || infoProyecto.monto===null){
-            Alert.alert(
-                'Monto invalido', 'El campo \'monto\' no puede estar vacio',[{text:'Entiendo'}]
-            );
+            setInfo({"titulo":"Campo \"monto\"","subTitulo":"Monto invalido", "parrafo":"El campo \"monto\" no puede estar vacio"});
             return;
         }
         if(validarCifrasNumericas(infoProyecto.monto)){
-            Alert.alert(
-                'Monto invalido', 'El campo \'monto\' solo permite numeros y puntos, ejemplo: "10.32"',[{text:'Entiendo'}]
-            );
+            setInfo({"titulo":"Campo \"monto\"","subTitulo":"Monto invalido", "parrafo":"El campo \"monto\" solo permite numeros y puntos, ejemplo: \"10.32\""});
             return;
         }
         let resultado = validarDatosRegistroPersona(fecha);
         if(resultado.result != true){
-            Alert.alert(
-                'Fecha invalida', resultado.alerta,[{text:'Entiendo'}]
-            );
+            setInfo({"titulo":"\"Fecha\"","subTitulo":"Fecha invalida", "parrafo":resultado.alerta});
             return;
         }
         resultado = validarDatosRegistroPersona(hora);
         if(resultado.result != true){
-            Alert.alert(
-                'Hora invalida', resultado.alerta,[{text:'Entiendo'}]
-            );
+            setInfo({"titulo":"\"Hora\"","subTitulo":"Hora invalida", "parrafo":resultado.alerta});
             return;
         }
         ////////////////////////////////////
@@ -96,9 +103,7 @@ const CrearProyecto = (props) =>{
     useEffect(()=>{
         if(infoProyecto.fechaInicio!=="" && infoProyecto.fechaFin !== ""){
             if(!validarRangoFechaInicioFin(infoProyecto)){
-                Alert.alert(
-                    'Rango de tiempo invalido', `La fecha incial "${infoProyecto.fechaInicio}" no puede ser mayor a la fecha final "${infoProyecto.fechaFin}"`,[{text:'Entiendo'}]
-                );
+                setInfo({"titulo":"\"Fechas\"","subTitulo":"Rango de fechas invalido", "parrafo":`La fecha incial "${infoProyecto.fechaInicio}" no puede ser mayor a la fecha final "${infoProyecto.fechaFin}"`});
                 cargarInfoProyecto({...infoProyecto, "fechaInicio":"", "fechaFin":""});
                 return;
             }
@@ -111,14 +116,11 @@ const CrearProyecto = (props) =>{
         const respuesta = await registrarProyecto(infoProyecto);
         if(!respuesta.registro === true){
             Vibration.vibrate(1500);
-            Alert.alert(
-                'El proyecto no se pudo crear', `Situacion:\n ${respuesta.resultado === undefined? JSON.stringify(respuesta): JSON.stringify(respuesta.resultado)}`,[{text:'Entiendo'}]
-            );
+            setInfo({"titulo":"\"Error\"","subTitulo":"El proyecto no se pudo crear", "parrafo":`Situacion:\n ${respuesta.resultado === undefined? JSON.stringify(respuesta): JSON.stringify(respuesta.resultado)}`});
         }else{
             Vibration.vibrate(200);
-            Alert.alert(
-                '¡Aviso!', 'Proyecto creado con exito',[{text:'Entiendo', onPress: ()=>restablecerCampos()}]
-            );
+            setInfo({"titulo":"¡Aviso!","subTitulo":"Proyecto creado con exito", "parrafo":`Descripción: ${infoProyecto.descripcion}\nMonto: ${infoProyecto.monto}\nFecha inicio: ${infoProyecto.fechaInicio}\nFecha final: ${infoProyecto.fechaFin}`});
+            restablecerCampos();
         }
     }
 
@@ -253,6 +255,16 @@ const CrearProyecto = (props) =>{
                         <Text style={[styles.textBoton, { color: 'white' }]}>Guardar</Text>
                     </TouchableOpacity>
                 </View>
+                {/**Modal alert */}
+                <ModalAlert
+                    VisibleModal={visual}
+                    setVisibleModal={() => setVisual(!visual)}
+                    textTitleModal={info.titulo}
+                    textSubtilulo={info.subTitulo}
+                    textParrafo={info.parrafo}
+                    backgroundColor="#A3A3A380"
+                    backgroundColorButton="#ffdd9b"
+                />
             </SafeAreaView>
         </ScrollView>
     );

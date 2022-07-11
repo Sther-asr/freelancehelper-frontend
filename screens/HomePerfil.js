@@ -114,7 +114,7 @@ const HomePerfil = (props) => {
     } else {
       Vibration.vibrate(200);
       Alert.alert("¡Aviso!", "Perfil actualizado con exito", [
-        { text: "Entiendo", onPress: () => props.navigation.navigate("Organizador")},
+        { text: "Entiendo"},
       ]);
       // onPress: () => restablecerCampos()
       // props.navigation.navigate("Organizador", { perfil });

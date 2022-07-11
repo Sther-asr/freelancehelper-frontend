@@ -9,23 +9,22 @@ import useContextUsuario from "../hook/useContextUsuario";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import { useIsFocused } from '@react-navigation/native';
-import ListaProyectosItems from "../components/ListaProyectosItems";
-import { consultaProyectos } from "../requestBackend/API-Proyectos";
+import ListaRecordatoriosItems from "../components/ListaRecordatoriosItems";
+import { consultarRecordatorios } from "../requestBackend/API-Recordatorios";
 
-const ConsultaProyectos = (props) => {
+const ConsultaRecordatorios = (props) => {
   // utilizando contexto de usuario
   const infoUsuario = useContextUsuario();
   const isFocus = useIsFocused();
   // realizando consulta cada vex que se accede a la pantalla
   useEffect(()=>{
-    console.log("Consultando los proyectos");
-    // obtenerProyectos();
+    console.log("Consultando los recordatorios");
+    // obtenerRecordatorios();
 },[isFocus]);
-
   // control estado actualizar
   const [estadoActualizar, setEstadoActualizar] = useState(false);
   // estado contenedor del resultado de la busqueda de movimientos
-  const [dataProyectos, setDataProyectos] = useState([
+  const [dataRecordatorios, setDataRecordatorios] = useState([
     {
       descripcion: "No posee descripcion",
       monto: "0,00",
@@ -35,11 +34,12 @@ const ConsultaProyectos = (props) => {
     },
   ]);
   // funcion para realizar la consulta
-  const obtenerProyectos = async (periodo) => {
+  const obtenerRecordatorios = async (periodo) => {
     const data = await consultaProyectos({
       sesion: true,
-      idSesion: infoUsuario.idPersona,
+      idSession: infoUsuario.idPersona,
     });
+    console.log(JSON.stringify(data));
     if (data.length !== 0) {
       setDataProyectos(data);
     } else {
@@ -56,6 +56,7 @@ const ConsultaProyectos = (props) => {
       ]);
     }
   };
+  
   return (
     <SafeAreaView style={[{ backgroundColor: "#FFDD9B" }, styles.container]}>
       <StatusBar translucent={true} backgroundColor="#FFDD9B" />
@@ -72,20 +73,20 @@ const ConsultaProyectos = (props) => {
           source={require("../assets/icons/Linea-sup.png")}
         />
         {/* Titulo + boton */}
-        <View style={[{ flexDirection: "row", width: '80%', justifyContent: 'space-between'}]}>
+        <View style={[{ flexDirection: "row", width: '80%', justifyContent: 'space-between', marginTop: 20}]}>
           {/* Titulo */}
           <View style={[{ flexDirection: "row", alignSelf: "center"}]}>
             <Image
               style={[
-                {alignSelf: "center", height: 27, width:37, marginRight: 8}
+                {alignSelf: "center", height: 32, width:30, marginRight: 8}
               ]}
-              source={require("../assets/icons/Icon-proyecto-color.png")}
+              source={require("../assets/icons/Icon-recordatorio-color.png")}
             />
-            <Text style={{fontSize: 23, fontWeight: '500', color: '#666666'}}>Proyectos</Text>
+            <Text style={{fontSize: 23, fontWeight: '500', color: '#666666'}}>Recordatorios</Text>
           </View>
           {/* Boton azul */}
           <TouchableOpacity
-            onPress={() => props.navigation.navigate("CrearProyecto")}
+            onPress={() => props.navigation.navigate("CrearRecordatorio")}
           >
             <Image
               style={[StylesHome.botonNueva, {height: 32, width:32, alignSelf: "center", margin: 0}]}
@@ -99,8 +100,7 @@ const ConsultaProyectos = (props) => {
 
         </View>
 
-        <ListaProyectosItems
-        navegar={props.navigation}
+        <ListaRecordatoriosItems
             // estadoActualizar={estadoActualizar}
             // setEstadoActualizar={setEstadoActualizar}
             // datas={dataProyectos}
@@ -111,4 +111,4 @@ const ConsultaProyectos = (props) => {
   );
 };
 
-export default ConsultaProyectos;
+export default ConsultaRecordatorios;
