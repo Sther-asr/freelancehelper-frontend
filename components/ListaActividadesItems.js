@@ -1,14 +1,13 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { Text, View, FlatList, RefreshControl } from "react-native";
-import { styles, StylesListaTareas } from "./styles/Styles";
+import React, { useState, useEffect } from "react";
+import {  View, FlatList } from "react-native";
+import { StylesListaTareas } from "./styles/Styles";
 import { consultarActividades } from "../requestBackend/API-Actividad";
 import useContextUsuario from "../hook/useContextUsuario";
 import { useIsFocused } from "@react-navigation/native";
 import Actividad from "./ActividadItem";
 
 const ListaProyectosItem = ({idProyecto}) => {
-  // control estado actualizar
-  // const [estadoActualizar, setEstadoActualizar] = useState(false);
+  
   // informacion del contexto de usuario
   const infoUsuario = useContextUsuario();
   //variable para las tareas obtenidas de la bdd
@@ -50,16 +49,6 @@ const ListaProyectosItem = ({idProyecto}) => {
         setDataActividades(data);
     }
   };
-
-  // funcion para cambiar el estado al actualizar la lista de tareas
-  const actualizarActiva = useCallback(async () => {
-    // cargando el estado de refreshing
-    setEstadoActualizar(true);
-    // ejecutar de forma asincrona la funcion de llamar las tareas
-    await consultarTareas();
-    // cargando el estado de refreshing
-    setEstadoActualizar(false);
-  });
 
   //funcion que dibuja cada elemento pasado a traves del llamado del flatList
   const dibujarItems = (actividad) => {
