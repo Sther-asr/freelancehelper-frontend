@@ -2,7 +2,7 @@
  * Funciones encargadas de realizar las solicitudes al servidor
  */
 // constante que contienne la direccion del servidor
-const APISERVER = 'http://192.168.1.104:2000';
+const APISERVER = 'http://192.168.43.244:2000';
 
 //funion de registro de personas o usuarios nuevos
 export const registrarPersona = async (infoPersona) =>{
